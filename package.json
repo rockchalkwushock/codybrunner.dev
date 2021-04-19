@@ -1,0 +1,80 @@
+{
+  "name": "codybrunner.dev",
+  "version": "1.0.0",
+  "description": "My stretch of pipe in the world wide inter-tubes.",
+  "author": {
+    "email": "me@codybrunner.dev",
+    "name": "Cody Brunner",
+    "url": "https://codybrunner.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rockchalkwushock/codybrunner.dev.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": "14.x"
+  },
+  "scripts": {
+    "build": "next build",
+    "commit": "git cz",
+    "dev": "next",
+    "format": "prettier --write",
+    "lint": "eslint",
+    "prepare": "husky install",
+    "start": "next start",
+    "type-check": "tsc"
+  },
+  "dependencies": {
+    "next": "^10.1.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
+    "@rockchalkwushock/eslint-config": "^1.0.3",
+    "@types/node": "^14.14.41",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.3",
+    "commitizen": "^4.2.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.24.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.4"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "eslintConfig": {
+    "extends": "@rockchalkwushock/eslint-config",
+    "ignorePatterns": [
+      "package.json",
+      "vercel.json"
+    ]
+  },
+  "lint-staged": {
+    "*.+(js|json|md|mdx|ts|tsx|yml|yaml)": [
+      "prettier --write"
+    ],
+    "*.+(js|ts|tsx)": [
+      "eslint --fix"
+    ]
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5"
+  }
+}
