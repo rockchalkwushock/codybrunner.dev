@@ -29,7 +29,8 @@
   "dependencies": {
     "next": "^10.1.3",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "sass": "^1.32.10"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.1",
@@ -38,6 +39,7 @@
     "@types/node": "^14.14.41",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
+    "autoprefixer": "^10.2.5",
     "commitizen": "^4.2.3",
     "cz-conventional-changelog": "^3.3.0",
     "dot-plop": "^0.4.1",
@@ -45,7 +47,11 @@
     "husky": "^6.0.0",
     "lint-staged": "^10.5.4",
     "plop": "^2.7.4",
+    "postcss": "^8.2.10",
+    "postcss-import": "^14.0.1",
+    "postcss-preset-env": "^6.7.0",
     "prettier": "^2.2.1",
+    "tailwindcss": "^2.1.1",
     "typescript": "^4.2.4"
   },
   "commitlint": {

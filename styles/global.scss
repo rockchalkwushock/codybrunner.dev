@@ -1,0 +1,14 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+html,
+body {
+  min-height: 100vh;
+  min-width: 22.5rem;
+  scroll-behavior: smooth;
+}
+
+#__next {
+  @apply flex flex-col min-h-screen w-full;
+}
