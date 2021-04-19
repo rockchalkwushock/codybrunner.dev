@@ -31,21 +31,22 @@ const content: Variants = {
   initial: {},
 }
 
+export interface PageMetaData {
+  createdAt?: string
+  description: string
+  image?: string
+  keywords?: Array<string>
+  tags?: Array<string>
+  title: string
+  type: 'article' | 'website'
+  updatedAt?: string
+}
 interface Props
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLElement>,
     HTMLElement
   > {
-  pageMetaData: {
-    createdAt?: string
-    description: string
-    image?: string
-    keywords?: Array<string>
-    tags?: Array<string>
-    title: string
-    type: 'article' | 'website'
-    updatedAt?: string
-  }
+  pageMetaData: PageMetaData
 }
 
 export const AnimatedPage: React.FC<Props> = ({
