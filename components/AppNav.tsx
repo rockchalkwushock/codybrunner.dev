@@ -199,7 +199,7 @@ const AnimatedMobileNav: React.FC = () => {
       ref={containerRef}
     >
       <motion.div
-        className="absolute bottom-0 left-0 shadow-lg top-0 z-20"
+        className="absolute bg-secondary bottom-0 left-0 shadow-lg top-0 z-20"
         variants={mobileNavVariants}
       />
       <AnimatedMenu onNavigate={onNavigate} />
@@ -229,7 +229,7 @@ const DesktopNav: React.FC = () => {
 
 export const AppNav: React.FC = () => {
   return (
-    <nav className="flex items-center justify-between mx-auto sticky top-0 w-full z-10 md:mb-8 lg:p-4">
+    <nav className="bg-primary flex items-center justify-between mx-auto sticky top-0 w-full z-10 md:mb-8 lg:p-4">
       <AnimatedMobileNav />
       <DesktopNav />
     </nav>

@@ -9,6 +9,7 @@ export const SocialIcons: React.FC = () => {
       <li>
         <a
           aria-label="Link to Cody Brunner's Github"
+          className="text-primary"
           href={constants.externalLinks.github}
           rel="noopener noreferrer"
           target="_blank"
@@ -19,6 +20,7 @@ export const SocialIcons: React.FC = () => {
       <li>
         <a
           aria-label="Link to Cody Brunner's LinkedIn"
+          className="text-primary"
           href={constants.externalLinks.linkedin}
           rel="noopener noreferrer"
           target="_blank"
@@ -29,6 +31,7 @@ export const SocialIcons: React.FC = () => {
       <li>
         <a
           aria-label="Link to Cody Brunner's Twitter"
+          className="text-primary"
           href={constants.externalLinks.twitter}
           rel="noopener noreferrer"
           target="_blank"
