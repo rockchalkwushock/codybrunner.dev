@@ -1,7 +1,7 @@
 import * as React from 'react'
 // import { GetStaticPaths, GetStaticProps } from 'next'
 
-import { AnimatedPage } from '@components/AnimatedPage'
+import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 // import {} from '@interfaces/'
 // import {} from '@hooks/'
 // import {} from '@utils/'
@@ -11,7 +11,7 @@ import { AnimatedPage } from '@components/AnimatedPage'
 interface Props {}
 
 const {{ properCase pageName }}: React.FC<Props> = ({ children }) => {
-  const pageMetaData = {
+  const pageMetaData: PageMetaData = {
     description: "{{ sentenceCase pageDescription }}",
     title: "codybrunner.dev | {{ properCase pageName }}",
     type: "{{ pageType }}",

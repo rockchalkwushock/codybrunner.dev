@@ -48,7 +48,7 @@ export const feature: Pick<
     }
     if (answers.requirements.includes('layout')) {
       _actions.push({
-        path: `${LAYOUTS_PATH}/{{ properCase layoutName }}.ts`,
+        path: `${LAYOUTS_PATH}/{{ properCase layoutName }}.tsx`,
         templateFile: '.plop/templates/layout.tsx.hbs',
         type: 'add',
       })

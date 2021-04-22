@@ -75,7 +75,10 @@ export const constants: Constants = {
     'Colombia',
   ],
   location: 'Colombia',
-  menu: [{ path: '/', text: 'Home' }],
+  menu: [
+    { path: '/', text: 'Home' },
+    { path: '/about', text: 'About' },
+  ],
   tech: {
     next: pkg.dependencies.next.substr(1, 4), // Major.Minor
     tailwindCSS: pkg.devDependencies.tailwindcss.substr(1, 3), // Major.Minor
