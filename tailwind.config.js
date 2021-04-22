@@ -1,5 +1,13 @@
 const colors = require('tailwindcss/colors')
 
+/**
+ * Base Theme
+ * - bg-primary:      blueGray-300
+ * - bg-secondary:    blueGray-50
+ * - text-primary:    blueGray-900
+ * - text-secondary:  blueGray-700
+ */
+
 module.exports = {
   darkMode: false,
   important: true,
