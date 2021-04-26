@@ -27,6 +27,7 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.4.0",
     "date-fns": "^2.21.1",
     "framer-motion": "^4.1.5",
     "mdx-bundler": "^3.2.1",
