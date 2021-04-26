@@ -76,7 +76,7 @@ export const MDXLayout: React.FC<Props> = ({
           </ul>
         </section>
       )}
-      <article className="max-w-none mb-8">
+      <article className="mb-8 prose prose-blue lg:prose-lg">
         <MDXContent />
       </article>
       <section
