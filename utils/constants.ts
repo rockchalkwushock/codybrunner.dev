@@ -78,6 +78,7 @@ export const constants: Constants = {
   menu: [
     { path: '/', text: 'Home' },
     { path: '/about', text: 'About' },
+    { path: '/CodyBrunner.pdf', text: 'Resume' },
   ],
   tech: {
     next: pkg.dependencies.next.substr(1, 4), // Major.Minor
