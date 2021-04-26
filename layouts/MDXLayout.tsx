@@ -41,14 +41,14 @@ export const MDXLayout: React.FC<Props> = ({
             </div>
 
             <div className="flex flex-col">
-              <p>
+              <p className="text-secondary">
                 {`${constants.author} / ${formatDateTime(
                   frontMatter.createdAt,
                   'full-date-localized'
                 )}`}
               </p>
               {frontMatter.updatedAt && (
-                <span>
+                <span className="text-secondary">
                   Updated:{' '}
                   {formatDateTime(frontMatter.updatedAt, 'full-date-localized')}
                 </span>
@@ -56,7 +56,7 @@ export const MDXLayout: React.FC<Props> = ({
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <p className="lg:pr-4">{frontMatter.readingTime}</p>
+            <p className="text-secondary lg:pr-4">{frontMatter.readingTime}</p>
           </div>
         </div>
       </header>
@@ -90,7 +90,7 @@ export const MDXLayout: React.FC<Props> = ({
       >
         {previousPost && (
           <PostLink
-            className="border border-transparent outline-none px-8 py-2 rounded-lg shadow-md text-xl focus:outline-none"
+            className="bg-secondary border border-transparent outline-none px-8 py-2 rounded-lg shadow-md text-secondary text-xl focus:outline-none"
             slug={previousPost}
           >
             Previous
@@ -98,7 +98,7 @@ export const MDXLayout: React.FC<Props> = ({
         )}
         {nextPost && (
           <PostLink
-            className="border border-transparent outline-none px-8 py-2 rounded-lg shadow-md text-xl focus:outline-none"
+            className="bg-secondary border border-transparent outline-none px-8 py-2 rounded-lg shadow-md text-secondary text-xl focus:outline-none"
             slug={nextPost}
           >
             Next

@@ -12,3 +12,24 @@ body {
 #__next {
   @apply flex flex-col min-h-screen w-full;
 }
+
+/*
+-------------------------------------------
+Custom utilities
+-------------------------------------------
+*/
+
+@layer utilities {
+  .bg-primary {
+    @apply bg-blueGray-300;
+  }
+  .text-primary {
+    @apply text-blueGray-900;
+  }
+  .bg-secondary {
+    @apply bg-blueGray-50;
+  }
+  .text-secondary {
+    @apply text-blueGray-700;
+  }
+}
