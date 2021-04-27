@@ -22,6 +22,12 @@ module.exports = {
       ...colors,
     },
     extend: {
+      animation: {
+        move: 'move 8s linear infinite',
+      },
+      keyframes: {
+        move: { to: { transform: 'translateX(-100%)' } },
+      },
       typography: theme => ({
         DEFAULT: {
           css: {
