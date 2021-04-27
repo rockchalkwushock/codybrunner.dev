@@ -27,6 +27,7 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@appointlet/appointlet.js": "^3.0.6",
     "@tailwindcss/typography": "^0.4.0",
     "date-fns": "^2.21.1",
     "framer-motion": "^4.1.5",

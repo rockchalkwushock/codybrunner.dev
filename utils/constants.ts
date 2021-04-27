@@ -79,6 +79,7 @@ export const constants: Constants = {
     { path: '/', text: 'Home' },
     { path: '/about', text: 'About' },
     { path: '/CodyBrunner.pdf', text: 'Resume' },
+    { path: '/contact', text: 'Contact' },
   ],
   tech: {
     next: pkg.dependencies.next.substr(1, 4), // Major.Minor
