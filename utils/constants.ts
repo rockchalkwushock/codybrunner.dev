@@ -21,6 +21,7 @@ type Constants = {
   }
   externalLinks: {
     github: string
+    instagram: string
     linkedin: string
     next: string
     source: string
@@ -60,6 +61,7 @@ export const constants: Constants = {
   },
   externalLinks: {
     github: 'https://github.com/rockchalkwushock',
+    instagram: 'https://www.instagram.com/rockchalkwushock',
     linkedin: 'https://www.linkedin.com/in/cody-brunner',
     next: 'https://nextjs.org',
     source: 'https://github.com/rockchalkwushock/codybrunner.dev',
