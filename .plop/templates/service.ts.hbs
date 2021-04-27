@@ -1,8 +1,26 @@
 // import {} from 'fs'
 // import {} from 'path'
+import { QueryFunctionContext } from 'react-query'
 
 // import {} from '@interfaces/{{ camelCase serviceName }}'
 // import {} from '@utils/'
+
+/**
+ * CLIENT-SIDE QUERIES
+ */
+
+export async function fetch{{ properCase serviceName }}(_context: QueryFunctionContext): Promise<unknown> {
+  try {
+    const response = await fetch('/api/{{#if endpointPath}}{{ dashCase endpointPath }}/{{ dashCase endpointName }}{{else}}{{ dashCase endpointName }}{{/if}}')
+    return await response.json()
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+/**
+ * SERVER-SIDE QUERIES
+ */
 
 export async function get{{ properCase serviceName }}(): Promise<unknown> {
   try {

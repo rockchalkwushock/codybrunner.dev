@@ -1,12 +1,12 @@
 // import * as React from 'react'
-// import useSWR, { SWRResponse } from 'swr'
+// import { useQuery, UseQueryResult } from 'react-query'
 
-// import {} from '@interfaces/{{ camelCase endpointName }}'
-import { fetcher } from '@lib/fetcher'
+// import {} from '@interfaces/{{ camelCase serviceName }}'
+// import {} from '@lib/{{ camelCase serviceName }}'
 
-type {{ properCase hookName }} = () => {}
+type {{ properCase hookName }} = () => void
 
 export const {{ camelCase hookName }}: {{ properCase hookName }} = () => {
-  // return useSWR<unknown, unknown>('/api/{{ dashCase endpointName }}', fetcher)
+  // return useQuery('{{ dashCase endpointName }}', async () => {}, {})
   return
 }
