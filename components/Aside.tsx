@@ -1,22 +1,13 @@
 import * as React from 'react'
-import NextImage from 'next/image'
 
 import { SocialIcons } from './SocialIcons'
 import { constants } from '@utils/constants'
+import { Avatar } from './Avatar'
 
 export const Aside: React.FC = () => {
   return (
     <aside className="hidden md:col-start-1 md:col-end-3 md:flex md:flex-col md:items-center md:space-y-4">
-      <div className="h-48 rounded-full w-48">
-        <NextImage
-          alt={constants.author}
-          className="rounded-full"
-          height="300"
-          objectFit="cover"
-          src="/images/me.jpg"
-          width="300"
-        />
-      </div>
+      <Avatar className="h-48 w-48" />
       <ul className="flex flex-col items-center space-y-4">
         <li className="text-xl lg:text-2xl">{constants.author}</li>
         <li className="min-h-min">
