@@ -32,4 +32,8 @@ Custom utilities
   .text-secondary {
     @apply text-blueGray-700;
   }
+  // One-Offs
+  .spotify-light {
+    fill: rgba(104, 242, 152, 1);
+  }
 }
