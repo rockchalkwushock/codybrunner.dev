@@ -1,6 +1,8 @@
 import { readdirSync, statSync } from 'fs'
 import { join } from 'path'
 
+export const isServer = typeof window === 'undefined'
+
 /**
  * @name getFiles
  * @param path {string}
