@@ -14,7 +14,7 @@ export const SocialIcons: React.FC = () => {
           rel="noopener noreferrer"
           target="_blank"
         >
-          <GitHub className="lg:h-7 lg:w-7" />
+          <GitHub className="h-7 w-7" />
         </a>
       </li>
       <li>
@@ -25,7 +25,7 @@ export const SocialIcons: React.FC = () => {
           rel="noopener noreferrer"
           target="_blank"
         >
-          <Linkedin className="lg:h-7 lg:w-7" />
+          <Linkedin className="h-7 w-7" />
         </a>
       </li>
       <li>
@@ -36,7 +36,7 @@ export const SocialIcons: React.FC = () => {
           rel="noopener noreferrer"
           target="_blank"
         >
-          <Twitter className="lg:h-7 lg:w-7" />
+          <Twitter className="h-7 w-7" />
         </a>
       </li>
     </>
