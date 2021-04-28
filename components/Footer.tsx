@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import { SocialIcons } from './SocialIcons'
+import { NowPlaying } from './NowPlaying'
 import { constants } from '@utils/constants'
 
 export const Footer: React.FC = () => {
@@ -10,6 +11,7 @@ export const Footer: React.FC = () => {
         <SocialIcons />
       </ul>
       <div className="flex flex-col items-center space-y-2 md:items-start md:space-y-0">
+        <NowPlaying />
         <a
           aria-label="Link to source code on Github"
           className="hover-text text-primary lg:text-lg"

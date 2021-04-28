@@ -1,10 +1,9 @@
 import * as React from 'react'
-import NextImage from 'next/image'
 import { getMDXComponent } from 'mdx-bundler/client'
 
+import { Avatar } from '@components/Avatar'
 import { PostLink } from '@components/PostLink'
 import { Post } from '@interfaces/blog'
-// import {} from '@hooks/'
 import { constants } from '@utils/constants'
 import { formatDateTime } from '@utils/dateTime'
 
@@ -30,15 +29,7 @@ export const MDXLayout: React.FC<Props> = ({
         </h1>
         <div className="flex flex-col items-center w-full md:flex-row md:justify-between">
           <div className="flex items-center">
-            <div className="h-8 mr-2 relative w-8 md:hidden">
-              <NextImage
-                alt="Cody Brunner"
-                className="rounded-full"
-                height="32"
-                src="/images/me.jpg"
-                width="32"
-              />
-            </div>
+            <Avatar className="h-9 mr-2 w-9 md:hidden" />
 
             <div className="flex flex-col">
               <p className="text-secondary">
