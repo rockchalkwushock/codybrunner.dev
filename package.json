@@ -30,6 +30,7 @@
   "dependencies": {
     "@appointlet/appointlet.js": "^3.0.6",
     "@tailwindcss/typography": "^0.4.0",
+    "amplitude-js": "^8.2.0",
     "date-fns": "^2.21.1",
     "framer-motion": "^4.1.11",
     "mdx-bundler": "^3.4.1",
@@ -51,6 +52,7 @@
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
     "@rockchalkwushock/eslint-config": "^1.0.3",
+    "@types/amplitude-js": "^7.0.1",
     "@types/node": "^15.0.1",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
