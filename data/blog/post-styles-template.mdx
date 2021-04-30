@@ -1,0 +1,198 @@
+---
+archived: false
+createdAt: 01/01/2021
+description: hello world, goodbye world
+keywords:
+  - '1'
+  - '2'
+  - '3'
+published: false
+tags:
+  - '1'
+  - '2'
+  - '3'
+title: Post Styles Template
+---
+
+import { Signature, TLDR } from '../components/MDXComponents.tsx'
+
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+
+#### Heading 4
+
+##### Heading 5
+
+###### Heading 6
+
+---
+
+I am a paragraph.
+
+---
+
+It is a long established fact that a reader will be distracted by the **readable** content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, `inline code` to using 'Content here, content here', making it look like _readable_ English. Many desktop publishing packages and web page editors [link](https://cnn.com) use Lorem Ipsum as their default model text, and a **_search_** for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+
+---
+
+_I am italicized text_
+
+---
+
+**I am bolded text**
+
+---
+
+**_I am bolded and italicized text_**
+
+---
+
+`I am inline code`
+
+---
+
+[I am a link](https://cnn.com)
+
+---
+
+I am an unordered list:
+
+- 1
+- 2
+- 3
+
+---
+
+I am an ordered list:
+
+1. a
+2. b
+3. c
+
+---
+
+> I am a blockquote
+
+> I am a blockquote with _italicized text_
+
+> I am a blockquote with **bolded text**
+
+> I am a blockquote with `inline code`
+
+> I am a blockquote with a [link](https://cnn.com)
+
+---
+
+```bash
+cd hello_world
+yarn install
+yarn add next react react-dom
+```
+
+```javascript:meaningOfLife.js
+const meaningOfLife = 42
+```
+
+```typescript:add.ts
+const add(...args: Array<number>): number => args.reduce((acc, val) => val += acc, 0)
+```
+
+```tsx:components/Avatar.tsx
+import * as React from 'react'
+import NextImage from 'next/image'
+
+import { constants } from '@utils/constants'
+
+interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const Avatar: React.FC<Props> = ({ className }) => {
+  return (
+    <div
+      className={`bg-white border border-transparent relative rounded-full ${
+        className ?? ''
+      }`}
+    >
+      <NextImage
+        alt={constants.author}
+        className="rounded-full"
+        layout="fill"
+        objectFit="contain"
+        src="/images/me.jpg"
+      />
+    </div>
+  )
+}
+
+```
+
+```json:tsconfig.json
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "alwaysStrict": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "lib": ["dom", "es2017"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "@components/*": ["components/*"],
+      "@hooks/*": ["hooks/*"],
+      "@interfaces/*": ["interfaces/*"],
+      "@layouts/*": ["layouts/*"],
+      "@lib/*": ["lib/*"],
+      "@pages/*": ["pages/*"],
+      "@utils/*": ["utils/*"]
+    },
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext"
+  },
+  "exclude": ["node_modules"],
+  "include": ["**/*.ts", "**/*.tsx", "next.config.js", "next-env.d.ts"]
+}
+```
+
+```yml:.github/workflows/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: '/'
+    open-pull-requests-limit: 10
+    schedule:
+      day: 'sunday'
+      interval: 'weekly'
+      time: '22:00'
+      timezone: 'America/Bogota'
+    target-branch: 'development'
+
+  - package-ecosystem: 'npm'
+    directory: '/'
+    open-pull-requests-limit: 10
+    schedule:
+      day: 'sunday'
+      interval: 'weekly'
+      time: '22:00'
+      timezone: 'America/Bogota'
+    target-branch: 'development'
+
+```
+
+![Strava API Application Screen](/images/2021/adding-my-strava-data-to-my-website/strava-application-screen.png)
+
+<TLDR>Do as I say...not as I do!</TLDR>
+
+<TLDR>`yarn add react`</TLDR>
+
+<Signature>~ Cody 🚀</Signature>

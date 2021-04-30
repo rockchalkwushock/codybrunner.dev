@@ -1,0 +1,809 @@
+---
+archived: false
+createdAt: 03/26/2021
+description: How to integrate the Strava API into a NextJS Application.
+keywords:
+  - dark-mode
+  - date-fns
+  - feather-icons
+  - nextjs
+  - next-themes
+  - reactjs
+  - react-feather
+  - strava
+  - swr
+  - tailwindcss
+  - typescript
+published: false
+tags:
+  - nextjs
+  - tailwindcss
+  - typescript
+title: Adding My Strava Data To My Website
+versions:
+  date-fns: 2.19.0
+  nextjs: 10.0.9
+  next-themes: 0.0.14
+  react/react-dom: 17.0.1
+  react-feather: 2.0.9
+  strava: 1.3.0
+  swr: 0.5.4
+  tailwindcss: 2.0.4
+updatedAt: 04/07/2021
+---
+
+import { Signature } from '../components/MDXComponents.tsx'
+
+I have modeled a lot of my site and features off of [@leerob](https://github.com/leerob)'s blog/website and in doing so have also added a dashboard-like page with various data from external resources. You can check it out [here](https://codybrunner.dev/dashboard)! I have been attempting, quite poorly I have to admit, in getting back into running and losing some of that "Paaaandemic weight". My wife showed me [Strava](https://www.strava.com) so I've been using it along with my Apple Watch to track my runs and get that juicy data. I don't believe Strava existed the many moons ago when I competed at the collegiate level and ran marathons (yeah it baffles the mind that I used to do that!), but damn I wish it would have been around because it is hella dope!
+
+In this post we will create a little card that shows off your stats for the year and your weekly stats. Now there is a disclaimer that if you have a Strava account already you could just embed one of their sleek and sexy iframes, but that's no damn fun! We are developers here and it's our job to reinvent the wheel again with the latest technologies because by God we can!
+
+## Setting up Strava
+
+If you don't have a Strava account already you are going to need one so surf on over to [here](https://www.strava.com/register/free) and create and account (you will probably also want to go for a bike, run, or swim so you have some data!).
+
+We need to register our application with Strava so we will navigate to our [profile](https://www.strava.com/settings/profile). You will want to find the "My API Application" tab. We need to get our `ATHLETE_ID`, `CLIENT_ID`, & `CLIENT_SECRET` so we can authenticate our application with the Strava API.
+
+To get your `ATHLETE_ID` click on your avatar and then inspect the URL you should see something like this:
+
+```shell
+https://www.strava.com/athletes/[ATHLETE_ID]
+```
+
+![Strava API Application Screen](/images/2021/adding-my-strava-data-to-my-website/strava-application-screen.png)
+
+```shell
+# http://www.strava.com/oauth/authorize?client_id=[REPLACE_WITH_YOUR_CLIENT_ID]&response_type=code&redirect_uri=http://localhost:3000/exchange_token&approval_prompt=force&scope=read
+
+curl -X POST https://www.strava.com/oauth/token\?client_id\=[CLIENT_ID]\&client_secret\=[CLIENT_SECRET]\&code\=[CODE]\&grant_type\=authorization_code
+```
+
+Nice! Now that we have what we need let's get to coding!
+
+## Bootstrapping the Repository
+
+Let's bootstrap a NextJS project with TypeScript to get us moving faster.
+
+```shell
+yarn create next-app --example with-typescript strava-card
+cd strava-card
+```
+
+```shell
+yarn add strava swr
+touch .env.example .env.local
+```
+
+We need to get our environment variables added to our code so let's do that right away before we forget. We want to add them to our `.env.example` so we know in the future what we need should we lose our `.env.local` since `git` is not tracking it and of course don't forget to add the **REAL** values to your `.env.local`. I also like to have my typings for my env vars present so I add them to the `next-env.d.ts` file as seen below, but this is totally up to you.
+
+```diff:next-env.d.ts
+/// <reference types="next" />
+/// <reference types="next/types/global" />
++
++ declare namespace NodeJS {
++   export interface ProcessEnv {
++     // Node Environment Variables
++     NODE_ENV: 'development' | 'production' | 'test'
++     // Custom Environment Variables
++     NEXT_PUBLIC_STRAVA_ATHLETE_ID: string
++     STRAVA_CLIENT_ID: string
++     STRAVA_CLIENT_SECRET: string
++     STRAVA_REFRESH_TOKEN: string
++   }
++ }
+```
+
+## Getting Your Year-to-Date Running Stats
+
+Strava has the endpoint [`/athletes/{id}/stats`](https://developers.strava.com/docs/reference/#api-Athletes-getStats) for gathering up a user's year-to-date stats for biking, running, and swimming. With the [`strava`](https://www.npmjs.com/package/strava) library that you installed you can access this endpoint through the `getStats` method. Which will require your `ATHLETE_ID` that you got in the first section of this post. First we will write out the business logic portion for getting those year-to-date stats.
+
+```typescript:lib/strava.ts
+import { Strava } from 'strava'
+
+import { AthleteStats, Maybe } from '@interfaces'
+
+const client = new Strava({
+  client_id: process.env.STRAVA_CLIENT_ID,
+  client_secret: process.env.STRAVA_CLIENT_SECRET,
+  refresh_token: process.env.STRAVA_REFRESH_TOKEN,
+})
+
+export async function getStrava(): Promise<Maybe<AthleteStats>> {
+  try {
+    // Fetch total stats.
+    const stats = await client.athletes.getStats({ id: process.env.NEXT_PUBLIC_STRAVA_ATHLETE_ID })
+
+    if (!stats) {
+      return Promise.reject(null)
+    }
+
+    return Promise.resolve({
+      ytdRunDistance: `${(stats.ytd_run_totals.distance / 1000).toFixed(2)} km`,
+      ytdTotalRuns: stats.all_run_totals.count,
+    })
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+```
+
+Two important things to note about the Strava API is that all distances are returned in meters & time in seconds so depending on what units of measurement you prefer you will need to perform some computation on the values. Now that I live outside the USA I need to familiarize myself with the metric system so I went with kilometers for distance and minutes for time.
+
+Notice our `getStrava` function will return a Promise that can either be `null` in a rejection state or with our parsed data in a resolved state. This is important because this is how you will differentiate in the UI between and error state and a success state because as seen below in the `/api/strava` endpoint we will always respond to a query at this endpoint with a 200 status code. We are not dealing with authentication, authorization, etc here so I don't really see the need to respond with Client or Server status code errors. In the event of a 200 with a `null` data type it was Strava requests that failed and I don't think the application just crap down it's leg because of Strava. Instead we can gracefully handle this in the UI later on.
+
+```typescript:pages/api/strava.ts
+import type { NextApiRequest, NextApiResponse } from 'next'
+
+import { AthleteStats, Maybe } from '@interfaces'
+import { getStrava } from '@lib'
+
+export default async (
+  _: NextApiRequest,
+  res: NextApiResponse<Maybe<AthleteStats>>
+  ) => {
+  try {
+    const response = await getStrava()
+    return res.status(200).json(response)
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+```
+
+```typescript:hooks/useStrava.ts
+import useSWR, { SWRResponse } from 'swr'
+
+import { AthleteStats, Maybe } from '@interfaces'
+import { fetcher } from '@lib'
+
+type UseStrava = () => SWRResponse<Maybe<AthleteStats>, unknown>
+
+export const useStrava: UseStrava = () => {
+  return useSWR<Maybe<AthleteStats>, unknown>('/api/strava', fetcher)
+}
+```
+
+We need to create our custom `fetcher` function that is required by `swr`.
+
+```typescript:lib/fetcher.ts
+export async function fetcher<T>(
+  input: RequestInfo,
+  init?: RequestInit
+): Promise<T> {
+  try {
+    const res = await fetch(input, init)
+    return res.json() as Promise<T>
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+```
+
+```tsx:pages/index.tsx
+import { Layout } from '@components'
+import { useStrava } from '@hooks'
+
+const IndexPage = () => {
+  const { data, error } = useStrava()
+
+  return (
+    <Layout title="Home | Next.js + TypeScript Example">
+      <h1>Hello Next.js 👋</h1>
+      {error ? (
+        <h1>Error</h1>
+      ) : !data ? (
+        <h1>Loading...</h1>
+      ) : (
+        <div>{JSON.stringify(data, undefined, 2)}</div>
+      )}
+    </Layout>
+  )
+}
+
+export default IndexPage
+```
+
+![Stats Dump](/images/2021/adding-my-strava-data-to-my-website/stats-json-dump.png)
+
+Great! We have our year to date data being fetched via our application now let's move on to getting the weekly activity data before we start building the UI for the card.
+
+## Getting Your Weekly Activity Data
+
+For this step we are going to use [`date-fns`](https://date-fns.org/) to format our time values so let's get that installed:
+
+```shell
+yard add date-fns
+```
+
+We need to access the [`/athlete/activities`](https://developers.strava.com/docs/reference/#api-Activities-getLoggedInAthleteActivities) endpoint of Strava to get our weekly activity data so we will make use of the `getLoggedInAthleteActivities` method from the Strava library. This endpoint accepts params for an `after` and `before` timestamp. This is how we can scope our query down to the the current week. How we are going to achieve this is by fetching the current date with `new Date()`. `date-fns` gives us a plethora of helpers for working with dates and what we are specifically looking for are helpers that can get us the start date and end date of a week based off of the give date. `date-fns` gives us just that with `endOfWeek` and `startOfWeek`, all we need to do is just pass the functions the date we created and they will give us back a date object. The second thing we need to do is parse these date objects for the start and end of the week to UNIX timestamps because that is specifically what Strava expects for the two params.
+
+Now we are in a position where we can fetch a week's worth of data from Strava, but we still need to format the data. As I stated before the units returned by Strava are in meters and seconds what you choose to use are totally up to you. I will be using kilometers and minutes in this post.
+
+Converting meters to kilometers is pretty easy but I would also not like to send something like 12.123456789 kilometers to the frontend so we can make use of `Number.toFixed()` to trim the number of digits after the decimal. This prototype method will round automatically should we have something like `12.125.toFixed(2) // 12.13`.
+
+For converting the seconds to minutes we will take the seconds given to us by Strava and find the remainder against 3600 seconds, which is 1 hour in seconds. We will then use `Math.floor()` to get a whole number. We can then divide this value by 60 (number of minutes in an hour) and we will have the minutes it took to complete the activity.
+
+```typescript
+// Compute the remainder from the seconds we got from Strava & 3600 (1 hour).
+const remainder = stravaSeconds % 3600
+// Get a whole number value using Math.floor()
+const wholeValue = Math.floor(remainder)
+// Divide the value by 60 (minutes in an hour)
+const minutesForActivity = wholeValue / 60
+```
+
+We can simplify the above into a one liner and use some magic I learned about while writing the feature. `Math.floor` has a shorthand operator `~~`. It does operate different than `Math.floor` with negative values so be careful, you can read more [here](https://stackoverflow.com/questions/5971645/what-is-the-double-tilde-operator-in-javascript):
+
+```typescript
+~~((stravaSeconds % 3600) / 60)
+```
+
+```diff:lib/strava.ts
+- import { Strava } from 'strava'
++ import { Strava as StravaClient } from 'strava'
++ import { endOfWeek, format, getUnixTime, startOfWeek } from 'date-fns'
+
+- import { AthleteStats, Maybe } from '@interfaces'
++ import { Maybe, Strava } from '@interfaces'
+
+- const client = new Strava({
++ const client = new StravaClient({
+  client_id: process.env.STRAVA_CLIENT_ID,
+  client_secret: process.env.STRAVA_CLIENT_SECRET,
+  refresh_token: process.env.STRAVA_REFRESH_TOKEN,
+})
+
+- export async function getStrava(): Promise<Maybe<AthleteStats>> {
++ export async function getStrava(): Promise<Maybe<Strava>> {
++ const date = new Date()
+  try {
+    // Fetch total stats.
+    const stats = await client.athletes.getStats({ id: process.env.NEXT_PUBLIC_STRAVA_ATHLETE_ID })
++   // Fetch recent activities.
++   const activities = await client.activities.getLoggedInAthleteActivities({
++     // Bound the query to the current weeks activities.
++     after: getUnixTime(startOfWeek(date)),
++     before: getUnixTime(endOfWeek(date)),
++   })
++
+-   if (!stats) {
++   if (!activities || !stats) {
+      return Promise.reject(null)
+    }
+
+-   return Promise.resolve({
+-     ytdRunDistance: `${(stats.ytd_run_totals.distance / 1000).toFixed(2)} km`,
+-     ytdTotalRuns: stats.all_run_totals.count,
+-   })
++   return Promise.resolve({
++     activities: activities.map(a => ({
++       date: format(new Date(a.start_date_local), 'EEE'),
++       distance: `${(a.distance / 1000).toFixed(2)} km`,
++       name: a.name,
++       time: `${~~((a.elapsed_time % 3600) / 60)} minutes`,
++       type: a.type,
++     })),
++     totals: {
++       ytdRunDistance: `${(stats.ytd_run_totals.distance / 1000).toFixed(2)} km`,
++       ytdTotalRuns: stats.all_run_totals.count,
++     },
++   })
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+```
+
+```diff:pages/api/strava.ts
+- import { AthleteStats, Maybe } from '@interfaces'
++ import { Maybe, Strava } from '@interfaces'
+import { getStrava } from '@lib'
+
+export default async (
+  _: NextApiRequest,
+- res: NextApiResponse<Maybe<AthleteStats>>
++ res: NextApiResponse<Maybe<Strava>>
+  ) => {
+  try {
+    const response = await getStrava()
+    return res.status(200).json(response)
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+```
+
+```diff:hooks/useStrava.ts
+import useSWR, { SWRResponse } from 'swr'
+
+- import { AthleteStats, Maybe } from '@interfaces'
++ import { Maybe, Strava } from '@interfaces'
+import { fetcher } from '@lib'
+
+- type UseStrava = () => SWRResponse<Maybe<AthleteStats>, unknown>
++ type UseStrava = () => SWRResponse<Maybe<Strava>, unknown>
+
+export const useStrava: UseStrava = () => {
+-  return useSWR<Maybe<AthleteStats>, unknown>('/api/strava', fetcher)
++  return useSWR<Maybe<Strava>, unknown>('/api/strava', fetcher)
+}
+```
+
+![Activities Dump](/images/2021/adding-my-strava-data-to-my-website/activities-json-dump.png)
+
+### Seconds To Minutes Bug 🐛🤦🏻‍♂️
+
+At the time of writing this I found a bug in my code in which if I did a run or walk over 60 minutes, say it was 63 minutes, the code would return 3 minutes as the time it took to complete the activity.
+
+To fix this bug I leaned on some of the helpers from `date-fns` and wrapped them up in a helper function called `formatStravaSeconds`:
+
+```typescript filename="utils/dateTime.ts"
+import { formatDuration, intervalToDuration } from 'date-fns'
+
+export const formatStravaSeconds = (seconds: number) => {
+  return formatDuration(
+    intervalToDuration({
+      // The acutal date here does not matter, what does is that the start
+      // seconds are zero and the end seconds are what Strava gave us.
+      end: new Date(2021, 0, 1, 0, 0, seconds),
+      start: new Date(2021, 0, 1, 0, 0, 0),
+    }),
+    // We want to only format this as hours & minutes.
+    { format: ['hours', 'minutes'] }
+  )
+}
+
+// Examples:
+// formatStravaSeconds(3600) -- "1 hour"
+// formatStravaSeconds(3660) -- "1 hour 1 minute"
+// formatStravaSeconds(5960) -- "1 hour 39 minutes"
+```
+
+## Building the Card UI/UX with TailwindCSS
+
+We will need to install a few dependencies and setup a few config files to get our UI going:
+
+```shell
+yard add -D autoprefixer postcss postcss-import postcss-preset-env tailwindcss
+touch postcss.config.js tailwind.config.js pages/_app.tsx
+```
+
+```javascript:postcss.config.js
+module.exports = {
+  plugins: [
+    'postcss-import',
+    'tailwindcss',
+    'postcss-preset-env',
+    'autoprefixer',
+  ],
+}
+```
+
+```javascript:tailwind.config.js
+const colors = require('tailwindcss/colors')
+
+module.exports = {
+  darkMode: false,
+  plugins: [],
+  purge: ['./components/*.tsx', './pages/**/*.tsx'],
+  theme: {
+    colors: {
+      // Both of these must be added manually.
+      current: 'currentColor',
+      transparent: 'transparent',
+      // This will give us all the color palette from tailwind.
+      ...colors,
+    },
+    extend: {},
+  },
+  variants: {
+    extend: {},
+  },
+}
+```
+
+```tsx:pages/_app.tsx
+import * as React from 'react'
+import { AppProps } from 'next/app'
+
+// Import the tailwind styles.
+import 'tailwindcss/tailwind.css'
+
+type Props = AppProps & {}
+
+const App: React.FC<Props> = ({ Component, pageProps }) => {
+  return <Component {...pageProps} />
+}
+
+export default App
+```
+
+```tsx:components/StravaCard.ts
+import * as React from 'react'
+
+import { useStrava } from '@hooks'
+
+type Props = {}
+
+export const StravaCard: React.FC<Props> = () => {
+  const { data, error } = useStrava()
+
+  if (error) return <h1>Error</h1>
+  if (!data) return <h1>Loading...</h1>
+
+  return (
+    <div className="bg-orange-500 border border-transparent flex flex-col p-4 rounded-lg shadow-md">
+      <header className="flex items-center justify-center mb-4 w-full">
+        <h1 className="font-medium italic text-2xl">My Strava Data</h1>
+      </header>
+      <div className="flex flex-col flex-grow space-y-2">
+        <div className="bg-orange-200 p-4 rounded-lg shadow-md">
+          <h4 className="font-medium mb-2 underline">Yearly Totals</h4>
+          <p className="text-sm">
+            Total Distance Ran: {data.totals.ytdRunDistance}
+          </p>
+          <p className="text-sm">Total Runs: {data.totals.ytdTotalRuns}</p>
+        </div>
+        <div className="bg-orange-200 p-4 rounded-lg shadow-md">
+          <h4 className="font-medium mb-2 underline">Weekly Activity</h4>
+          <ul>
+            {data.activities.length === 0 ? (
+              <p>No activity yet</p>
+            ) : (
+              <ul>
+                {data.activities.map((a, i) => (
+                  <li className="text-sm" key={`${i}--${a.date}`}>
+                    {a.date}: {a.name} -- {a.distance} -- {a.time}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+![Strava Card](/images/2021/adding-my-strava-data-to-my-website/strava-card.png)
+
+## Refactoring the Business Logic
+
+We can clean up our logic by using `Promise.all`. Some might be scared to use this because if you are not aware, and you definitely should be, when reaching for this `Promise.all` will reject if **any** of the promises fail. In our case here if either or all of the requests were to fail it's likely because there is a problem with Strava or our configuration with Strava so it seems appropriate to fail early and send `null` to the frontend.
+
+```diff:lib/strava.ts
+export async function getStrava(): Promise<Maybe<Strava>> {
+  const date = new Date()
+  try {
+-    // Fetch total stats.
+-    const stats = await client.athletes.getStats({ id: process.env.NEXT_PUBLIC_STRAVA_ATHLETE_ID })
+-   // Fetch recent activities.
+-   const activities = await client.activities.getLoggedInAthleteActivities({
+-     // Bound the query to the current weeks activities.
+-     after: getUnixTime(startOfWeek(date)),
+-     before: getUnixTime(endOfWeek(date)),
+-   })
++    // Define request for activities.
++    const activitiesRequest = client.activities.getLoggedInAthleteActivities({
++      // Bound the query to the current weeks activities.
++      after: getUnixTime(startOfWeek(date)),
++      before: getUnixTime(endOfWeek(date)),
++    })
++    // Define request for stats.
++    const statsRequest = client.athletes.getStats({
++      // Library expects a number.
++      id: parseInt(process.env.NEXT_PUBLIC_STRAVA_ATHLETE_ID),
++    })
++
++    // Here we can batch our requests.
++    // NOTE: If any request fails Promise.all will reject!
++    const [activities, stats] = await Promise.all([
++      activitiesRequest,
++      statsRequest,
++    ])
+
+    // If Strava API call fails reject the Promise with null.
+    // The frontend will interpret this and handle displaying
+    // the correct UI.
+    if (!activities || !stats) {
+      return Promise.reject(null)
+    }
+
+    return Promise.resolve({
+      activities: activities.map(a => ({
+        date: format(new Date(a.start_date_local), 'EEE'),
+        distance: `${(a.distance / 1000).toFixed(2)} km`,
+        name: a.name,
+        time: formatStravaSeconds(a.elapsed_time),
+        type: a.type,
+      })),
+      totals: {
+        ytdRunDistance: `${(stats.ytd_run_totals.distance / 1000).toFixed(
+          2
+        )} km`,
+        ytdTotalRuns: stats.all_run_totals.count,
+      },
+    })
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+```
+
+## Adding Theming with `next-themes`
+
+Theming and specifically having dark mode is all the rage these days so let's add to the feature with our very own dark mode using `next-themes`:
+
+```shell
+yarn add next-themes react-feather
+```
+
+We will need to update our tailwind config to enable the dark mode via the class attribute:
+
+```diff:tailwind.config.js
+module.exports = {
+-  darkMode: false,
++  darkMode: 'class',
+  plugins: [],
+  purge: ['./components/*.tsx', './pages/**/*.tsx'],
+  theme: {
+    colors: {
+      current: 'currentColor',
+      transparent: 'transparent',
+      ...colors,
+    },
+    extend: {},
+  },
+  variants: {
+    extend: {},
+  },
+}
+```
+
+And then we will need to update our `_app.tsx` to use the `<ThemeProvider />`. This is a pretty powerful library in the sense that you can choose how to setup your theming (i.e class attribute). You can decided what the default theme should be when your app boots up (including the ability to default to the system theme). You can retrieve the user's setting from local storage by setting up a key to store the value. Not to mention you can setup multiple themes, not just light and dark mode. I kind of want to do a few other themes in the future! With the changes we have made we now have the ability to setup a dark mode using `dark:`. Now whenever dark mode is toggled on tailwind will look for the `dark:` prefix and enable any tailwind class that is attached to it very similarly to how responsive design is handled with the `xs:`, `sm:`, `md:`, `lg:`, and `xl:` prefixes.
+
+```diff:pages/_app.tsx
+import * as React from 'react'
+import { AppProps } from 'next/app'
++ import { ThemeProvider } from 'next-themes'
+
+import 'tailwindcss/tailwind.css'
++ import { ThemeToggle } from '@components'
+
+type Props = AppProps & {}
+
+const App: React.FC<Props> = ({ Component, pageProps }) => {
+-  return <Component {...pageProps} />
++  return (
++    <ThemeProvider
++      // This needs to match what is being used in tailwind.config.js
++      attribute="class"
++      // What the default theme will be if:
++      // 1. 'system' does not override it.
++      // 2. a different theme is not found in localStorage.
++      defaultTheme="light"
++      // Look at what he user's system is set to and use that.
++      enableSystem
++      // The key that will put in localStorage.
++      storageKey="strava-card-theme"
++      // List of themes.
++      themes={['light', 'dark']}
++    >
++      <div className="bg-indigo-300 flex flex-col min-h-screen min-w-screen text-gray-900 dark:bg-indigo-900">
++        <div className="flex justify-end pt-4 px-4 w-full">
++          <ThemeToggle />
++        </div>
++        <Component {...pageProps} />
++      </div>
++    </ThemeProvider>
++  )
+}
+
+export default App
+```
+
+Our `<ThemeToggle />` will be the way for the user to manually interact with our theming system.
+
+```tsx:components/ThemeToggle.tsx
+import * as React from 'react'
+import { useTheme } from 'next-themes'
+import { Moon, Sun } from 'react-feather'
+
+export const ThemeToggle: React.FC = () => {
+  const [mounted, setMounted] = React.useState(false)
+  const { theme, setTheme } = useTheme()
+
+  React.useEffect(() => setMounted(true), [])
+
+  const onToggleTheme = React.useCallback(() => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [theme])
+
+  return (
+    <button
+      aria-label="Toggle Color Theme"
+      className="bg-indigo-100 border-0 cursor-pointer flex h-14 items-center justify-center mr-2 outline-none rounded-full top-0 w-14 z-20 focus:outline-none lg:mr-0"
+      onClick={onToggleTheme}
+      type="button"
+    >
+      {mounted && theme === 'dark' && (
+        <Moon className="hover:text-amber-400 dark:hover:text-amber-300" />
+      )}
+      {mounted && theme === 'light' && (
+        <Sun className="hover:text-amber-400 dark:hover:text-amber-300" />
+      )}
+    </button>
+  )
+}
+```
+
+```diff:components/StravaCard.tsx
+export const StravaCard: React.FC<Props> = () => {
+  const { data, error } = useStrava()
+
+  if (error) return <h1>Error</h1>
+  if (!data) return <h1>Loading...</h1>
+
+  return (
+-    <div className="bg-orange-500 border border-transparent flex flex-col p-4 rounded-lg shadow-md">
++    <div className="bg-orange-300 border border-transparent flex flex-col p-4 rounded-lg shadow-md dark:bg-orange-500">
+      <header className="flex items-center justify-center mb-4 w-full">
+        <h1 className="font-medium italic text-2xl">My Strava Data</h1>
+      </header>
+      <div className="flex flex-col flex-grow space-y-2">
+        <div className="bg-orange-200 p-4 rounded-lg shadow-md">
+          <h4 className="font-medium mb-2 underline">Yearly Totals</h4>
+          <p className="text-sm">
+            Total Distance Ran: {data.totals.ytdRunDistance}
+          </p>
+          <p className="text-sm">Total Runs: {data.totals.ytdTotalRuns}</p>
+        </div>
+        <div className="bg-orange-200 p-4 rounded-lg shadow-md">
+          <h4 className="font-medium mb-2 underline">Weekly Activity</h4>
+          <ul>
+            {data.activities.length === 0 ? (
+              <p>No activity yet</p>
+            ) : (
+              <ul>
+                {data.activities.map((a, i) => (
+                  <li className="text-sm" key={`${i}--${a.date}`}>
+                    {a.date}: {a.name} -- {a.distance} -- {a.time}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+We will do a little code cleanup from when we initialized the app with a template since it is messing with our design and layout.
+
+```diff:components/Layout.tsx
+import React, { ReactNode } from 'react'
+- import Link from 'next/link'
+import Head from 'next/head'
+
+type Props = {
+  children?: ReactNode
+  title?: string
+}
+
+export const Layout = ({
+  children,
+  title = 'This is the default title',
+}: Props) => (
+  <div>
+    <Head>
+      <title>{title}</title>
+      <meta charSet="utf-8" />
+      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    </Head>
+-    <header>
+-      <nav>
+-        <Link href="/">
+-          <a>Home</a>
+-        </Link>{' '}
+-        |{' '}
+-        <Link href="/about">
+-          <a>About</a>
+-        </Link>{' '}
+-        |{' '}
+-        <Link href="/users">
+-          <a>Users List</a>
+-        </Link>{' '}
+-        | <a href="/api/users">Users API</a>
+-      </nav>
+-    </header>
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      {children}
+    </div>
+    <footer>
+      <hr />
+      <span>I'm here to stay (Footer)</span>
+    </footer>
+  </div>
+)
+
+export default Layout
+```
+
+And now we have a light and dark mode for our card and the surrounding UI/UX:
+
+### Light Mode
+
+![Light Mode](/images/2021/adding-my-strava-data-to-my-website/light-mode.png)
+
+### Dark Mode
+
+![Dark Mode](/images/2021/adding-my-strava-data-to-my-website/dark-mode.png)
+
+## Cleaning up the Error & Loading UI
+
+There are lots of ways to handle loading and error states in UI. The most typical loading state is some icon spinning around so we will use the `<Loader />` icon from `react-feather` along with the animation classes from tailwind. For the example I am just returning an `<h1 />` with an error message, but in this website I opt to just [hide](https://github.com/rockchalkwushock/codybrunner.dev/blob/production/components/StravaCard.tsx#L33) the "card" from the UI outright. No reason for the user to know they are missing out on seeing some cool feature that is obviously failing. This might not be a sound solution for every error case so think about what you want the user to see or not see in the event of an error.
+
+```diff:components/StravaCard.tsx
++ import { Loader } from 'react-feather'
+
+export const StravaCard: React.FC<Props> = () => {
+  const { data, error } = useStrava()
+
+- if (error) return <h1>Error</h1>
+- if (!data) return <h1>Loading...</h1>
+
+  return (
+-    <div className="bg-orange-500 border border-transparent flex flex-col p-4 rounded-lg shadow-md">
++    <div
++     className={`bg-orange-300 flex flex-col p-4 rounded-lg shadow-md dark:bg-orange-500 ${
++       !data ? 'items-center justify-center rounded-full' : undefined
++     }`}
++   >
++      {error ? (
++        <h1 className="text-2xl">Error</h1>
++      ) : !data ? (
++        <Loader className="animate-spin h-20 w-20 text-indigo-300 dark:text-indigo-700" />
++      ) : (
++        <>
++          <header className="flex items-center justify-center mb-4 w-full">
++            <h1 className="font-medium italic text-2xl">My Strava Data</h1>
++          </header>
++          <div className="flex flex-col flex-grow space-y-2">
++            <div className="bg-orange-200 p-4 rounded-lg shadow-md">
++              <h4 className="font-medium mb-2 underline">Yearly Totals</h4>
++              <p className="text-sm">
++                Total Distance Ran: {data.totals.ytdRunDistance}
++              </p>
++              <p className="text-sm">Total Runs: {data.totals.ytdTotalRuns}</p>
++            </div>
++            <div className="bg-orange-200 p-4 rounded-lg shadow-md">
++              <h4 className="font-medium mb-2 underline">Weekly Activity</h4>
++              <ul>
++                {data.activities.length === 0 ? (
++                  <p>No activity yet</p>
++                ) : (
++                  <ul>
++                    {data.activities.map((a, i) => (
++                      <li className="text-sm" key={`${i}--${a.date}`}>
++                        {a.date}: {a.name} -- {a.distance} -- {a.time}
++                      </li>
++                    ))}
++                  </ul>
++                )}
++              </ul>
++            </div>
++          </div>
++        </>
++      )}
+    </div>
+  )
+}
+```
+
+And that's a wrap! You now have your Strava stats on your website and we did it on our own, no fancy widget necessary! If you need to look at the code you can find it [here](https://github.com/rockchalkwushock/strava-card). The Strava card I made for this website is a bit different from the one made here so if you want to check it out you can find the source code [here](https://github.com/rockchalkwushock/codybrunner.dev/blob/production/components/StravaCard.tsx).
+
+<Signature>~ Cody 🚀</Signature>

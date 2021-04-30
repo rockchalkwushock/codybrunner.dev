@@ -1,0 +1,133 @@
+---
+archived: false
+createdAt: 01/04/2021
+description: A quick posts on how to kill processes on macOS.
+keywords:
+  - cli
+  - kill
+  - lsof
+  - macOS
+  - xargs
+published: true
+tags:
+  - cli
+  - macOS
+title: How to kill processes on macOS
+---
+
+import { Signature } from '../components/MDXComponents.tsx'
+
+I'm sure at some point you have gotten the dreaded error message:
+
+> Port #### is already in use.
+
+The problem here is that when we open a port on any machine we start a process and if that port was not closed properly (i.e. the process ended properly) we end up with a rouge process running in the background.
+
+Before I finally took the time to dig into this I just did the following:
+
+```shell
+$ yarn start # 3000
+# Some shenanigans ensue
+$ yarn start
+# Port 3000 is already in use.
+$ PORT=3001 yarn start # 3001
+# rinse and repeat...or just restart machine.
+```
+
+This article will show you a better way to go about handling rouge processes on macOS.
+
+###### TLDR 🤏🏻
+
+```shell
+$ lsof -ti:port_number | xargs kill
+```
+
+## Using lsof, xargs, & kill to stop processes
+
+`lsof` is a command that will give us a list of open files. When I first read that I was a little confused because I was thinking in terms of like an open Pages document which is true, but you must think of a process as an open file too. As an example running the command on my Mac right now returns an entry from Spotify while I am listening to the Joe Rogan Experience:
+
+```shell
+$ lsof
+# Spotify    798 codybrunner   25u      REG                1,4      36864              485865 /Users/codybrunner/Library/Caches/com.spotify.client/Browser/Reporting and NEL
+```
+
+Let's see what `-t` will do:
+
+```shell
+$ man lsof
+# -t specifies that lsof should produce terse output with process identifiers only and no header - e.g., so that the output may be piped to kill(1).
+
+$ lsof -t
+# List of all pids running on the machine.
+145
+313
+314
+315
+319
+321
+322
+324
+...
+```
+
+So with `-t` we can get a list of all the processes running on our machine. Let's see what exactly `i` is doing in in that chain of flags.
+
+```shell
+$ man lsof
+#  -i [i]   selects the listing of files any of whose Internet address matches the address specified in i.  If no address is specified, this option selects the listing of all  Internet  and x.25 (HP-UX) network files.
+
+# Possible arguments to supply to `i`.
+# [46][protocol][@hostname|hostaddr][:service|port]
+```
+
+Now if we pair `-ti` together we can get only a list of pids that correlate to processes that are running on the network.
+
+```shell
+$ lsof -ti
+# List of all pids that are running on the network.
+145
+336
+342
+343
+346
+382
+...
+```
+
+With the error message we get back we know what port is still open so following the documentation surrounding `-i` we can provide that as an argument to our query.
+
+```shell
+$ lsof -ti:port_number
+10479 # pid for the open port
+```
+
+`xargs` constructs an argument or list of arguments to pipe into a command so we can turn around and send the pid or pids to the `kill` command.
+
+```shell
+$ lsof -ti:port_number | xargs kill
+```
+
+## Let's make the command reusable.
+
+I wanted to create a reusable function that wrapped the above command so I came up with the following and assigned it to an alias.
+
+```bash:.zshrc
+find_and_kill() {
+    if [ $# -eq 0 ]; then
+        echo "Must provide port number.";
+        return 1;
+    else
+        lsof -ti:$1 | xargs kill;
+    fi;
+}
+
+alias killport=find_and_kill;
+```
+
+Now I have a simple one liner to reach for when I get that damn error message.
+
+```shell
+killport 4000
+```
+
+<Signature>~ Cody 🚀</Signature>

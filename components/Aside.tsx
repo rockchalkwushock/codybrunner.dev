@@ -8,9 +8,9 @@ export const Aside: React.FC = () => {
   return (
     <aside className="hidden md:col-start-1 md:col-end-3 md:flex md:flex-col md:items-center md:space-y-4">
       <Avatar className="h-48 w-48" />
-      <ul className="flex flex-col items-center space-y-4">
-        <li className="text-xl lg:text-2xl">{constants.author}</li>
-        <li className="min-h-min">
+      <ul className="flex flex-col items-center">
+        <li className="mb-4 text-xl lg:text-2xl">{constants.author}</li>
+        <li className="h-10 mb-4">
           <ul className="flex space-x-4">
             <SocialIcons />
           </ul>

@@ -2,7 +2,8 @@ import * as React from 'react'
 import { getMDXComponent } from 'mdx-bundler/client'
 
 import { Avatar } from '@components/Avatar'
-import { PostLink } from '@components/PostLink'
+import { CodeBlock } from '@components/CodeBlock'
+import { PaginationButton } from '@components/PaginationButton'
 import { Post } from '@interfaces/blog'
 import { constants } from '@utils/constants'
 import { formatDateTime } from '@utils/dateTime'
@@ -67,8 +68,22 @@ export const MDXLayout: React.FC<Props> = ({
           </ul>
         </section>
       )}
-      <article className="mb-8 prose prose-blue lg:prose-lg">
-        <MDXContent />
+      <article className="mb-8 prose prose-blue">
+        <MDXContent
+          components={{
+            // @ts-ignore
+            pre: ({ children: { props } }) => {
+              return (
+                <CodeBlock
+                  code={props.children.trim()}
+                  language={
+                    props.className && props.className.replace('language-', '')
+                  }
+                />
+              )
+            },
+          }}
+        />
       </article>
       <section
         className={`flex mb-8 ${
@@ -80,21 +95,9 @@ export const MDXLayout: React.FC<Props> = ({
         }`}
       >
         {previousPost && (
-          <PostLink
-            className="bg-secondary border border-transparent outline-none px-8 py-2 rounded-lg shadow-md text-secondary text-xl focus:outline-none"
-            slug={previousPost}
-          >
-            Previous
-          </PostLink>
+          <PaginationButton direction="prev" slug={previousPost} />
         )}
-        {nextPost && (
-          <PostLink
-            className="bg-secondary border border-transparent outline-none px-8 py-2 rounded-lg shadow-md text-secondary text-xl focus:outline-none"
-            slug={nextPost}
-          >
-            Next
-          </PostLink>
-        )}
+        {nextPost && <PaginationButton direction="next" slug={nextPost} />}
       </section>
     </>
   )
