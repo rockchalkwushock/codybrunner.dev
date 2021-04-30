@@ -1,16 +1,22 @@
+import { existsSync, mkdirSync } from 'fs'
 import { join } from 'path'
 
+import { format } from 'date-fns'
 import { PlopGenerator } from 'plop'
 
 const root = process.cwd()
 
 const API_PATH = join(root, 'pages', 'api')
+const BLOG_PATH = join(root, 'data', 'blog')
 const COMPONENTS_PATH = join(root, 'components')
 const HOOKS_PATH = join(root, 'hooks')
 const INTERFACES_PATH = join(root, 'interfaces')
 const LAYOUTS_PATH = join(root, 'layouts')
 const LIB_PATH = join(root, 'lib')
 const PAGES_PATH = join(root, 'pages')
+
+const now = new Date()
+const year = format(now, 'y')
 
 export const feature: Pick<
   PlopGenerator,
@@ -67,6 +73,19 @@ export const feature: Pick<
         type: 'add',
       })
     }
+    if (answers.requirements.includes('post')) {
+      if (!existsSync(join(BLOG_PATH, year))) {
+        mkdirSync(join(BLOG_PATH, year))
+      }
+      // Create the new post with the current date.
+      // i.e. 01/01/2021
+      answers.createdAt = format(now, 'P')
+      _actions.push({
+        path: `${BLOG_PATH}/${year}/{{ dashCase postTitle }}.mdx`,
+        templateFile: '.plop/templates/post.mdx.hbs',
+        type: 'add',
+      })
+    }
     return _actions
   },
   description: 'Create a new feature.',
@@ -76,10 +95,11 @@ export const feature: Pick<
         { name: 'API Endpoint', value: 'api' },
         { name: 'Component', value: 'component' },
         { name: 'Hook', value: 'hook' },
-        { name: 'Typings', value: 'interface' },
         { name: 'Layout', value: 'layout' },
-        { name: 'Service', value: 'lib' },
+        { name: 'New Post', value: 'post' },
         { name: 'Page', value: 'page' },
+        { name: 'Service', value: 'lib' },
+        { name: 'Typings', value: 'interface' },
       ],
       message: 'What will this feature require?',
       name: 'requirements',
@@ -101,6 +121,39 @@ export const feature: Pick<
       type: 'input',
       when: ({ requirements }) => {
         return requirements.includes('api')
+      },
+    },
+    // If 'requirement.blog':
+    {
+      message: 'What is the title of the post?',
+      name: 'postTitle',
+      type: 'input',
+      when: ({ requirements }) => {
+        return requirements.includes('post')
+      },
+    },
+    {
+      message: 'What is the description of the post?',
+      name: 'postDescription',
+      type: 'input',
+      when: ({ requirements }) => {
+        return requirements.includes('post')
+      },
+    },
+    {
+      message: 'What are the keywords associated with the post?',
+      name: 'postKeywords',
+      type: 'input',
+      when: ({ requirements }) => {
+        return requirements.includes('post')
+      },
+    },
+    {
+      message: 'What are the tags associated with the post?',
+      name: 'postTags',
+      type: 'input',
+      when: ({ requirements }) => {
+        return requirements.includes('post')
       },
     },
     // If 'requirement.component':
