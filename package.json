@@ -22,6 +22,7 @@
     "format": "prettier --write",
     "lint": "eslint",
     "new": "plop",
+    "postbuild": "next-sitemap",
     "prepare": "husky install",
     "start": "next start",
     "type-check": "tsc"
@@ -60,6 +61,7 @@
     "eslint": "^7.24.0",
     "husky": "^6.0.0",
     "lint-staged": "^10.5.4",
+    "next-sitemap": "^1.6.25",
     "plop": "^2.7.4",
     "postcss": "^8.2.10",
     "postcss-import": "^14.0.1",

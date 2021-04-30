@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url><loc>http://localhost:4000</loc><changefreq>weekly</changefreq><priority>0.7</priority><lastmod>2021-04-30T14:34:13.689Z</lastmod></url>
+<url><loc>http://localhost:4000/about</loc><changefreq>weekly</changefreq><priority>0.7</priority><lastmod>2021-04-30T14:34:13.689Z</lastmod></url>
+<url><loc>http://localhost:4000/contact</loc><changefreq>weekly</changefreq><priority>0.7</priority><lastmod>2021-04-30T14:34:13.689Z</lastmod></url>
+<url><loc>http://localhost:4000/blog/2021/adding-my-strava-data-to-my-website</loc><changefreq>weekly</changefreq><priority>0.7</priority><lastmod>2021-04-30T14:34:13.689Z</lastmod></url>
+<url><loc>http://localhost:4000/blog/2021/how-to-kill-processes-on-macos</loc><changefreq>weekly</changefreq><priority>0.7</priority><lastmod>2021-04-30T14:34:13.689Z</lastmod></url>
+<url><loc>http://localhost:4000/blog/2021/looking-at-2021-with-2020-vision</loc><changefreq>weekly</changefreq><priority>0.7</priority><lastmod>2021-04-30T14:34:13.689Z</lastmod></url>
+<url><loc>http://localhost:4000/blog/2021/renting-as-an-expat-in-colombia</loc><changefreq>weekly</changefreq><priority>0.7</priority><lastmod>2021-04-30T14:34:13.689Z</lastmod></url>
+<url><loc>http://localhost:4000/blog/2021/road-map-for-my-webiste</loc><changefreq>weekly</changefreq><priority>0.7</priority><lastmod>2021-04-30T14:34:13.689Z</lastmod></url>
+</urlset>
