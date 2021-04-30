@@ -93,35 +93,54 @@ export function filterPosts(
 }
 
 export async function getAllPostsFrontMatter(): Promise<Array<Post>> {
+  let archivedPosts, currentYearsPosts
   const files = getFiles(paths.blog, appRegex.blogSource).filter(ext =>
     appRegex.mdx.test(ext)
   )
 
   const posts = await parsePosts(files)
 
-  const archivedPosts = addsPaginationToPosts(
-    sortPosts(
-      filterPosts(posts, ({ frontMatter }) => frontMatter.archived),
-      byDate
-    )
-  )
-
-  const currentYearsPosts = addsPaginationToPosts(
-    sortPosts(
-      filterPosts(posts, ({ frontMatter }) => !frontMatter.archived),
-      byDate
-    )
-  )
-
-  // Don't let posts that are still marked as drafts to be visible.
   if (process.env.NODE_ENV === 'production') {
-    return filterPosts(
-      [...currentYearsPosts, ...archivedPosts],
-      p => p.frontMatter.published
+    archivedPosts = addsPaginationToPosts(
+      sortPosts(
+        filterPosts(posts, ({ frontMatter }) => frontMatter.archived),
+        byDate
+      )
     )
-  }
 
-  return [...currentYearsPosts, ...archivedPosts]
+    currentYearsPosts = addsPaginationToPosts(
+      // Lastly sort the posts so they are in ascending order.
+      sortPosts(
+        filterPosts(
+          // First filter out drafts
+          // Obviously they are not ready to be published but I also must
+          // prevent them from breaking the pagination.
+          filterPosts(posts, ({ frontMatter }) => frontMatter.published),
+          // Next filter out archived posts...this is the list of posts for the current year.
+          ({ frontMatter }) => !frontMatter.archived
+        ),
+        byDate
+      )
+    )
+
+    return [...currentYearsPosts, ...archivedPosts]
+  } else {
+    const archivedPosts = addsPaginationToPosts(
+      sortPosts(
+        filterPosts(posts, ({ frontMatter }) => frontMatter.archived),
+        byDate
+      )
+    )
+
+    const currentYearsPosts = addsPaginationToPosts(
+      sortPosts(
+        filterPosts(posts, ({ frontMatter }) => !frontMatter.archived),
+        byDate
+      )
+    )
+
+    return [...currentYearsPosts, ...archivedPosts]
+  }
 }
 
 export function getRelatedPosts(

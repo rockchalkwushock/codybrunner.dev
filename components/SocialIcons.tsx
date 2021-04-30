@@ -6,44 +6,44 @@ import { constants } from '@utils/constants'
 export const SocialIcons: React.FC = () => {
   return (
     <>
-      <li>
+      <li className="social-button hover:bg-black">
         <a
           aria-label="Link to Cody Brunner's Github"
           href={constants.externalLinks.github}
           rel="noopener noreferrer"
           target="_blank"
         >
-          <GitHub className="h-7 w-7" />
+          <GitHub className="group-hover:animate-wiggle" />
         </a>
       </li>
-      <li>
+      <li className="social-button hover:bg-instagram">
         <a
           aria-label="Link to Cody Brunner's Instagram"
           href={constants.externalLinks.instagram}
           rel="noopener noreferrer"
           target="_blank"
         >
-          <Instagram className="h-7 w-7" />
+          <Instagram className="group-hover:animate-wiggle" />
         </a>
       </li>
-      <li>
+      <li className="social-button hover:bg-linkedIn">
         <a
           aria-label="Link to Cody Brunner's LinkedIn"
           href={constants.externalLinks.linkedin}
           rel="noopener noreferrer"
           target="_blank"
         >
-          <Linkedin className="h-7 w-7" />
+          <Linkedin className="group-hover:animate-wiggle" />
         </a>
       </li>
-      <li>
+      <li className="social-button hover:bg-twitter">
         <a
           aria-label="Link to Cody Brunner's Twitter"
           href={constants.externalLinks.twitter}
           rel="noopener noreferrer"
           target="_blank"
         >
-          <Twitter className="h-7 w-7" />
+          <Twitter className="group-hover:animate-wiggle" />
         </a>
       </li>
     </>

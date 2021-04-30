@@ -18,9 +18,9 @@ export const Signature: React.FC = ({ children }) => {
 
 export const TLDR: React.FC = ({ children }) => {
   return (
-    <div className="border flex flex-col p-4 rounded-lg shadow-md space-y-2">
-      <h6 className="font-bold text-2xl">TLDR 🤏🏻</h6>
-      <p className="font-light italic m-0 tracking-wide">{children}</p>
+    <div className="border flex flex-col mb-4 p-4 rounded-lg shadow-md space-y-2">
+      <h6>TLDR 🤏🏻</h6>
+      {children}
     </div>
   )
 }
