@@ -5,6 +5,7 @@ import { bundleMDX } from 'mdx-bundler'
 import readingTime from 'reading-time'
 
 // Plugins & Presets
+import rehypeCodeTitles from 'rehype-code-titles'
 import remarkEmoji from 'remark-emoji'
 import remarkExternalLinks from 'remark-external-links'
 import gfm from 'remark-gfm'
@@ -88,7 +89,7 @@ export async function prepareMDX(source: MDXSource): Promise<Post> {
             remarkEmoji,
             remarkExternalLinks,
           ],
-          rehypePlugins: [...(options.rehypePlugins ?? [])],
+          rehypePlugins: [...(options.rehypePlugins ?? []), rehypeCodeTitles],
         }
       },
     })
