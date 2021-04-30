@@ -1,4 +1,9 @@
-module.exports = {
+// This is currently needed because 'rehype-code-titles' is a pure-ESM package
+// and NextJS cannot resolve the import properly.
+// https://github.com/vercel/next.js/issues/9607
+const withTM = require('next-transpile-modules')(['rehype-code-titles'])
+
+module.exports = withTM({
   future: {
     webpack5: true,
   },
@@ -17,4 +22,4 @@ module.exports = {
 
     return config
   },
-}
+})
