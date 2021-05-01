@@ -10,19 +10,20 @@ declare namespace NodeJS {
     ANALYZE: boolean
     CI: string
     VERCEL: string
-    VERCEL_ENV: 'development' | 'preview' | 'production'
-    VERCEL_GIT_COMMIT_AUTHOR_LOGIN: string
-    VERCEL_GIT_COMMIT_AUTHOR_NAME: string
-    VERCEL_GIT_COMMIT_MESSAGE: string
-    VERCEL_GIT_COMMIT_REF: string
-    VERCEL_GIT_COMMIT_SHA: string
-    VERCEL_GIT_PROVIDER: string
-    VERCEL_GIT_REPO_ID: string
-    VERCEL_GIT_REPO_OWNER: string
-    VERCEL_GIT_REPO_SLUG: string
-    VERCEL_REGION: string
-    VERCEL_URL: string
+    NEXT_PUBLIC_VERCEL_ENV: 'development' | 'preview' | 'production'
+    NEXT_PUBLIC_VERCEL_GIT_COMMIT_AUTHOR_LOGIN: string
+    NEXT_PUBLIC_VERCEL_GIT_COMMIT_AUTHOR_NAME: string
+    NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE: string
+    NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF: string
+    NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: string
+    NEXT_PUBLIC_VERCEL_GIT_PROVIDER: string
+    NEXT_PUBLIC_VERCEL_GIT_REPO_ID: string
+    NEXT_PUBLIC_VERCEL_GIT_REPO_OWNER: string
+    NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG: string
+    NEXT_PUBLIC_VERCEL_REGION: string
+    NEXT_PUBLIC_VERCEL_URL: string
     // Custom Environment Variables
+    AMPLITUDE_API_KEY: string
     SPOTIFY_CLIENT_ID: string
     SPOTIFY_CLIENT_SECRET: string
     SPOTIFY_REFRESH_TOKEN: string

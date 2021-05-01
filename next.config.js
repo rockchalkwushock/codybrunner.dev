@@ -4,6 +4,9 @@
 const withTM = require('next-transpile-modules')(['rehype-code-titles'])
 
 module.exports = withTM({
+  env: {
+    AMPLITUDE_API_KEY: process.env.AMPLITUDE_API_KEY,
+  },
   future: {
     webpack5: true,
   },
