@@ -151,7 +151,7 @@ module.exports = {
               fontWeight: theme('fontWeight.semibold'),
             },
             hr: {
-              borderColor: theme('colors.blueGray.600'),
+              borderColor: theme('colors.blueGray.400'),
               marginBottom: theme('spacing.8'),
               marginTop: theme('spacing.8'),
             },
