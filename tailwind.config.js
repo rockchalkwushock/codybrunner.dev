@@ -192,12 +192,8 @@ module.exports = {
               color: theme('colors.blueGray.600'),
               fontWeight: theme('fontWeight.medium'),
             },
-            ul: {
-              listStyle: theme('listStyleType.disc'),
-              marginLeft: theme('spacing.4'),
-            },
-            'ul > li': {
-              paddingLeft: theme('spacing.4'),
+            'ul > li::before': {
+              backgroundColor: theme('colors.blueGray.900'),
             },
             'div > p > code': {
               backgroundColor: theme('colors.transparent'),
