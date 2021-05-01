@@ -1,5 +1,12 @@
 import * as React from 'react'
 
+function splitArray<T>(arr: Array<T>) {
+  const cut = Math.floor(arr.length / 2)
+  const firstHalf = arr.slice(0, cut)
+  const secondHalf = arr.slice(cut, arr.length)
+  return [firstHalf, secondHalf]
+}
+
 export const Grid: React.FC = ({ children }) => {
   return (
     <div className="bg-secondary gap-4 grid grid-cols-3 justify-items-center p-4 place-items-center rounded-lg md:grid-cols-5">
@@ -22,5 +29,29 @@ export const TLDR: React.FC = ({ children }) => {
       <h6>TLDR 🤏🏻</h6>
       {children}
     </div>
+  )
+}
+
+export const Versions: React.FC<{ technologies: Record<string, number> }> = ({
+  technologies,
+}) => {
+  const [first, second] = splitArray(Object.entries(technologies))
+
+  return (
+    <section className="flex flex-col items-center space-y-4">
+      <h3 className="my-0">Tech used in this post:</h3>
+      <div className="gap-2 grid grid-cols-1 place-items-center md:gap-4 md:place-items-start md:grid-cols-2 lg:grid-cols-3">
+        {first.map(([key, val]) => (
+          <code key={key}>
+            {key.toLowerCase()}@{val}
+          </code>
+        ))}
+        {second.map(([key, val]) => (
+          <code key={key}>
+            {key.toLowerCase()}@{val}
+          </code>
+        ))}
+      </div>
+    </section>
   )
 }

@@ -229,7 +229,7 @@ const DesktopNav: React.FC = () => {
 
 export const AppNav: React.FC = () => {
   return (
-    <nav className="bg-primary flex items-center justify-between mx-auto sticky top-0 w-full z-10 md:mb-8 lg:p-4">
+    <nav className="bg-primary flex items-center justify-between mx-auto sticky top-0 w-full z-10 lg:p-4">
       <AnimatedMobileNav />
       <DesktopNav />
     </nav>
