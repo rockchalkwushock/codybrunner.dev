@@ -30,8 +30,8 @@ const App: React.FC<Props> = ({ Component, pageProps, router }) => {
 
   return (
     <QueryClientProvider client={queryClientRef.current}>
-      <div className="container flex flex-col flex-grow items-center justify-center mx-auto relative w-full">
-        <OpenToWorkBanner />
+      <OpenToWorkBanner />
+      <div className="container flex flex-col flex-grow items-center justify-center mx-auto relative space-y-8 w-full">
         <AppNav />
         <main className="flex-grow grid grid-cols-1 h-full mt-10 w-full md:gap-8 md:grid-cols-5 md:mt-0">
           <Aside />

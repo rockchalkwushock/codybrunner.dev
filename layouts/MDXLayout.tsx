@@ -20,11 +20,11 @@ export const MDXLayout: React.FC<Props> = ({
   return (
     <>
       {!frontMatter.published && (
-        <span className="flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-red-500 text-4xl">
+        <span className="bg-red-200 border-2 border-red-500 flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-red-500 text-4xl">
           DRAFT
         </span>
       )}
-      <header className="flex flex-col mb-12 space-y-8 w-full md:mb-8">
+      <header className="flex flex-col space-y-8 w-full">
         <h1 className="text-4xl text-center md:text-left">
           {frontMatter.title}
         </h1>
@@ -52,6 +52,7 @@ export const MDXLayout: React.FC<Props> = ({
           </div>
         </div>
       </header>
+      <hr className="border-blueGray-400 my-8" />
       {frontMatter.versions && (
         <section className="border flex flex-col mb-8 p-4 rounded-lg shadow-md space-y-2">
           <h2 className="font-light italic text-lg tracking-wide underline">
@@ -68,7 +69,7 @@ export const MDXLayout: React.FC<Props> = ({
           </ul>
         </section>
       )}
-      <article className="mb-8 prose prose-blue">
+      <article className="prose prose-blue">
         <MDXContent
           components={{
             // @ts-ignore
@@ -85,8 +86,9 @@ export const MDXLayout: React.FC<Props> = ({
           }}
         />
       </article>
+      <hr className="border-blueGray-400 my-8" />
       <section
-        className={`flex mb-8 ${
+        className={`flex ${
           previousPost && nextPost
             ? 'justify-between'
             : previousPost

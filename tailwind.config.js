@@ -193,7 +193,7 @@ module.exports = {
               fontWeight: theme('fontWeight.medium'),
             },
             'ul > li::before': {
-              backgroundColor: theme('colors.blueGray.900'),
+              backgroundColor: theme('colors.blueGray.400'),
             },
             'div > p > code': {
               backgroundColor: theme('colors.transparent'),
