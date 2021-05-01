@@ -23,6 +23,7 @@ declare namespace NodeJS {
     VERCEL_REGION: string
     VERCEL_URL: string
     // Custom Environment Variables
+    AMPLITUDE_API_KEY: string
     SPOTIFY_CLIENT_ID: string
     SPOTIFY_CLIENT_SECRET: string
     SPOTIFY_REFRESH_TOKEN: string
