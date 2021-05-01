@@ -53,22 +53,6 @@ export const MDXLayout: React.FC<Props> = ({
         </div>
       </header>
       <hr className="border-blueGray-400 my-8" />
-      {frontMatter.versions && (
-        <section className="border flex flex-col mb-8 p-4 rounded-lg shadow-md space-y-2">
-          <h2 className="font-light italic text-lg tracking-wide underline">
-            Versions at time of writing:
-          </h2>
-          <ul>
-            {Object.keys(frontMatter.versions).map(tech => (
-              <li key={tech}>
-                <code>
-                  {tech}: {frontMatter.versions![tech]}
-                </code>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
       <article className="prose prose-blue">
         <MDXContent
           components={{

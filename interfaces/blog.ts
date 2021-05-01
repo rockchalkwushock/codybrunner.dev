@@ -11,7 +11,6 @@ interface FrontMatter {
   tags: Array<string>
   title: string
   updatedAt?: string
-  versions?: Record<string, string>
   wordCount: number
 }
 
