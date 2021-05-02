@@ -35,11 +35,24 @@ const Home: React.FC<Props> = ({ posts }) => {
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
     const posts = await getAllPostsFrontMatter()
-
+    console.log(
+      posts.map(p => ({
+        published: p.frontMatter.published,
+        slug: p.frontMatter.slug,
+      }))
+    )
+    console.log(
+      posts
+        .map(p => ({
+          published: p.frontMatter.published,
+          slug: p.frontMatter.slug,
+        }))
+        .slice(0, 3)
+    )
     return {
       props: {
         // Give the client the 3 latest posts.
-        posts: posts.slice(3),
+        posts: posts.slice(0, 3),
       },
     }
   } catch (error) {
