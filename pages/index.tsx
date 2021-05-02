@@ -35,12 +35,7 @@ const Home: React.FC<Props> = ({ posts }) => {
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
     const posts = await getAllPostsFrontMatter()
-    console.log(
-      posts.map(p => ({
-        published: p.frontMatter.published,
-        slug: p.frontMatter.slug,
-      }))
-    )
+
     return {
       props: {
         // Give the client the 3 latest posts.
