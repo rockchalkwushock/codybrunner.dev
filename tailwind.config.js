@@ -192,8 +192,18 @@ module.exports = {
               color: theme('colors.blueGray.600'),
               fontWeight: theme('fontWeight.medium'),
             },
+            ul: {
+              display: 'flex',
+              flexDirection: 'column',
+              listStyleType: theme('listStyleType.disc'),
+              listStylePosition: 'inside',
+            },
             'ul > li::before': {
               backgroundColor: theme('colors.blueGray.400'),
+            },
+            'ul > li': {
+              paddingLeft: theme('spacing.3'),
+              position: 'unset',
             },
             'div > p > code': {
               backgroundColor: theme('colors.transparent'),
