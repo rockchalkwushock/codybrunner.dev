@@ -4,6 +4,7 @@ import { getMDXComponent } from 'mdx-bundler/client'
 import { Avatar } from '@components/Avatar'
 import { CodeBlock } from '@components/CodeBlock'
 import { PaginationButton } from '@components/PaginationButton'
+import { PostShare } from '@components/PostShare'
 import { Post } from '@interfaces/blog'
 import { constants } from '@utils/constants'
 import { formatDateTime } from '@utils/dateTime'
@@ -70,6 +71,8 @@ export const MDXLayout: React.FC<Props> = ({
           }}
         />
       </article>
+      <hr className="border-blueGray-400 my-8" />
+      <PostShare frontMatter={frontMatter} />
       <hr className="border-blueGray-400 my-8" />
       <section
         className={`flex ${
