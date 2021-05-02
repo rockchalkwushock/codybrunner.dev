@@ -10,15 +10,14 @@ interface Props {
   posts: Array<Post>
 }
 
-const Home: React.FC<Props> = ({ posts }) => {
+const BlogIndex: React.FC<Props> = ({ posts }) => {
   const pageMetaData: PageMetaData = {
-    description: 'My stretch of pipe in the world wide inter-tubes.',
-    title: 'codybrunner.dev | Home',
+    description: "Cody Brunner's personal and technology blog.",
+    title: 'codybrunner.dev | Blog',
     type: 'website',
   }
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <h1 className="mb-4 text-2xl">Latest Posts</h1>
       <ul className="flex flex-col mb-8 overflow-scroll space-y-6 lg:space-y-4">
         {posts.map(({ frontMatter }) => (
           <PostListItem
@@ -38,8 +37,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
     return {
       props: {
-        // Give the client the 3 latest posts.
-        posts: posts.slice(3),
+        posts,
       },
     }
   } catch (error) {
@@ -47,4 +45,4 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   }
 }
 
-export default Home
+export default BlogIndex
