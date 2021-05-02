@@ -1,0 +1,15 @@
+{
+  "cleanUrls": true,
+  "github": {
+    "enabled": false
+  },
+  "public": false,
+  "redirects": [
+    {
+      "source": "/CodyBrunner.pdf",
+      "destination": "/resume_28_02_2021.pdf"
+    }
+  ],
+  "trailingSlash": false,
+  "version": 2
+}

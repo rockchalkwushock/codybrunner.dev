@@ -1,0 +1,106 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+html,
+body {
+  min-height: 100vh;
+  min-width: 22.5rem;
+  scroll-behavior: smooth;
+}
+
+#__next {
+  @apply flex flex-col min-h-screen w-full;
+}
+
+/*
+-------------------------------------------
+Custom components
+-------------------------------------------
+*/
+
+@layer components {
+  .pagination-button {
+    // Animations & Transitions.
+    @apply duration-500 ease-in-out transform-gpu transition hover:scale-105 hover:translate-y-1;
+    // Borders & Shadows
+    @apply border border-transparent rounded-lg shadow-md;
+    // Sizing
+    @apply text-xl;
+    // Spacing
+    @apply px-8 py-2;
+    // Theming
+    @apply bg-secondary text-secondary;
+
+    // Children
+    svg {
+      @apply h-8 w-8;
+    }
+  }
+
+  .social-button {
+    // Animations & Transitions.
+    @apply duration-100 ease-in-out group transition-all;
+    // Borders & Shadows.
+    @apply rounded-full;
+    // Theming.
+    @apply bg-transparent;
+    // Effects
+    @apply hover:p-2 hover:text-white;
+    // Children
+    a > svg {
+      // Sizing
+      @apply h-8 w-8;
+    }
+  }
+}
+
+/*
+-------------------------------------------
+Custom utilities
+-------------------------------------------
+*/
+
+@layer utilities {
+  .bg-primary {
+    @apply bg-blueGray-300;
+  }
+  .text-primary {
+    @apply text-blueGray-900;
+  }
+  .bg-secondary {
+    @apply bg-blueGray-50;
+  }
+  .text-secondary {
+    @apply text-blueGray-700;
+  }
+  // One-Offs
+  .night-owl-theme {
+    background-color: rgb(1, 22, 39);
+    color: rgb(214, 222, 235);
+  }
+}
+
+.prose {
+  .contains-task-list {
+    @apply list-none;
+    .task-list-item {
+      &::before {
+        content: none; // removes the dot
+      }
+      *:first-child,
+      *:last-child {
+        @apply my-0.5;
+      }
+      @apply pl-0;
+    }
+  }
+
+  .rehype-code-title:defined {
+    @apply border-b border-blueGray-300 leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg shadow-md;
+  }
+
+  .rehype-code-title + pre {
+    @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none shadow-md;
+  }
+}

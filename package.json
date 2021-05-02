@@ -1,0 +1,109 @@
+{
+  "name": "codybrunner.dev",
+  "version": "1.0.0",
+  "description": "My stretch of pipe in the world wide inter-tubes.",
+  "author": {
+    "email": "me@codybrunner.dev",
+    "name": "Cody Brunner",
+    "url": "https://codybrunner.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rockchalkwushock/codybrunner.dev.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": "14.x"
+  },
+  "scripts": {
+    "build": "next build",
+    "commit": "git cz",
+    "dev": "next",
+    "format": "prettier --write",
+    "lint": "eslint",
+    "new": "plop",
+    "postbuild": "next-sitemap",
+    "prepare": "husky install",
+    "start": "next start",
+    "type-check": "tsc"
+  },
+  "dependencies": {
+    "@appointlet/appointlet.js": "^3.0.6",
+    "@tailwindcss/typography": "^0.4.0",
+    "amplitude-js": "^8.2.0",
+    "date-fns": "^2.21.1",
+    "framer-motion": "^4.1.11",
+    "mdx-bundler": "^3.4.1",
+    "next": "^10.2.0",
+    "next-transpile-modules": "^7.0.0",
+    "prism-react-renderer": "^1.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-feather": "^2.0.9",
+    "react-query": "^3.15.2",
+    "react-share": "^4.4.0",
+    "reading-time": "^1.3.0",
+    "rehype-code-titles": "^1.0.3",
+    "remark-emoji": "^2.2.0",
+    "remark-external-links": "^8.0.0",
+    "remark-gfm": "^1.0.0",
+    "sass": "^1.32.12"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
+    "@rockchalkwushock/eslint-config": "^1.0.3",
+    "@types/amplitude-js": "^7.0.1",
+    "@types/node": "^15.0.1",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.3",
+    "autoprefixer": "^10.2.5",
+    "commitizen": "^4.2.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "dot-plop": "^0.4.1",
+    "eslint": "^7.24.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^10.5.4",
+    "next-sitemap": "^1.6.25",
+    "plop": "^2.7.4",
+    "postcss": "^8.2.10",
+    "postcss-import": "^14.0.1",
+    "postcss-preset-env": "^6.7.0",
+    "prettier": "^2.2.1",
+    "rehype": "^11.0.0",
+    "tailwindcss": "^2.1.1",
+    "typescript": "^4.2.4"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "eslintConfig": {
+    "extends": "@rockchalkwushock/eslint-config",
+    "ignorePatterns": [
+      "package.json",
+      "vercel.json"
+    ]
+  },
+  "lint-staged": {
+    "*.+(js|json|md|mdx|ts|tsx|yml|yaml)": [
+      "prettier --write"
+    ],
+    "*.+(js|ts|tsx)": [
+      "eslint --fix"
+    ]
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5"
+  }
+}

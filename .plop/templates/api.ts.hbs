@@ -1,0 +1,18 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
+
+// import {} from '@interfaces/{{ camelCase serviceName }}'
+// import {} from '@lib/{{ camelCase serviceName }}'
+
+
+const handler = async (
+  _: NextApiRequest,
+  res: NextApiResponse<unknown>
+) => {
+  try {
+    return res.status(200).json({})
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+export default handler
