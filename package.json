@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@appointlet/appointlet.js": "^3.0.6",
+    "@supabase/supabase-js": "^1.11.9",
     "@tailwindcss/typography": "^0.4.0",
     "amplitude-js": "^8.2.1",
     "date-fns": "^2.21.3",

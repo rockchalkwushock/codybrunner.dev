@@ -35,11 +35,11 @@ type Constants = {
 }
 
 export const appRegex = {
-  archive: /(blog\/archive\/.+)/,
-  blog: /blog\//,
+  blog: /blog\/(archive\/)*/, // Will match both '/blog/' & '/blog/archive/'
   blogSource: /data\/blog\//,
   mdx: /\.mdx?$/,
   tsx: /\.tsx?$/,
+  url: /https:\/\/codybrunner.dev/g,
 }
 
 export const constants: Constants = {

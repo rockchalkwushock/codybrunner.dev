@@ -25,11 +25,14 @@ declare namespace NodeJS {
     // Custom Environment Variables
     AMPLITUDE_API_KEY: string
     GITHUB_TOKEN: string
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: string
+    NEXT_PUBLIC_SUPABASE_URL: string
     SPOTIFY_CLIENT_ID: string
     SPOTIFY_CLIENT_SECRET: string
     SPOTIFY_REFRESH_TOKEN: string
     STRAVA_CLIENT_ID: string
     STRAVA_CLIENT_SECRET: string
     STRAVA_REFRESH_TOKEN: string
+    SUPABASE_SERVICE_KEY: string
   }
 }

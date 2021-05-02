@@ -1,9 +1,12 @@
 import * as React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { useMutation } from 'react-query'
 
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { Post } from '@interfaces/blog'
 import { MDXLayout } from '@layouts/MDXLayout'
+// import { useGetPostViews } from '@hooks/useGetPostViews'
+// import { usePostViewsMutation } from '@hooks/usePostViewsMutation'
 import { appRegex, paths } from '@utils/constants'
 import { getFiles } from '@utils/helpers'
 import { getAllPostsFrontMatter, parsePost } from '@utils/mdx'
@@ -14,9 +17,18 @@ const Article: React.FC<Props> = ({
   frontMatter,
   nextPost,
   previousPost,
-
   source,
 }) => {
+  const { mutate } = useMutation<unknown, unknown, string, unknown>(
+    async slug => {
+      try {
+        const response = await fetch(`/api/views/${slug}`, { method: 'POST' })
+        return await response.json()
+      } catch (error) {
+        throw new Error(error)
+      }
+    }
+  )
   const pageMetaData: PageMetaData = {
     createdAt: frontMatter.createdAt,
     description: frontMatter.description,
@@ -26,6 +38,10 @@ const Article: React.FC<Props> = ({
     type: 'article',
     updatedAt: frontMatter.updatedAt,
   }
+
+  React.useEffect(() => {
+    mutate(frontMatter.slug)
+  }, [frontMatter, mutate])
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
       <MDXLayout
