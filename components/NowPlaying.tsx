@@ -11,8 +11,8 @@ export const NowPlaying: React.FC = () => {
     <div className="hidden" />
   ) : (
     // animate-move block overflow-x-hidden transform translate-x-full
-    <div className="flex items-center space-x-2 w-full">
-      <div className="h-5 relative w-5">
+    <div className="flex items-center space-x-2">
+      <div className="flex-shrink-0 h-5 relative w-5">
         <div className="absolute bg-black inset-0 rounded-full">
           <svg className="h-5 rounded-full w-5" viewBox="0 0 168 168">
             <path
@@ -27,7 +27,7 @@ export const NowPlaying: React.FC = () => {
       {status === 'loading' && <p className="font-medium">Loading...</p>}
       {/* Success State */}
       {status === 'success' && data && (
-        <div className="overflow-x-hidden">
+        <div className="flex-grow overflow-x-hidden">
           {/* If I am not listening to Spotify then display the following. */}
           {((data as CurrentEpisode).isPlaying === false ||
             (data as CurrentTrack).isPlaying === false ||
