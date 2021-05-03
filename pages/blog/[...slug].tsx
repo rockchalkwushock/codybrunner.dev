@@ -42,10 +42,19 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const filePaths = getFiles(paths.blog, appRegex.blogSource)
     // Remove file extensions for page paths.
     .map(path => path.replace(appRegex.mdx, ''))
+    // Filter out posts that are still in a draft state.
+    .filter(path =>
+      process.env.NODE_ENV === 'production'
+        ? // TODO: Find a better way to do this!
+          // FIXME: <== Do that soon!
+          !path.includes('adding-my-strava-data-to-my-website')
+        : true
+    )
     // Map the path into the static paths object required by Next.js
     // "slug" is declares as a catch-all route in the file system
     // so it needs to be an array.
     .map(slug => ({ params: { slug: slug.split('/') } }))
+
   console.log(filePaths.map(f => f.params.slug))
   return {
     fallback: false,
