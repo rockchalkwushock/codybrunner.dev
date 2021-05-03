@@ -55,7 +55,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
     // so it needs to be an array.
     .map(slug => ({ params: { slug: slug.split('/') } }))
 
-  console.log(filePaths.map(f => f.params.slug))
   return {
     fallback: false,
     paths: filePaths,
@@ -69,7 +68,7 @@ export const getStaticProps: GetStaticProps<
   try {
     const post = await parsePost(ctx.params!.slug.join('/'))
     const posts = await getAllPostsFrontMatter()
-    console.log(posts.map(p => p.frontMatter.slug))
+
     return {
       props: {
         ...post,

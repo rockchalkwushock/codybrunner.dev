@@ -108,8 +108,6 @@ export async function getAllPostsFrontMatter(): Promise<Array<Post>> {
       )
     )
 
-    console.log({ archivedPosts })
-
     currentYearsPosts = addsPaginationToPosts(
       // Lastly sort the posts so they are in ascending order.
       sortPosts(
@@ -124,8 +122,6 @@ export async function getAllPostsFrontMatter(): Promise<Array<Post>> {
         byDate
       )
     )
-
-    console.log({ currentYearsPosts })
 
     return [...currentYearsPosts, ...archivedPosts]
   } else {
