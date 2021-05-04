@@ -9,7 +9,8 @@ const colors = require('tailwindcss/colors')
  */
 
 module.exports = {
-  darkMode: false,
+  // This must match the attribute on next-themes <ThemeProvider /> in BaseLayout.tsx.
+  darkMode: 'class',
   important: true,
   plugins: [require('@tailwindcss/typography')],
   purge: ['./components/*.tsx', './layouts/*.tsx', './pages/**/*.tsx'],
