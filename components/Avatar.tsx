@@ -8,7 +8,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 export const Avatar: React.FC<Props> = ({ className }) => {
   return (
     <div
-      className={`bg-white border border-transparent relative rounded-full ${
+      className={`bg-white border md:border-2 border-black dark:border-white relative rounded-full ${
         className ?? ''
       }`}
     >

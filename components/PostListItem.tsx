@@ -13,10 +13,10 @@ export const PostListItem: React.FC<Props> = ({ dateFormat, frontMatter }) => {
   return (
     <PostLink slug={frontMatter.slug}>
       <li
-        className={`px-4 py-2 rounded-lg shadow-md space-y-2 ${
+        className={`border px-4 py-2 rounded-lg shadow-md space-y-2 ${
           frontMatter.published
-            ? 'bg-secondary border border-transparent'
-            : 'bg-red-50 border-2 border-red-500'
+            ? 'bg-secondary border-transparent'
+            : 'danger-theme'
         }`}
       >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
