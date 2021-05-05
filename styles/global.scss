@@ -20,9 +20,6 @@ Custom components
 */
 
 @layer components {
-  .animated-button {
-    @apply duration-300 ease-in-out group transform-gpu transition hover:bg-blueGray-700 hover:scale-105 hover:translate-y-1 dark:hover:bg-blueGray-400;
-  }
   .divider {
     @apply border-blueGray-400 my-8;
   }
