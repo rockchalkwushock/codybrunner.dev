@@ -1,145 +1,60 @@
 const colors = require('tailwindcss/colors')
 
-/**
- * Base Theme
- * - bg-primary:      blueGray-300
- * - bg-secondary:    blueGray-50
- * - text-primary:    blueGray-900
- * - text-secondary:  blueGray-700
- */
-
 module.exports = {
-  // This must match the attribute on next-themes <ThemeProvider /> in BaseLayout.tsx.
+  // Enables the use of dark mode with 'next-themes'.
   darkMode: 'class',
   important: true,
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [
+    require('@savvywombat/tailwindcss-grid-areas'),
+    require('@tailwindcss/typography'),
+  ],
   purge: ['./components/*.tsx', './layouts/*.tsx', './pages/**/*.tsx'],
   theme: {
     colors: {
       // These must be included manually.
       current: 'currentColor',
       transparent: 'transparent',
-      // bg-linkedIn || text-linkedIn
-      linkedIn: '#0072B1',
-      // bg-twitter || text-twitter
-      twitter: '#1DA1F2',
+      // Exposes the whole Tailwind color palette.
       ...colors,
     },
-    fill: theme => ({
-      // fill-spotify
-      spotify: 'rgba(30, 215, 96, 1)',
-    }),
-    extend: {
-      animation: {
-        // animate-move
-        move: 'move 8s linear infinite',
-        // animate-move-faster
-        'move-faster': 'move 2s linear infinite',
-        // animate-wiggle
-        wiggle: 'wiggle 1s ease-in-out infinite',
-      },
-      backgroundImage: theme => ({
-        // bg-instagram
-        instagram:
-          'radial-gradient(circle at 30% 107%, #fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%)',
-      }),
-      keyframes: {
-        move: { to: { transform: 'translateX(-100%)' } },
-        wiggle: {
-          '0%, 100%': { transform: 'rotate(-12deg) scale(0.95)' },
-          '50%': { transform: 'rotate(12deg) scale(0.95)' },
-        },
-      },
+    // Defines the template areas using 'grid-template-areas':
+    // Generates:
+    // - grid-areas-mobile
+    // - grid-areas-tablet
+    // - grid-areas-desktop
+    // - grid-in-<name> (i.e. grid-in-nav)
+    gridTemplateAreas: {
+      mobile: ['header', 'nav', 'section', 'footer'],
+      tablet: ['header header', 'aside section', 'nav nav', 'footer footer'],
+      desktop: ['header header', 'aside section', 'nav nav', 'footer footer'],
+    },
+    // Defines the template columns using 'grid-template-columns':
+    // Generates:
+    // - grid-cols-mobile
+    // - grid-cols-tablet
+    // - grid-cols-desktop
+    gridTemplateColumns: {
+      mobile: '1fr',
+      tablet: '250px 1fr',
+      desktop: '300px 1fr',
+    },
+    // Defines the template rows using 'grid-template-rows':
+    // Generates:
+    // - grid-rows-mobile
+    // - grid-rows-tablet
+    // - grid-rows-desktop
+    gridTemplateRows: {
+      mobile: '100px 100px 1fr 100px',
+      tablet: '100px 1fr 150px 50px',
+      desktop: '100px 1fr 150px 75px',
     },
   },
   variants: {
-    extend: {
-      animation: [
-        'focus',
-        'group-hover',
-        'hover',
-        'responsive',
-        'motion-reduce',
-        'motion-safe',
-      ],
-      backgroundImage: ['focus', 'group-hover', 'hover', 'responsive'],
-      gradientColorStops: ['focus', 'group-hover', 'hover', 'responsive'],
-      padding: ['focus', 'group-hover', 'hover', 'responsive'],
-      rotate: [
-        'focus',
-        'group-hover',
-        'hover',
-        'responsive',
-        'motion-reduce',
-        'motion-safe',
-      ],
-      scale: [
-        'focus',
-        'group-hover',
-        'hover',
-        'responsive',
-        'motion-reduce',
-        'motion-safe',
-      ],
-      transform: [
-        'focus',
-        'group-hover',
-        'hover',
-        'responsive',
-        'motion-reduce',
-        'motion-safe',
-      ],
-      transformOrigin: [
-        'focus',
-        'group-hover',
-        'hover',
-        'responsive',
-        'motion-reduce',
-        'motion-safe',
-      ],
-      transitionDelay: [
-        'focus',
-        'group-hover',
-        'hover',
-        'responsive',
-        'motion-reduce',
-        'motion-safe',
-      ],
-      transitionDuration: [
-        'focus',
-        'group-hover',
-        'hover',
-        'responsive',
-        'motion-reduce',
-        'motion-safe',
-      ],
-      transitionProperty: [
-        'focus',
-        'group-hover',
-        'hover',
-        'responsive',
-        'motion-reduce',
-        'motion-safe',
-      ],
-      transitionTimingFunction: [
-        'focus',
-        'group-hover',
-        'hover',
-        'responsive',
-        'motion-reduce',
-        'motion-safe',
-      ],
-      translate: [
-        'focus',
-        'group-hover',
-        'hover',
-        'responsive',
-        'motion-reduce',
-        'motion-safe',
-      ],
-      // This tells @tailwindcss/typography to look for this
-      // variant and apply the custom styles we declared above.
-      typography: ['dark'],
-    },
+    // Will enable the ability to do the following:
+    // grid-areas-mobile md:grid-areas-tablet lg:grid-areas-desktop.
+    gridTemplateAreas: ['responsive'],
+    // Will enabled the ability to do the following:
+    // bg-black dark:bg-white
+    typography: ['dark'],
   },
 }

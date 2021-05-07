@@ -1,15 +1,10 @@
 import * as React from 'react'
 import { AppProps } from 'next/app'
-import { AnimatePresence } from 'framer-motion'
 import { ThemeProvider } from 'next-themes'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
 import '../styles/global.scss'
-import { AppNav } from '@components/AppNav'
-import { Aside } from '@components/Aside'
-import { Footer } from '@components/Footer'
-import { OpenToWorkBanner } from '@components/OpenToWorkBanner'
 import { initAmplitudeJS } from '@lib/amplitude'
 
 interface Props extends AppProps {}
@@ -20,11 +15,6 @@ const App: React.FC<Props> = ({ Component, pageProps, router }) => {
   if (!queryClientRef.current) {
     queryClientRef.current = new QueryClient()
   }
-
-  const handleExit = React.useCallback(
-    () => typeof window !== 'undefined' && window.scrollTo(0, 0),
-    []
-  )
 
   // Initialize Amplitude Services.
   React.useEffect(() => initAmplitudeJS())
@@ -37,17 +27,11 @@ const App: React.FC<Props> = ({ Component, pageProps, router }) => {
         // The key that will put in localStorage.
         storageKey="codybrunner.dev-theme"
       >
-        <OpenToWorkBanner />
-        <div className="container flex flex-col flex-grow items-center justify-center mx-auto relative space-y-8 w-full">
-          <AppNav />
-          <main className="flex-grow grid grid-cols-1 h-full mt-10 w-full md:gap-8 md:grid-cols-5 md:mt-0">
-            <Aside />
-            <AnimatePresence exitBeforeEnter onExitComplete={handleExit}>
-              <Component {...pageProps} key={router.asPath} />
-            </AnimatePresence>
-          </main>
-          <Footer />
-        </div>
+        <header className="border-2 border-red-100 grid-in-header"></header>
+        <nav className="border-2 border-teal-100 grid-in-nav"></nav>
+        <aside className="border-2 border-yellow-100 grid-in-aside"></aside>
+        <Component {...pageProps} key={router.asPath} />
+        <footer className="border-2 border-blue-100 grid-in-footer"></footer>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen />
     </QueryClientProvider>
