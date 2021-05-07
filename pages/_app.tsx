@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
 import '../styles/global.scss'
+import { Aside } from '@components/Aside'
 import { Footer } from '@components/Footer'
 import { initAmplitudeJS } from '@lib/amplitude'
 
@@ -39,7 +40,7 @@ const App: React.FC<Props> = ({ Component, pageProps, router }) => {
             <li className="">Resume</li>
           </ul>
         </nav>
-        <aside className="border-2 border-yellow-100 grid-in-aside"></aside>
+        <Aside />
         <Component {...pageProps} key={router.asPath} />
         <Footer />
       </ThemeProvider>

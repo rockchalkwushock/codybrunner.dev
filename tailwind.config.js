@@ -87,6 +87,8 @@ module.exports = {
     // Will enable the ability to do the following:
     // grid-areas-mobile md:grid-areas-tablet lg:grid-areas-desktop.
     gridTemplateAreas: ['responsive'],
+    gridTemplateColumns: ['responsive'],
+    gridTemplateRows: ['responsive'],
     // Will enabled the ability to do the following:
     // bg-black dark:bg-white
     typography: ['dark'],
