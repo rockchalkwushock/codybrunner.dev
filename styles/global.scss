@@ -12,3 +12,23 @@ body {
 #__next {
   @apply gap-y-2 grid grid-areas-mobile grid-cols-mobile grid-rows-mobile h-screen md:gap-2 md:grid-areas-tablet md:grid-cols-tablet md:grid-rows-tablet lg:grid-areas-desktop lg:grid-cols-desktop lg:grid-rows-desktop;
 }
+
+@layer components {
+  .social-button {
+    @apply bg-transparent duration-100 ease-in-out group rounded-full transition-all hover:p-2 hover:text-white;
+    a > svg {
+      @apply h-8 w-8;
+    }
+  }
+}
+
+@layer utilities {
+  .bg-primary {
+  }
+  .bg-secondary {
+  }
+  .text-primary {
+  }
+  .text-secondary {
+  }
+}

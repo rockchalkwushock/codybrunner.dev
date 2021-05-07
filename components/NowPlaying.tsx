@@ -32,7 +32,7 @@ export const NowPlaying: React.FC = () => {
           {((data as CurrentEpisode).isPlaying === false ||
             (data as CurrentTrack).isPlaying === false ||
             (data as RecentTrack).isLastPlayed === false) && (
-            <p className="font-medium">Not Playing</p>
+            <p className="">Not Playing</p>
           )}
 
           <a

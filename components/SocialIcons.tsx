@@ -6,7 +6,7 @@ import { constants } from '@utils/constants'
 export const SocialIcons: React.FC = () => {
   return (
     <>
-      <li className="social-button hover:bg-black">
+      <li className="social-button hover:bg-black dark:hover:bg-white dark:hover:text-black">
         <a
           aria-label="Link to Cody Brunner's Github"
           href={constants.externalLinks.github}

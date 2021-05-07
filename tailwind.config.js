@@ -14,19 +14,29 @@ module.exports = {
       // These must be included manually.
       current: 'currentColor',
       transparent: 'transparent',
+      // bg-linkedIn || text-linkedIn
+      linkedIn: '#0072B1',
+      // bg-twitter || text-twitter
+      twitter: '#1DA1F2',
       // Exposes the whole Tailwind color palette.
       ...colors,
     },
+    fill: theme => ({
+      // fill-spotify
+      spotify: 'rgba(30, 215, 96, 1)',
+    }),
     // Defines the template areas using 'grid-template-areas':
     // Generates:
     // - grid-areas-mobile
     // - grid-areas-tablet
     // - grid-areas-desktop
+    // - grid-areas-nav
     // - grid-in-<name> (i.e. grid-in-nav)
     gridTemplateAreas: {
       mobile: ['header', 'nav', 'section', 'footer'],
       tablet: ['header header', 'aside section', 'nav nav', 'footer footer'],
       desktop: ['header header', 'aside section', 'nav nav', 'footer footer'],
+      nav: ['nav-col-1', 'nav-col-2'],
     },
     // Defines the template columns using 'grid-template-columns':
     // Generates:
@@ -37,6 +47,7 @@ module.exports = {
       mobile: '1fr',
       tablet: '250px 1fr',
       desktop: '300px 1fr',
+      nav: '150px 150px',
     },
     // Defines the template rows using 'grid-template-rows':
     // Generates:
@@ -44,9 +55,32 @@ module.exports = {
     // - grid-rows-tablet
     // - grid-rows-desktop
     gridTemplateRows: {
-      mobile: '100px 100px 1fr 100px',
+      mobile: '100px 100px 1fr minmax(max-content, auto)',
       tablet: '100px 1fr 150px 50px',
       desktop: '100px 1fr 150px 75px',
+      nav: '1fr 1fr 1fr',
+    },
+    extend: {
+      animation: {
+        // animate-move
+        move: 'move 8s linear infinite',
+        // animate-move-faster
+        'move-faster': 'move 2s linear infinite',
+        // animate-wiggle
+        wiggle: 'wiggle 1s ease-in-out infinite',
+      },
+      backgroundImage: theme => ({
+        // bg-instagram
+        instagram:
+          'radial-gradient(circle at 30% 107%, #fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%)',
+      }),
+      keyframes: {
+        move: { to: { transform: 'translateX(-100%)' } },
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-12deg) scale(0.95)' },
+          '50%': { transform: 'rotate(12deg) scale(0.95)' },
+        },
+      },
     },
   },
   variants: {
@@ -56,5 +90,11 @@ module.exports = {
     // Will enabled the ability to do the following:
     // bg-black dark:bg-white
     typography: ['dark'],
+    extend: {
+      animation: ['group-hover', 'hover'],
+      backgroundImage: ['group-hover', 'hover'],
+      gradientColorStops: ['focus', 'group-hover', 'hover', 'responsive'],
+      padding: ['hover', 'responsive'],
+    },
   },
 }

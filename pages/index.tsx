@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { GetStaticProps } from 'next'
 
-import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
-import { PostListItem } from '@components/PostListItem'
 import { Post } from '@interfaces/blog'
 import { getAllPostsFrontMatter } from '@utils/mdx'
 
@@ -11,24 +9,10 @@ interface Props {
 }
 
 const Home: React.FC<Props> = ({ posts }) => {
-  const pageMetaData: PageMetaData = {
-    description: 'My stretch of pipe in the world wide inter-tubes.',
-    title: 'codybrunner.dev | Home',
-    type: 'website',
-  }
   return (
-    <AnimatedPage pageMetaData={pageMetaData}>
-      <h1 className="mb-4 text-2xl">Latest Posts</h1>
-      <ul className="flex flex-col mb-8 overflow-scroll space-y-6 lg:space-y-4">
-        {posts.map(({ frontMatter }) => (
-          <PostListItem
-            dateFormat="day-month"
-            frontMatter={frontMatter}
-            key={frontMatter.slug}
-          />
-        ))}
-      </ul>
-    </AnimatedPage>
+    <div className="border-2 border-purple-100 grid-in-section px-4">
+      <h1>Home Page</h1>
+    </div>
   )
 }
 
