@@ -6,10 +6,10 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 // import { ReactQueryDevtools } from 'react-query/devtools'
 
 import '../styles/global.scss'
-import { AnimatedMobileNav, AppNav, ThemeToggle } from '@components/AppNav'
+import { AnimatedMobileNav, AppNav } from '@components/AppNav'
 import { Aside } from '@components/Aside'
 import { Footer } from '@components/Footer'
-import { OpenToWorkBanner } from '@components/OpenToWorkBanner'
+import { ThemeToggle } from '@components/ThemeToggle'
 import { initAmplitudeJS } from '@lib/amplitude'
 
 interface Props extends AppProps {}
@@ -37,10 +37,11 @@ const App: React.FC<Props> = ({ Component, pageProps, router }) => {
         // The key that will put in localStorage.
         storageKey="codybrunner.dev-theme"
       >
-        <OpenToWorkBanner />
-        <div className="gap-y-2 grid grid-areas-mobile grid-cols-mobile grid-rows-mobile h-screen mt-14 overflow-y-auto relative md:gap-8 md:grid-areas-tablet md:grid-cols-tablet md:grid-rows-tablet lg:grid-areas-desktop lg:grid-cols-desktop lg:grid-rows-desktop">
-          <header className="flex grid-in-header items-center justify-between sticky top-0 w-full z-50">
-            <h1 className="hidden lg:block lg:text-2xl">codybrunner.dev</h1>
+        <div className="gap-y-2 grid grid-areas-mobile grid-cols-mobile grid-rows-mobile h-screen overflow-y-auto relative md:gap-8 md:grid-areas-tablet md:grid-cols-tablet md:grid-rows-tablet lg:grid-areas-desktop lg:grid-cols-desktop lg:grid-rows-desktop">
+          <header className="bg-primary flex grid-in-header items-center justify-between sticky top-0 w-full z-50">
+            <h1 className="hidden lg:block lg:text-accent lg:text-2xl">
+              codybrunner.dev
+            </h1>
             <AnimatedMobileNav />
             <ThemeToggle />
           </header>

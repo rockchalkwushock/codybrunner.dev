@@ -1,11 +1,8 @@
 import * as React from 'react'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { useTheme } from 'next-themes'
 import { Cycle, motion, MotionProps, useCycle, Variants } from 'framer-motion'
-import { Moon, Sun } from 'react-feather'
 
-import { useAmplitude } from '@hooks/useAmplitude'
 import { useDimensions } from '@hooks/useDimensions'
 import { constants } from '@utils/constants'
 
@@ -204,7 +201,7 @@ export const AnimatedMobileNav: React.FC = () => {
       ref={containerRef}
     >
       <motion.div
-        className="absolute bg-coolGray-100 bottom-0 left-0 shadow-lg top-0 z-20"
+        className="absolute bg-coolGray-400 bottom-0 left-0 shadow-lg top-0 z-20"
         variants={mobileNavVariants}
       />
       <AnimatedMenu onNavigate={onNavigate} />
@@ -217,8 +214,8 @@ export const AnimatedMobileNav: React.FC = () => {
 
 export const AppNav: React.FC = () => {
   return (
-    <nav className="grid-in-nav md:flex md:justify-end">
-      <ul className="hidden md:gap-4 md:grid md:grid-areas-nav md:grid-cols-nav md:grid-rows-nav">
+    <nav className="grid-in-nav md:border-b md:border-t md:border-blueGray-400 md:flex md:justify-end">
+      <ul className="hidden md:gap-4 md:grid md:grid-areas-nav md:grid-cols-nav md:grid-rows-nav md:py-8">
         {constants.menu.map(({ path, text }) => (
           <AnimatedMenuItem key={text}>
             <MenuLink to={path}>{text}</MenuLink>
@@ -226,48 +223,5 @@ export const AppNav: React.FC = () => {
         ))}
       </ul>
     </nav>
-  )
-}
-
-const themeToggleVariants: Variants = {
-  closed: {
-    opacity: 0,
-    transition: {},
-  },
-  open: {
-    opacity: 1,
-    transition: {
-      delay: 0.3,
-    },
-  },
-}
-
-export const ThemeToggle: React.FC = () => {
-  const { setEvent } = useAmplitude(true)
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => setMounted(true), [])
-
-  const onToggleTheme = React.useCallback(() => {
-    setEvent('toggle theme', { theme: theme === 'dark' ? 'light' : 'dark' })
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [theme])
-  return (
-    <motion.button
-      aria-label="Toggle Color Theme"
-      className="border-0 cursor-pointer duration-300 ease-in-out flex group h-14 items-center justify-center mr-2 outline-none rounded-full top-0 transform-gpu transition w-14 z-20 focus:outline-none lg:mr-0 hover:scale-110"
-      onClick={onToggleTheme}
-      type="button"
-      variants={themeToggleVariants}
-    >
-      {mounted && theme === 'dark' && (
-        <Moon className="h-7 w-7  group-hover:text-amber-300" />
-      )}
-      {mounted && theme === 'light' && (
-        <Sun className="h-7 w-7 group-hover:text-amber-300" />
-      )}
-    </motion.button>
   )
 }

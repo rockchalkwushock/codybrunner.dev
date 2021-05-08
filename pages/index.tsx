@@ -19,7 +19,7 @@ const Home: React.FC<Props> = ({ posts }) => {
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
       <h1 className="mb-4 text-2xl">Latest Posts</h1>
-      <ul className="flex flex-col mb-8 overflow-scroll space-y-6 lg:space-y-4">
+      <ul className="flex flex-col mb-8 overflow-y-scroll p-2 space-y-6 lg:space-y-4">
         {posts.map(({ frontMatter }) => (
           <PostListItem
             dateFormat="day-month"

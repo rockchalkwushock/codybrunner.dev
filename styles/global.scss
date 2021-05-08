@@ -4,12 +4,12 @@
 
 html,
 body {
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: hidden;
   scroll-behavior: smooth;
 }
 
 #__next {
-  @apply min-h-screen overflow-y-auto;
 }
 
 @layer components {
@@ -20,34 +20,50 @@ body {
     @apply border-2 danger-theme flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
   }
   .open-to-work-banner {
-    @apply absolute bg-teal-200 flex h-14 items-center justify-center left-0 p-4 top-0 w-screen z-10;
+    @apply absolute bg-accent flex h-14 items-center justify-center left-0 p-4 top-0 w-screen z-10;
     h1 {
-      @apply font-medium text-black text-lg lg:text-2xl;
+      @apply font-medium text-lg text-white dark:text-black lg:text-2xl;
     }
   }
   .pagination-button {
-    @apply border border-transparent px-8 py-2 rounded-lg shadow-md text-xl;
+    @apply bg-accent border border-transparent px-8 py-2 rounded-lg shadow-md text-teal-200 dark:text-fuchsia-800 text-xl;
   }
   .social-button {
-    @apply bg-transparent duration-100 ease-in-out rounded-full transition-all hover:p-2 hover:text-white;
+    @apply bg-transparent duration-100 ease-in-out rounded-full text-accent transition-all hover:p-2 hover:text-white;
     a > svg {
       @apply h-8 w-8;
+    }
+  }
+  .theme-toggle {
+    @apply bg-accent border-0 cursor-pointer duration-300 ease-in-out flex h-14 items-center justify-center mr-2 outline-none rounded-full top-0 transform-gpu transition w-14 z-20 focus:outline-none hover:scale-110;
+    > svg {
+      @apply h-7 text-teal-200 dark:text-fuchsia-900 w-7;
     }
   }
 }
 
 @layer utilities {
+  .bg-accent {
+    @apply bg-fuchsia-900 dark:bg-teal-200;
+  }
   .bg-primary {
+    @apply bg-blueGray-200 dark:bg-coolGray-800;
   }
   .bg-secondary {
+    @apply bg-coolGray-400 dark:bg-blueGray-200;
+  }
+  .text-accent {
+    @apply text-fuchsia-900 dark:text-teal-200;
   }
   .text-primary {
+    @apply text-black dark:text-white;
   }
   .text-secondary {
+    @apply text-coolGray-700 dark:text-coolGray-300;
   }
   // One-Offs
   .danger-theme {
-    @apply bg-red-200 border-red-500 text-red-500 dark:bg-red-500 dark:border-red-200 dark:text-red-200;
+    @apply bg-red-200 text-red-500 dark:bg-red-500 dark:text-red-200;
   }
   .night-owl-theme {
     background-color: rgb(1, 22, 39, 1);
@@ -56,6 +72,7 @@ body {
 }
 
 .prose {
+  @apply text-coolGray-900 dark:text-coolGray-100;
   a {
     @apply font-normal hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
     > code {
@@ -102,7 +119,17 @@ body {
   h3,
   h4,
   h5 {
-    @apply font-semibold dark:text-teal-200;
+    @apply font-semibold;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply text-accent;
+  }
+
+  h4 {
+    @apply text-teal-600 dark:text-fuchsia-400;
   }
 
   h6 {

@@ -22,7 +22,7 @@ export const MDXLayout: React.FC<Props> = ({
     <>
       {!frontMatter.published && <span className="draft-banner">DRAFT</span>}
       <header className="flex flex-col space-y-8 w-full">
-        <h1 className="text-5xl text-center md:text-left dark:text-teal-200">
+        <h1 className="text-accent text-5xl text-center md:text-left">
           {frontMatter.title}
         </h1>
         <div className="flex flex-col items-center w-full md:flex-row md:justify-between">
