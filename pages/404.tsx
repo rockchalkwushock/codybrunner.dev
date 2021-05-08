@@ -15,9 +15,9 @@ const Custom404: React.FC = () => {
         type: 'website',
       }}
     >
-      <h1 className="mb-8 text-4xl text-center">Oops! 🤭</h1>
+      <h1 className="mb-8 text-accent text-4xl text-center">Oops! 🤭</h1>
       <div className="flex flex-col items-center mb-8 p-4 space-y-12">
-        <p className="font-semibold text-center text-lg">
+        <p className="font-semibold text-accent text-center text-lg">
           Looks like you took a trip down the wrong worm hole to get here.
         </p>
         <h2>Your options are:</h2>

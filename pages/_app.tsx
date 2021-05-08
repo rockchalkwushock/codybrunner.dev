@@ -6,10 +6,10 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 // import { ReactQueryDevtools } from 'react-query/devtools'
 
 import '../styles/global.scss'
-import { AnimatedMobileNav, AppNav } from '@components/AppNav'
+import { Nav } from '@components/Nav'
 import { Aside } from '@components/Aside'
 import { Footer } from '@components/Footer'
-import { ThemeToggle } from '@components/ThemeToggle'
+import { Header } from '@components/Header'
 import { initAmplitudeJS } from '@lib/amplitude'
 
 interface Props extends AppProps {}
@@ -38,14 +38,8 @@ const App: React.FC<Props> = ({ Component, pageProps, router }) => {
         storageKey="codybrunner.dev-theme"
       >
         <div className="gap-y-2 grid grid-areas-mobile grid-cols-mobile grid-rows-mobile h-screen overflow-y-auto relative md:gap-8 md:grid-areas-tablet md:grid-cols-tablet md:grid-rows-tablet lg:grid-areas-desktop lg:grid-cols-desktop lg:grid-rows-desktop">
-          <header className="bg-primary flex grid-in-header items-center justify-between sticky top-0 w-full z-50">
-            <h1 className="hidden lg:block lg:text-accent lg:text-2xl">
-              codybrunner.dev
-            </h1>
-            <AnimatedMobileNav />
-            <ThemeToggle />
-          </header>
-          <AppNav />
+          <Header />
+          <Nav />
           <Aside />
           <AnimatePresence exitBeforeEnter onExitComplete={handleExit}>
             <Component {...pageProps} key={router.asPath} />

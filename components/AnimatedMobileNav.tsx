@@ -1,35 +1,9 @@
 import * as React from 'react'
-import NextLink from 'next/link'
-import { useRouter } from 'next/router'
-import { Cycle, motion, MotionProps, useCycle, Variants } from 'framer-motion'
+import { Cycle, motion, useCycle, Variants } from 'framer-motion'
 
+import { MenuLink } from './MenuLink'
 import { useDimensions } from '@hooks/useDimensions'
 import { constants } from '@utils/constants'
-
-// MenuLink
-
-type MenuLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
-  MotionProps & {
-    to: string
-  }
-
-const MenuLink = React.forwardRef<HTMLAnchorElement, MenuLinkProps>(
-  ({ children, onClick, to, ...rest }, ref) => {
-    const { asPath } = useRouter()
-    return (
-      <NextLink href={to} passHref>
-        <motion.a
-          {...rest}
-          className={`text-2xl ${asPath === to ? '' : ''}`}
-          onClick={onClick}
-          ref={ref}
-        >
-          <span className="">{children}</span>
-        </motion.a>
-      </NextLink>
-    )
-  }
-)
 
 // AnimatedMenuItem
 
@@ -51,7 +25,7 @@ const menuItemVariants: Variants = {
   },
 }
 
-const AnimatedMenuItem: React.FC = ({ children }) => {
+export const AnimatedMenuItem: React.FC = ({ children }) => {
   return (
     <motion.li className="text-right" variants={menuItemVariants}>
       {children}
@@ -207,21 +181,5 @@ export const AnimatedMobileNav: React.FC = () => {
       <AnimatedMenu onNavigate={onNavigate} />
       <AnimatedMenuToggle toggle={setIsOpen} />
     </motion.div>
-  )
-}
-
-// AppNav
-
-export const AppNav: React.FC = () => {
-  return (
-    <nav className="grid-in-nav md:border-b md:border-t md:border-blueGray-400 md:flex md:justify-end">
-      <ul className="hidden md:gap-4 md:grid md:grid-areas-nav md:grid-cols-nav md:grid-rows-nav md:py-8">
-        {constants.menu.map(({ path, text }) => (
-          <AnimatedMenuItem key={text}>
-            <MenuLink to={path}>{text}</MenuLink>
-          </AnimatedMenuItem>
-        ))}
-      </ul>
-    </nav>
   )
 }
