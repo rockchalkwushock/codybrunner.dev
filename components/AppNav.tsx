@@ -5,8 +5,8 @@ import { useTheme } from 'next-themes'
 import { Cycle, motion, MotionProps, useCycle, Variants } from 'framer-motion'
 import { Moon, Sun } from 'react-feather'
 
-import { useDimensions } from '@hooks/useDimensions'
 import { useAmplitude } from '@hooks/useAmplitude'
+import { useDimensions } from '@hooks/useDimensions'
 import { constants } from '@utils/constants'
 
 // MenuLink
@@ -23,13 +23,11 @@ const MenuLink = React.forwardRef<HTMLAnchorElement, MenuLinkProps>(
       <NextLink href={to} passHref>
         <motion.a
           {...rest}
-          className={`border-2 border-transparent group px-6 py-2 rounded-full text-2xl text-center w-full hover:border-indigo-600 hover:bg-indigo-100 ${
-            asPath === to ? 'border-teal-500' : ''
-          }`}
+          className={`text-2xl ${asPath === to ? '' : ''}`}
           onClick={onClick}
           ref={ref}
         >
-          <span className="group-hover:text-indigo-600">{children}</span>
+          <span className="">{children}</span>
         </motion.a>
       </NextLink>
     )
@@ -58,7 +56,7 @@ const menuItemVariants: Variants = {
 
 const AnimatedMenuItem: React.FC = ({ children }) => {
   return (
-    <motion.li className="text-center w-full" variants={menuItemVariants}>
+    <motion.li className="text-right" variants={menuItemVariants}>
       {children}
     </motion.li>
   )
@@ -181,6 +179,56 @@ const mobileNavVariants: Variants = {
   }),
 }
 
+export const AnimatedMobileNav: React.FC = () => {
+  const [isOpen, setIsOpen] = useCycle(false, true)
+  const containerRef = React.useRef(null)
+  const { height } = useDimensions(containerRef)
+
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden')
+      return
+    }
+    document.body.classList.remove('overflow-hidden')
+  }, [isOpen])
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onNavigate = React.useCallback(() => setIsOpen(), [])
+
+  return (
+    <motion.div
+      animate={isOpen ? 'open' : 'closed'}
+      className="relative h-20 lg:hidden"
+      custom={height}
+      initial={false}
+      ref={containerRef}
+    >
+      <motion.div
+        className="absolute bg-coolGray-100 bottom-0 left-0 shadow-lg top-0 z-20"
+        variants={mobileNavVariants}
+      />
+      <AnimatedMenu onNavigate={onNavigate} />
+      <AnimatedMenuToggle toggle={setIsOpen} />
+    </motion.div>
+  )
+}
+
+// AppNav
+
+export const AppNav: React.FC = () => {
+  return (
+    <nav className="grid-in-nav md:flex md:justify-end">
+      <ul className="hidden md:gap-4 md:grid md:grid-areas-nav md:grid-cols-nav md:grid-rows-nav">
+        {constants.menu.map(({ path, text }) => (
+          <AnimatedMenuItem key={text}>
+            <MenuLink to={path}>{text}</MenuLink>
+          </AnimatedMenuItem>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
 const themeToggleVariants: Variants = {
   closed: {
     opacity: 0,
@@ -194,7 +242,7 @@ const themeToggleVariants: Variants = {
   },
 }
 
-const ThemeToggle: React.FC = () => {
+export const ThemeToggle: React.FC = () => {
   const { setEvent } = useAmplitude(true)
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
@@ -221,68 +269,5 @@ const ThemeToggle: React.FC = () => {
         <Sun className="h-7 w-7 group-hover:text-amber-300" />
       )}
     </motion.button>
-  )
-}
-
-const AnimatedMobileNav: React.FC = () => {
-  const [isOpen, setIsOpen] = useCycle(false, true)
-  const containerRef = React.useRef(null)
-  const { height } = useDimensions(containerRef)
-
-  React.useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add('overflow-hidden')
-      return
-    }
-    document.body.classList.remove('overflow-hidden')
-  }, [isOpen])
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const onNavigate = React.useCallback(() => setIsOpen(), [])
-
-  return (
-    <motion.div
-      animate={isOpen ? 'open' : 'closed'}
-      className="relative h-20 lg:hidden"
-      custom={height}
-      initial={false}
-      ref={containerRef}
-    >
-      <motion.div
-        className="absolute bg-amber-100 dark:bg-blueGray-400 bottom-0 left-0 shadow-lg top-0 z-20"
-        variants={mobileNavVariants}
-      />
-      <AnimatedMenu onNavigate={onNavigate} />
-      <AnimatedMenuToggle toggle={setIsOpen} />
-    </motion.div>
-  )
-}
-
-// Desktop Nav
-
-const DesktopNav: React.FC = () => {
-  return (
-    <div className="hidden lg:flex lg:items-center lg:space-x-4 lg:text-2xl lg:w-full">
-      <div className="flex-shrink">codybrunner.dev</div>
-      <ul className="flex space-x-6">
-        {constants.menu.map(({ path, text }) => (
-          <AnimatedMenuItem key={text}>
-            <MenuLink to={path}>{text}</MenuLink>
-          </AnimatedMenuItem>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-// AppNav
-
-export const AppNav: React.FC = () => {
-  return (
-    <nav className="bg-primary flex items-center justify-between mx-auto sticky top-0 w-full z-10 lg:p-4">
-      <AnimatedMobileNav />
-      <DesktopNav />
-      <ThemeToggle />
-    </nav>
   )
 }

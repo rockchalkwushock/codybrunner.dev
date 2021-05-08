@@ -27,7 +27,7 @@ export const MDXLayout: React.FC<Props> = ({
         </h1>
         <div className="flex flex-col items-center w-full md:flex-row md:justify-between">
           <div className="flex items-center">
-            <Avatar className="h-9 mr-2 w-9 md:hidden" />
+            <Avatar className="h-9 mr-2 w-9 lg:hidden" />
 
             <div className="flex flex-col">
               <p className="text-secondary">

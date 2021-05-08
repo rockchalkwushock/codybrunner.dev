@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
           target="_blank"
         >{`${constants.copyright} ${constants.author}`}</a>
       </div>
-      <ul className="flex items-center justify-center space-x-6 md:space-x-4">
+      <ul className="flex items-center justify-center pb-8 space-x-6 md:space-x-4">
         <SocialIcons />
       </ul>
     </footer>

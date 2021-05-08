@@ -9,7 +9,7 @@ body {
 }
 
 #__next {
-  @apply gap-y-2 grid grid-areas-mobile grid-cols-mobile grid-rows-mobile h-screen md:gap-2 md:grid-areas-tablet md:grid-cols-tablet md:grid-rows-tablet lg:grid-areas-desktop lg:grid-cols-desktop lg:grid-rows-desktop;
+  @apply min-h-screen overflow-y-auto;
 }
 
 @layer components {
@@ -20,7 +20,7 @@ body {
     @apply border-2 danger-theme flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
   }
   .open-to-work-banner {
-    @apply bg-teal-200 flex h-12 items-center justify-center p-4 w-screen;
+    @apply absolute bg-teal-200 flex h-14 items-center justify-center left-0 p-4 top-0 w-screen z-10;
     h1 {
       @apply font-medium text-black text-lg lg:text-2xl;
     }
@@ -29,7 +29,7 @@ body {
     @apply border border-transparent px-8 py-2 rounded-lg shadow-md text-xl;
   }
   .social-button {
-    @apply bg-transparent duration-100 ease-in-out group rounded-full transition-all hover:p-2 hover:text-white;
+    @apply bg-transparent duration-100 ease-in-out rounded-full transition-all hover:p-2 hover:text-white;
     a > svg {
       @apply h-8 w-8;
     }

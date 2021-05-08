@@ -116,7 +116,7 @@ export const AnimatedPage: React.FC<Props> = ({
       </NextHead>
       <motion.section
         animate="animate"
-        className={`grid-in-section px-4 md:py-4 ${className}`}
+        className={`grid-in-section px-6 md:pt-4 md:px-8 lg:px-0 ${className}`}
         exit="exit"
         initial="initial"
         variants={variants}
