@@ -5,7 +5,6 @@
 html,
 body {
   min-height: 100vh;
-  min-width: 22.5rem;
   scroll-behavior: smooth;
 }
 
@@ -14,6 +13,21 @@ body {
 }
 
 @layer components {
+  .divider {
+    @apply border-blueGray-400 my-8;
+  }
+  .draft-banner {
+    @apply border-2 danger-theme flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
+  }
+  .open-to-work-banner {
+    @apply bg-teal-200 flex h-12 items-center justify-center p-4 w-screen;
+    h1 {
+      @apply font-medium text-black text-lg lg:text-2xl;
+    }
+  }
+  .pagination-button {
+    @apply border border-transparent px-8 py-2 rounded-lg shadow-md text-xl;
+  }
   .social-button {
     @apply bg-transparent duration-100 ease-in-out group rounded-full transition-all hover:p-2 hover:text-white;
     a > svg {
@@ -30,5 +44,102 @@ body {
   .text-primary {
   }
   .text-secondary {
+  }
+  // One-Offs
+  .danger-theme {
+    @apply bg-red-200 border-red-500 text-red-500 dark:bg-red-500 dark:border-red-200 dark:text-red-200;
+  }
+  .night-owl-theme {
+    background-color: rgb(1, 22, 39, 1);
+    color: rgb(214, 222, 235, 1);
+  }
+}
+
+.prose {
+  a {
+    @apply font-normal hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
+    > code {
+      @apply font-normal italic hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
+      &::after,
+      &::before {
+        content: none;
+      }
+    }
+    > img {
+      // Keeps images from about.tsx from being rounded.
+      @apply rounded-none;
+    }
+  }
+
+  blockquote {
+    @apply bg-blue-200 border border-transparent font-light italic rounded-md shadow-lg dark:bg-fuchsia-700;
+    > p {
+      @apply my-2;
+      > code {
+        @apply bg-transparent p-0 rounded-none;
+        &::after,
+        &::before {
+          content: none;
+        }
+      }
+    }
+  }
+
+  code {
+    @apply bg-blueGray-300 font-normal italic px-2 py-1 rounded-full dark:bg-blueGray-500;
+    &::after,
+    &::before {
+      content: none;
+    }
+  }
+
+  del {
+    @apply font-semibold text-red-600;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    @apply font-semibold dark:text-teal-200;
+  }
+
+  h6 {
+    @apply font-mono text-indigo-600 text-2xl dark:text-indigo-400;
+  }
+
+  hr {
+    @apply border-blueGray-400 my-8;
+  }
+
+  img {
+    @apply flex items-center justify-center max-w-full mx-auto rounded-lg;
+  }
+
+  strong {
+    @apply font-semibold;
+  }
+
+  .contains-task-list {
+    @apply list-none;
+    .task-list-item {
+      &::before {
+        content: none; // removes the dot
+      }
+      *:first-child,
+      *:last-child {
+        @apply my-0.5;
+      }
+      @apply pl-0;
+    }
+  }
+
+  .rehype-code-title:defined {
+    @apply border-b border-blueGray-300 leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg;
+  }
+
+  .rehype-code-title + pre {
+    @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none;
   }
 }

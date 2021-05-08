@@ -23,7 +23,7 @@ export const PostShare: React.FC<Props> = ({ frontMatter }) => {
   // Parse URL for sharing.
   const url = `${constants.url}${asPath}`
   return (
-    <section className="flex flex-col items-center justify-center space-y-2 lg:flex-row lg:space-y-0 lg:justify-between">
+    <div className="flex flex-col items-center justify-center space-y-2 lg:flex-row lg:space-y-0 lg:justify-between">
       <div>
         <p className="text-center lg:text-left lg:text-lg">
           Like what you read?
@@ -58,6 +58,6 @@ export const PostShare: React.FC<Props> = ({ frontMatter }) => {
           <TwitterIcon round size="32" />
         </TwitterShareButton>
       </div>
-    </section>
+    </div>
   )
 }

@@ -29,8 +29,8 @@ const App: React.FC<Props> = ({ Component, pageProps, router }) => {
         // The key that will put in localStorage.
         storageKey="codybrunner.dev-theme"
       >
-        <header className="border-2 border-red-100 grid-in-header"></header>
-        <nav className="border-2 border-teal-100 grid-in-nav p-4 md:flex md:justify-end">
+        <header className="border-2 border-red-500 grid-in-header"></header>
+        <nav className="border-2 border-teal-500 grid-in-nav p-4 md:flex md:justify-end">
           <ul className="hidden md:gap-4 md:grid md:grid-areas-nav md:grid-cols-nav md:grid-rows-nav md:place-items-center">
             <li className="">Home</li>
             <li className="">About</li>

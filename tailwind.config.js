@@ -34,7 +34,7 @@ module.exports = {
     // - grid-in-<name> (i.e. grid-in-nav)
     gridTemplateAreas: {
       mobile: ['header', 'nav', 'section', 'footer'],
-      tablet: ['header header', 'aside section', 'nav nav', 'footer footer'],
+      tablet: ['header', 'section', 'nav', 'footer'],
       desktop: ['header header', 'aside section', 'nav nav', 'footer footer'],
       nav: ['nav-col-1', 'nav-col-2'],
     },
@@ -44,9 +44,9 @@ module.exports = {
     // - grid-cols-tablet
     // - grid-cols-desktop
     gridTemplateColumns: {
-      mobile: '1fr',
-      tablet: '250px 1fr',
-      desktop: '300px 1fr',
+      mobile: 'minmax(300px, min-content)',
+      tablet: 'minmax(300px, min-content)',
+      desktop: '300px minmax(300px, min-content)',
       nav: '150px 150px',
     },
     // Defines the template rows using 'grid-template-rows':

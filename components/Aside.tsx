@@ -6,7 +6,7 @@ import { Avatar } from './Avatar'
 
 export const Aside: React.FC = () => {
   return (
-    <aside className="grid-in-aside hidden md:flex md:flex-col md:items-center md:p-4">
+    <aside className="grid-in-aside hidden lg:flex md:flex-col md:items-center md:p-4">
       <Avatar className="h-48 mb-4 w-48" />
       <ul className="flex flex-col items-center">
         <li className="mb-4 text-2xl lg:text-3xl">{constants.author}</li>

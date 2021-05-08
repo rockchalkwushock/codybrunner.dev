@@ -50,7 +50,7 @@ export const MDXLayout: React.FC<Props> = ({
         </div>
       </header>
       <hr className="divider" />
-      <article className="max-w-none prose prose-xl tracking-wide md:tracking-normal">
+      <article className="max-w-none prose prose-lg md:prose-xl tracking-wide md:tracking-normal">
         <MDXContent
           components={{
             // @ts-ignore

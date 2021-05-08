@@ -16,7 +16,9 @@ const Contact: React.FC<Props> = () => {
     <AnimatedPage pageMetaData={pageMetaData}>
       <div id="appointlet-section" className="flex flex-col mb-6 space-y-2">
         <h1 className="text-center text-2xl">Use Appointlet!</h1>
-        <p className="text-center">I built this software!!! 🎉🎉🎉</p>
+        <p className="text-center text-secondary">
+          I built this software!!! 🎉🎉🎉
+        </p>
         {/*
           Appointlet Booking Page will be injected
           here by useAppointletEmbed().
