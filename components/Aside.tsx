@@ -17,8 +17,8 @@ export const Aside: React.FC = () => {
             <SocialIcons />
           </ul>
         </li>
-        <li className="bg-secondary flex flex-col items-center justify-center p-2 rounded-lg w-48">
-          <p className="text-black text-center lg:text-lg">
+        <li className="bg-accent flex flex-col items-center justify-center p-2 rounded-lg shadow-md w-48">
+          <p className="text-coolGray-50 text-center dark:text-coolGray-900 lg:text-lg">
             Cody is a {constants.age} year old American software developer,
             Jayhawk, and US Navy veteran originally hailing from the boondocks
             of Kansas and now currently living with his wife and step-doggo in{' '}

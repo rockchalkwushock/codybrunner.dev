@@ -67,7 +67,7 @@ body {
 .prose {
   @apply text-coolGray-900 dark:text-coolGray-100;
   a {
-    @apply font-normal hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
+    @apply font-normal text-accent hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
     > code {
       @apply font-normal italic hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
       &::after,
