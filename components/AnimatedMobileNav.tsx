@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Cycle, motion, useCycle, Variants } from 'framer-motion'
+import { Cycle, motion, MotionProps, useCycle, Variants } from 'framer-motion'
+import { useRouter } from 'next/router'
 
 import { MenuLink } from './MenuLink'
 import { useDimensions } from '@hooks/useDimensions'
@@ -25,9 +26,11 @@ const menuItemVariants: Variants = {
   },
 }
 
-export const AnimatedMenuItem: React.FC = ({ children }) => {
+type Props = React.LiHTMLAttributes<HTMLLIElement> & MotionProps & {}
+
+export const AnimatedMenuItem: React.FC<Props> = ({ children, ...rest }) => {
   return (
-    <motion.li className="text-right" variants={menuItemVariants}>
+    <motion.li variants={menuItemVariants} {...rest}>
       {children}
     </motion.li>
   )
@@ -53,6 +56,7 @@ interface AnimatedMenuProps {
 }
 
 const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ onNavigate }) => {
+  const { asPath } = useRouter()
   return (
     <motion.ul
       className="absolute flex-col items-center p-6 top-16 w-72 z-20"
@@ -60,9 +64,27 @@ const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ onNavigate }) => {
     >
       <motion.div className="flex flex-col flex-grow items-center space-y-6 w-full">
         {constants.menu.map(({ path, text }) => (
-          <AnimatedMenuItem key={text.toLocaleLowerCase()}>
-            <MenuLink onClick={onNavigate} to={path}>
-              {text}
+          <AnimatedMenuItem
+            aria-disabled={asPath === path}
+            className="text-center w-full"
+            key={text.toLocaleLowerCase()}
+          >
+            <MenuLink
+              aria-disabled={asPath === path}
+              className={`flex items-center justify-center ${
+                asPath === path
+                  ? 'bg-teal-600 dark:bg-fuchsia-400 border border-teal-600 dark:border-fuchsia-400 px-4 py-1 rounded-full uppercase'
+                  : ''
+              }`}
+              onClick={onNavigate}
+              to={path}
+            >
+              <span
+                aria-disabled={asPath === path}
+                className="text-teal-200 dark:text-fuchsia-900 text-2xl"
+              >
+                {text}
+              </span>
             </MenuLink>
           </AnimatedMenuItem>
         ))}

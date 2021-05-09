@@ -85,6 +85,8 @@ module.exports = {
       stroke: theme => ({
         'accent-1': theme('colors.teal.200'),
         'accent-2': theme('colors.fuchsia.900'),
+        'accent-3': theme('colors.amber.200'),
+        'accent-4': theme('colors.amber.500'),
       }),
     },
   },
@@ -100,8 +102,16 @@ module.exports = {
     extend: {
       animation: ['group-hover', 'hover'],
       backgroundImage: ['group-hover', 'hover'],
-      gradientColorStops: ['focus', 'group-hover', 'hover', 'responsive'],
-      padding: ['hover', 'responsive'],
+      borderRadius: ['hover'],
+      gradientColorStops: ['group-hover'],
+      padding: ['hover'],
+      stroke: ['group-hover'],
+      transform: ['hover'],
+      transformOrigin: ['hover'],
+      transitionDelay: ['hover'],
+      transitionDuration: ['hover'],
+      transitionProperty: ['hover'],
+      transitionTimingFunction: ['hover'],
     },
   },
 }

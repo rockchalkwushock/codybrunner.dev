@@ -39,10 +39,10 @@ export const ThemeToggle: React.FC = () => {
       variants={themeToggleVariants}
     >
       {mounted && theme === 'dark' && (
-        <Moon className="dark:group-hover:text-amber-500" />
+        <Moon className="dark:group-hover:stroke-accent-4" />
       )}
       {mounted && theme === 'light' && (
-        <Sun className="group-hover:text-amber-200" />
+        <Sun className="group-hover:stroke-accent-3" />
       )}
     </motion.button>
   )
