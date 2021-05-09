@@ -82,6 +82,10 @@ module.exports = {
           '50%': { transform: 'rotate(12deg) scale(0.95)' },
         },
       },
+      stroke: theme => ({
+        'accent-1': theme('colors.teal.200'),
+        'accent-2': theme('colors.fuchsia.900'),
+      }),
     },
   },
   variants: {

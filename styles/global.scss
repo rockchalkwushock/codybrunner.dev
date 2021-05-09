@@ -4,7 +4,6 @@
 
 html,
 body {
-  @apply h-screen overflow-y-hidden;
   scroll-behavior: smooth;
 }
 
@@ -28,9 +27,9 @@ body {
     }
   }
   .theme-toggle {
-    @apply bg-accent border-0 cursor-pointer duration-300 ease-in-out flex h-14 items-center justify-center mr-2 outline-none rounded-full top-0 transform-gpu transition w-14 z-20 focus:outline-none hover:scale-110;
+    @apply bg-coolGray-900 dark:bg-blueGray-200 border-0 cursor-pointer duration-300 ease-in-out flex h-14 items-center justify-center mr-2 outline-none rounded-full top-0 transform-gpu transition w-14 z-20 focus:outline-none hover:scale-110;
     > svg {
-      @apply h-7 text-teal-200 dark:text-fuchsia-900 w-7;
+      @apply h-7 stroke-accent-1 dark:stroke-accent-2 w-7;
     }
   }
 }

@@ -100,13 +100,13 @@ const AnimatedMenuToggle: React.FC<AnimatedMenuToggleProps> = ({ toggle }) => {
     >
       <svg height="24" viewBox="0 0 23 23" width="24">
         <motion.path
-          className="fill-current stroke-current"
+          className="stroke-accent-1 dark:stroke-accent-2"
           strokeLinecap="round"
           strokeWidth="3"
           variants={toggleVariants[0]}
         />
         <motion.path
-          className="fill-current stroke-current"
+          className="stroke-accent-1 dark:stroke-accent-2"
           d="M 2 9.423 L 20 9.423"
           strokeLinecap="round"
           strokeWidth="3"
@@ -114,7 +114,7 @@ const AnimatedMenuToggle: React.FC<AnimatedMenuToggleProps> = ({ toggle }) => {
           variants={toggleVariants[1]}
         />
         <motion.path
-          className="fill-current stroke-current"
+          className="stroke-accent-1 dark:stroke-accent-2"
           strokeLinecap="round"
           strokeWidth="3"
           variants={toggleVariants[2]}
@@ -175,7 +175,7 @@ export const AnimatedMobileNav: React.FC = () => {
       ref={containerRef}
     >
       <motion.div
-        className="absolute bg-coolGray-400 bottom-0 left-0 shadow-lg top-0 z-20"
+        className="absolute bg-coolGray-900 bottom-0 left-0 shadow-lg top-0 z-20 dark:bg-blueGray-200"
         variants={mobileNavVariants}
       />
       <AnimatedMenu onNavigate={onNavigate} />
