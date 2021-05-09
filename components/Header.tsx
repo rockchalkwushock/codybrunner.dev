@@ -17,6 +17,7 @@ export const Header: React.FC = () => {
             <AnimatedMenuItem
               aria-disabled={asPath === path}
               className="text-center w-full"
+              key={text.toLowerCase()}
             >
               <MenuLink
                 aria-disabled={asPath === path}

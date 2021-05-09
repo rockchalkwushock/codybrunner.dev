@@ -63,11 +63,11 @@ const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ onNavigate }) => {
       variants={menuVariants}
     >
       <motion.div className="flex flex-col flex-grow items-center space-y-6 w-full">
-        {constants.menu.map(({ path, text }) => (
+        {constants.menu.map(({ path, text }, i) => (
           <AnimatedMenuItem
             aria-disabled={asPath === path}
             className="text-center w-full"
-            key={text.toLocaleLowerCase()}
+            key={`${text.toLocaleLowerCase()}--${i}`}
           >
             <MenuLink
               aria-disabled={asPath === path}
