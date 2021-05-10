@@ -48,14 +48,14 @@ module.exports = withTM({
 
 // https://securityheaders.com
 const CSP = `
-  child-src https://appt.link/ *.amplitude.com;
+  child-src https://appt.link/ https://api.amplitude.com/;
   connect-src *;
   default-src 'self';
   font-src 'self';
   frame-src https://appt.link/;
   img-src * blob: data:;
   media-src 'none';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' *.amplitude.com;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.amplitude.com/;
   style-src 'self' 'unsafe-inline';
 `
 
@@ -75,7 +75,7 @@ const securityHeaders = [
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
     key: 'Referrer-Policy',
-    value: 'strict-origin-when-cross-origin',
+    value: 'origin-when-cross-origin',
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
   {
