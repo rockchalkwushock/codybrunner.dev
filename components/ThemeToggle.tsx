@@ -20,16 +20,18 @@ const themeToggleVariants: Variants = {
 
 export const ThemeToggle: React.FC = () => {
   const { setEvent } = useAmplitude(true)
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => setMounted(true), [])
 
   const onToggleTheme = React.useCallback(() => {
-    setEvent('toggle theme', { theme: theme === 'dark' ? 'light' : 'dark' })
-    setTheme(theme === 'dark' ? 'light' : 'dark')
+    setEvent('toggle theme', {
+      theme: resolvedTheme === 'dark' ? 'light' : 'dark',
+    })
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [theme])
+  }, [resolvedTheme])
   return (
     <motion.button
       aria-label="Toggle Color Theme"
@@ -38,11 +40,15 @@ export const ThemeToggle: React.FC = () => {
       type="button"
       variants={themeToggleVariants}
     >
-      {mounted && theme === 'dark' && (
-        <Moon className="dark:group-hover:stroke-accent-4" />
-      )}
-      {mounted && theme === 'light' && (
-        <Sun className="group-hover:stroke-accent-3" />
+      {mounted && (
+        <>
+          {resolvedTheme === 'dark' && (
+            <Moon className="dark:group-hover:stroke-accent-4" />
+          )}
+          {resolvedTheme === 'light' && (
+            <Sun className="group-hover:stroke-accent-3" />
+          )}
+        </>
       )}
     </motion.button>
   )
