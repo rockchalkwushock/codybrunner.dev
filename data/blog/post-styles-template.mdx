@@ -128,67 +128,6 @@ export const Avatar: React.FC<Props> = ({ className }) => {
 
 ```
 
-```json:tsconfig.json
-{
-  "compilerOptions": {
-    "allowJs": true,
-    "alwaysStrict": true,
-    "baseUrl": ".",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "lib": ["dom", "es2017"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noEmit": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "paths": {
-      "@components/*": ["components/*"],
-      "@hooks/*": ["hooks/*"],
-      "@interfaces/*": ["interfaces/*"],
-      "@layouts/*": ["layouts/*"],
-      "@lib/*": ["lib/*"],
-      "@pages/*": ["pages/*"],
-      "@utils/*": ["utils/*"]
-    },
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "esnext"
-  },
-  "exclude": ["node_modules"],
-  "include": ["**/*.ts", "**/*.tsx", "next.config.js", "next-env.d.ts"]
-}
-```
-
-```yml:.github/workflows/dependabot.yml
-version: 2
-updates:
-  - package-ecosystem: github-actions
-    directory: '/'
-    open-pull-requests-limit: 10
-    schedule:
-      day: 'sunday'
-      interval: 'weekly'
-      time: '22:00'
-      timezone: 'America/Bogota'
-    target-branch: 'development'
-
-  - package-ecosystem: 'npm'
-    directory: '/'
-    open-pull-requests-limit: 10
-    schedule:
-      day: 'sunday'
-      interval: 'weekly'
-      time: '22:00'
-      timezone: 'America/Bogota'
-    target-branch: 'development'
-
-```
-
 ![Strava API Application Screen](/images/2021/adding-my-strava-data-to-my-website/strava-application-screen.png)
 
 <TLDR>Do as I say...not as I do!</TLDR>

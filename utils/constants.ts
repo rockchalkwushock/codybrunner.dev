@@ -14,11 +14,6 @@ type Constants = {
   age: number
   author: string
   copyright: string
-  employment: {
-    location: string
-    name: string
-    role: string
-  }
   externalLinks: {
     github: string
     instagram: string
@@ -54,11 +49,6 @@ export const constants: Constants = {
       : parseInt(year) - 1 - 1988,
   author: 'Cody Brunner',
   copyright: `© 2017-${year}`,
-  employment: {
-    location: 'Portland, Oregon, USA',
-    name: 'Appointlet',
-    role: 'web developer',
-  },
   externalLinks: {
     github: 'https://github.com/rockchalkwushock',
     instagram: 'https://www.instagram.com/rockchalkwushock',
@@ -81,8 +71,9 @@ export const constants: Constants = {
     { path: '/', text: 'Home' },
     { path: '/about', text: 'About' },
     { path: '/blog', text: 'Blog' },
-    { path: '/CodyBrunner.pdf', text: 'Resume' },
     { path: '/contact', text: 'Contact' },
+    { path: '/projects', text: 'Projects' },
+    { path: '/CodyBrunner.pdf', text: 'Resume' },
   ],
   tech: {
     next: pkg.dependencies.next.substr(1, 4), // Major.Minor

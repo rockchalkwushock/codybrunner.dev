@@ -20,18 +20,14 @@ export const MDXLayout: React.FC<Props> = ({
   const MDXContent = React.useMemo(() => getMDXComponent(source), [source])
   return (
     <>
-      {!frontMatter.published && (
-        <span className="bg-red-200 border-2 border-red-500 flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-red-500 text-4xl">
-          DRAFT
-        </span>
-      )}
+      {!frontMatter.published && <span className="draft-banner">DRAFT</span>}
       <header className="flex flex-col space-y-8 w-full">
-        <h1 className="text-4xl text-center md:text-left">
+        <h1 className="text-accent text-5xl text-center md:text-left">
           {frontMatter.title}
         </h1>
         <div className="flex flex-col items-center w-full md:flex-row md:justify-between">
           <div className="flex items-center">
-            <Avatar className="h-9 mr-2 w-9 md:hidden" />
+            <Avatar className="h-9 mr-2 w-9 lg:hidden" />
 
             <div className="flex flex-col">
               <p className="text-secondary">
@@ -53,8 +49,8 @@ export const MDXLayout: React.FC<Props> = ({
           </div>
         </div>
       </header>
-      <hr className="border-blueGray-400 my-8" />
-      <article className="prose prose-blue">
+      <hr className="divider" />
+      <article className="max-w-none prose prose-lg md:prose-xl tracking-wide md:tracking-normal">
         <MDXContent
           components={{
             // @ts-ignore
@@ -71,9 +67,9 @@ export const MDXLayout: React.FC<Props> = ({
           }}
         />
       </article>
-      <hr className="border-blueGray-400 my-8" />
+      <hr className="divider" />
       <PostShare frontMatter={frontMatter} />
-      <hr className="border-blueGray-400 my-8" />
+      <hr className="divider" />
       <section
         className={`flex ${
           previousPost && nextPost

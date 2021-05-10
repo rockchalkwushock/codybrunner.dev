@@ -9,7 +9,7 @@ function splitArray<T>(arr: Array<T>) {
 
 export const Grid: React.FC = ({ children }) => {
   return (
-    <div className="bg-secondary gap-4 grid grid-cols-3 justify-items-center p-4 place-items-center rounded-lg md:grid-cols-5">
+    <div className="bg-secondary gap-4 grid grid-cols-3 justify-items-center p-4 place-items-center rounded-lg shadow-md md:grid-cols-5">
       {children}
     </div>
   )
