@@ -48,14 +48,14 @@ module.exports = withTM({
 
 // https://securityheaders.com
 const CSP = `
-  child-src https://appt.link/;
+  child-src https://appt.link/ *.amplitude.com;
   connect-src *;
   default-src 'self';
   font-src 'self';
   frame-src https://appt.link/;
   img-src * blob: data:;
   media-src 'none';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline';
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' *.amplitude.com;
   style-src 'self' 'unsafe-inline';
 `
 
