@@ -6,7 +6,7 @@ import { constants } from '@utils/constants'
 export const SocialIcons: React.FC = () => {
   return (
     <>
-      <li className="social-button hover:bg-black">
+      <li className="group social-button hover:bg-black dark:hover:bg-white dark:hover:text-black">
         <a
           aria-label="Link to Cody Brunner's Github"
           href={constants.externalLinks.github}
@@ -16,7 +16,7 @@ export const SocialIcons: React.FC = () => {
           <GitHub className="group-hover:animate-wiggle" />
         </a>
       </li>
-      <li className="social-button hover:bg-instagram">
+      <li className="group social-button hover:bg-instagram">
         <a
           aria-label="Link to Cody Brunner's Instagram"
           href={constants.externalLinks.instagram}
@@ -26,7 +26,7 @@ export const SocialIcons: React.FC = () => {
           <Instagram className="group-hover:animate-wiggle" />
         </a>
       </li>
-      <li className="social-button hover:bg-linkedIn">
+      <li className="group social-button hover:bg-linkedIn">
         <a
           aria-label="Link to Cody Brunner's LinkedIn"
           href={constants.externalLinks.linkedin}
@@ -36,7 +36,7 @@ export const SocialIcons: React.FC = () => {
           <Linkedin className="group-hover:animate-wiggle" />
         </a>
       </li>
-      <li className="social-button hover:bg-twitter">
+      <li className="group social-button hover:bg-twitter">
         <a
           aria-label="Link to Cody Brunner's Twitter"
           href={constants.externalLinks.twitter}

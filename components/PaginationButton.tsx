@@ -10,9 +10,16 @@ interface Props extends Pick<Post['frontMatter'], 'slug'> {
 
 export const PaginationButton: React.FC<Props> = ({ direction, slug }) => {
   return (
-    <PostLink className="pagination-button" slug={slug}>
-      {direction === 'prev' && <Rewind />}
-      {direction === 'next' && <FastForward />}
+    <PostLink
+      className="duration-300 ease-in-out group pagination-button transform-gpu transition hover:scale-105 hover:translate-y-1"
+      slug={slug}
+    >
+      {direction === 'prev' && (
+        <Rewind className="h-8 group-hover:text-teal-50 dark:group-hover:text-fuchsia-600 w-8" />
+      )}
+      {direction === 'next' && (
+        <FastForward className="h-8 group-hover:text-teal-50 dark:group-hover:text-fuchsia-600 w-8" />
+      )}
     </PostLink>
   )
 }

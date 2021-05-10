@@ -1,33 +1,10 @@
 import * as React from 'react'
-import NextLink from 'next/link'
 import { Cycle, motion, MotionProps, useCycle, Variants } from 'framer-motion'
+import { useRouter } from 'next/router'
 
+import { MenuLink } from './MenuLink'
 import { useDimensions } from '@hooks/useDimensions'
 import { constants } from '@utils/constants'
-
-// MenuLink
-
-type MenuLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
-  MotionProps & {
-    to: string
-  }
-
-const MenuLink = React.forwardRef<HTMLAnchorElement, MenuLinkProps>(
-  ({ children, onClick, to, ...rest }, ref) => {
-    return (
-      <NextLink href={to} passHref>
-        <motion.a
-          {...rest}
-          className="border border-transparent px-6 py-2 rounded-full text-2xl text-center w-full"
-          onClick={onClick}
-          ref={ref}
-        >
-          {children}
-        </motion.a>
-      </NextLink>
-    )
-  }
-)
 
 // AnimatedMenuItem
 
@@ -49,9 +26,11 @@ const menuItemVariants: Variants = {
   },
 }
 
-const AnimatedMenuItem: React.FC = ({ children }) => {
+type Props = React.LiHTMLAttributes<HTMLLIElement> & MotionProps & {}
+
+export const AnimatedMenuItem: React.FC<Props> = ({ children, ...rest }) => {
   return (
-    <motion.li className="text-center w-full" variants={menuItemVariants}>
+    <motion.li variants={menuItemVariants} {...rest}>
       {children}
     </motion.li>
   )
@@ -77,16 +56,35 @@ interface AnimatedMenuProps {
 }
 
 const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ onNavigate }) => {
+  const { asPath } = useRouter()
   return (
     <motion.ul
       className="absolute flex-col items-center p-6 top-16 w-72 z-20"
       variants={menuVariants}
     >
       <motion.div className="flex flex-col flex-grow items-center space-y-6 w-full">
-        {constants.menu.map(({ path, text }) => (
-          <AnimatedMenuItem key={text.toLocaleLowerCase()}>
-            <MenuLink onClick={onNavigate} to={path}>
-              {text}
+        {constants.menu.map(({ path, text }, i) => (
+          <AnimatedMenuItem
+            aria-disabled={asPath === path}
+            className="text-center w-full"
+            key={`${text.toLocaleLowerCase()}--${i}`}
+          >
+            <MenuLink
+              aria-disabled={asPath === path}
+              className={`flex items-center justify-center ${
+                asPath === path
+                  ? 'bg-teal-600 dark:bg-fuchsia-400 border border-teal-600 dark:border-fuchsia-400 px-4 py-1 rounded-full uppercase'
+                  : ''
+              }`}
+              onClick={onNavigate}
+              to={path}
+            >
+              <span
+                aria-disabled={asPath === path}
+                className="text-teal-200 dark:text-fuchsia-900 text-2xl"
+              >
+                {text}
+              </span>
             </MenuLink>
           </AnimatedMenuItem>
         ))}
@@ -124,13 +122,13 @@ const AnimatedMenuToggle: React.FC<AnimatedMenuToggleProps> = ({ toggle }) => {
     >
       <svg height="24" viewBox="0 0 23 23" width="24">
         <motion.path
-          className="fill-current stroke-current"
+          className="stroke-accent-1 dark:stroke-accent-2"
           strokeLinecap="round"
           strokeWidth="3"
           variants={toggleVariants[0]}
         />
         <motion.path
-          className="fill-current stroke-current"
+          className="stroke-accent-1 dark:stroke-accent-2"
           d="M 2 9.423 L 20 9.423"
           strokeLinecap="round"
           strokeWidth="3"
@@ -138,7 +136,7 @@ const AnimatedMenuToggle: React.FC<AnimatedMenuToggleProps> = ({ toggle }) => {
           variants={toggleVariants[1]}
         />
         <motion.path
-          className="fill-current stroke-current"
+          className="stroke-accent-1 dark:stroke-accent-2"
           strokeLinecap="round"
           strokeWidth="3"
           variants={toggleVariants[2]}
@@ -174,7 +172,7 @@ const mobileNavVariants: Variants = {
   }),
 }
 
-const AnimatedMobileNav: React.FC = () => {
+export const AnimatedMobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useCycle(false, true)
   const containerRef = React.useRef(null)
   const { height } = useDimensions(containerRef)
@@ -199,39 +197,11 @@ const AnimatedMobileNav: React.FC = () => {
       ref={containerRef}
     >
       <motion.div
-        className="absolute bg-secondary bottom-0 left-0 shadow-lg top-0 z-20"
+        className="absolute bg-coolGray-900 bottom-0 left-0 shadow-lg top-0 z-20 dark:bg-blueGray-200"
         variants={mobileNavVariants}
       />
       <AnimatedMenu onNavigate={onNavigate} />
       <AnimatedMenuToggle toggle={setIsOpen} />
     </motion.div>
-  )
-}
-
-// Desktop Nav
-
-const DesktopNav: React.FC = () => {
-  return (
-    <div className="hidden lg:flex lg:items-center lg:space-x-4 lg:text-2xl lg:w-full">
-      <div className="flex-shrink">codybrunner.dev</div>
-      <ul className="flex space-x-6">
-        {constants.menu.map(({ path, text }) => (
-          <AnimatedMenuItem key={text}>
-            <MenuLink to={path}>{text}</MenuLink>
-          </AnimatedMenuItem>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-// AppNav
-
-export const AppNav: React.FC = () => {
-  return (
-    <nav className="bg-primary flex items-center justify-between mx-auto sticky top-0 w-full z-10 lg:p-4">
-      <AnimatedMobileNav />
-      <DesktopNav />
-    </nav>
   )
 }

@@ -4,84 +4,157 @@
 
 html,
 body {
-  min-height: 100vh;
-  min-width: 22.5rem;
   scroll-behavior: smooth;
 }
 
 #__next {
-  @apply flex flex-col min-h-screen w-full;
 }
-
-/*
--------------------------------------------
-Custom components
--------------------------------------------
-*/
 
 @layer components {
+  .divider {
+    @apply border-fuchsia-900 my-8 dark:border-teal-200;
+  }
+  .draft-banner {
+    @apply border-2 danger-theme flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
+  }
   .pagination-button {
-    // Animations & Transitions.
-    @apply duration-500 ease-in-out transform-gpu transition hover:scale-105 hover:translate-y-1;
-    // Borders & Shadows
-    @apply border border-transparent rounded-lg shadow-md;
-    // Sizing
-    @apply text-xl;
-    // Spacing
-    @apply px-8 py-2;
-    // Theming
-    @apply bg-secondary text-secondary;
-
-    // Children
-    svg {
+    @apply bg-accent border border-transparent px-8 py-2 rounded-lg shadow-md text-teal-200 dark:text-fuchsia-800 text-xl;
+  }
+  .social-button {
+    @apply bg-transparent duration-100 ease-in-out rounded-full text-accent transition-all hover:p-2 hover:text-white;
+    a > svg {
       @apply h-8 w-8;
     }
   }
-
-  .social-button {
-    // Animations & Transitions.
-    @apply duration-100 ease-in-out group transition-all;
-    // Borders & Shadows.
-    @apply rounded-full;
-    // Theming.
-    @apply bg-transparent;
-    // Effects
-    @apply hover:p-2 hover:text-white;
-    // Children
-    a > svg {
-      // Sizing
-      @apply h-8 w-8;
+  .theme-toggle {
+    @apply bg-coolGray-900 dark:bg-blueGray-200 border-0 cursor-pointer duration-300 ease-in-out flex h-14 items-center justify-center mr-2 outline-none rounded-full top-0 transform-gpu transition w-14 z-20 focus:outline-none hover:scale-110;
+    > svg {
+      @apply h-7 stroke-accent-1 dark:stroke-accent-2 w-7;
     }
   }
 }
 
-/*
--------------------------------------------
-Custom utilities
--------------------------------------------
-*/
-
 @layer utilities {
-  .bg-primary {
-    @apply bg-blueGray-300;
+  .bg-accent {
+    @apply bg-fuchsia-900 dark:bg-teal-200;
   }
-  .text-primary {
-    @apply text-blueGray-900;
+  .bg-primary {
+    @apply bg-blueGray-200 dark:bg-coolGray-800;
   }
   .bg-secondary {
-    @apply bg-blueGray-50;
+    @apply bg-coolGray-400 dark:bg-blueGray-200;
+  }
+  .text-accent {
+    @apply text-fuchsia-900 dark:text-teal-200;
+  }
+  .text-primary {
+    @apply text-black dark:text-white;
   }
   .text-secondary {
-    @apply text-blueGray-700;
+    @apply text-coolGray-700 dark:text-coolGray-300;
   }
   // One-Offs
+  .danger-theme {
+    @apply bg-red-200 text-red-500 dark:bg-red-500 dark:text-red-200;
+  }
   .night-owl-theme {
-    background-color: rgb(1, 22, 39);
-    color: rgb(214, 222, 235);
+    background-color: rgb(1, 22, 39, 1);
+    color: rgb(214, 222, 235, 1);
   }
 }
 
 .prose {
+  @apply text-coolGray-900 dark:text-coolGray-100;
+  a {
+    @apply font-normal text-accent hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
+    > code {
+      @apply font-normal italic hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
+      &::after,
+      &::before {
+        content: none;
+      }
+    }
+    > img {
+      // Keeps images from about.tsx from being rounded.
+      @apply rounded-none;
+    }
+  }
+
+  blockquote {
+    @apply bg-accent border border-transparent font-light italic rounded-md shadow-lg text-white dark:text-black;
+    > p {
+      @apply my-2;
+      a {
+        @apply text-teal-200 dark:text-fuchsia-900;
+      }
+      code {
+        @apply bg-transparent p-0 rounded-none text-white dark:bg-transparent dark:text-black;
+        &::after,
+        &::before {
+          content: none;
+        }
+      }
+      strong {
+        @apply text-white dark:text-black;
+      }
+    }
+  }
+
+  code {
+    @apply bg-blueGray-300 font-normal italic px-2 py-1 rounded-full dark:bg-blueGray-500;
+    &::after,
+    &::before {
+      content: none;
+    }
+  }
+
+  del {
+    @apply font-semibold text-red-600;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    @apply font-semibold;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply text-accent;
+  }
+
+  h4,
+  h5 {
+    @apply text-teal-600 dark:text-fuchsia-400;
+  }
+
+  h6 {
+    @apply font-mono text-indigo-600 text-2xl dark:text-indigo-400;
+  }
+
+  hr {
+    @apply border-blueGray-400 my-8;
+  }
+
+  img {
+    @apply flex items-center justify-center max-w-full mx-auto rounded-lg;
+  }
+
+  strong {
+    @apply font-semibold text-accent;
+  }
+
+  ol > li::before {
+    @apply text-accent;
+  }
+
+  ul > li::before {
+    @apply bg-accent;
+  }
+
   .contains-task-list {
     @apply list-none;
     .task-list-item {
@@ -97,10 +170,10 @@ Custom utilities
   }
 
   .rehype-code-title:defined {
-    @apply border-b border-blueGray-300 leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg shadow-md;
+    @apply border-b border-fuchsia-900 leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg dark:border-teal-200;
   }
 
   .rehype-code-title + pre {
-    @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none shadow-md;
+    @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none;
   }
 }

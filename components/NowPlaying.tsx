@@ -32,11 +32,11 @@ export const NowPlaying: React.FC = () => {
           {((data as CurrentEpisode).isPlaying === false ||
             (data as CurrentTrack).isPlaying === false ||
             (data as RecentTrack).isLastPlayed === false) && (
-            <p className="font-medium">Not Playing</p>
+            <p className="">Not Playing</p>
           )}
 
           <a
-            className="animate-move font-medium inline-flex items-center space-x-2 transform-gpu translate-x-full lg:text-lg"
+            className="font-medium inline-flex items-center space-x-2 md:animate-move md:transform-gpu md:translate-x-full lg:text-lg"
             href={data.url!}
             target="_blank"
             rel="noopener noreferrer"
