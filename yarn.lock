@@ -2459,10 +2459,10 @@ es6-object-assign@^1.1.0:
   resolved "https://registry.yarnpkg.com/es6-object-assign/-/es6-object-assign-1.1.0.tgz#c2c3582656247c39ea107cb1e6652b6f9f24523c"
   integrity sha1-wsNYJlYkfDnqEHyx5mUrb58kUjw=
 
-esbuild@^0.11.16:
-  version "0.11.16"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.11.16.tgz#435f00474fb21e70f59a545b85e4cfc7ba106485"
-  integrity sha512-34ZWjo4ouvM5cDe7uRoM9GFuMyEmpH9fnVYmomvS1cq9ED9d/0ZG1r+p4P2VbX7ihjv36zA2SWTmP8Zmt/EANA==
+esbuild@^0.11.20:
+  version "0.11.23"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.11.23.tgz#c42534f632e165120671d64db67883634333b4b8"
+  integrity sha512-iaiZZ9vUF5wJV8ob1tl+5aJTrwDczlvGP0JoMmnpC2B0ppiMCu8n8gmy5ZTGl5bcG081XBVn+U+jP+mPFm5T5Q==
 
 esbuild@^0.8.40:
   version "0.8.57"
@@ -4875,21 +4875,21 @@ mdurl@^1.0.0:
   resolved "https://registry.yarnpkg.com/mdurl/-/mdurl-1.0.1.tgz#fe85b2ec75a59037f2adfec100fd6c601761152e"
   integrity sha1-/oWy7HWlkDfyrf7BAP1sYBdhFS4=
 
-mdx-bundler@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/mdx-bundler/-/mdx-bundler-3.4.1.tgz#1b51d01d87cc7e6a872ce3b63b9031d5e9fc6f62"
-  integrity sha512-QOhbSKN2fXZGXJ6YOMPjnPQiC9o4H8WVyTc/sOeEqVHqGjfqBSK0udQioV0JgG/FThGi8em9Z0go90RjqdKItA==
+mdx-bundler@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/mdx-bundler/-/mdx-bundler-4.0.0.tgz#b572a5a07b6b7d3ff85aa357ecfbc425b4c69428"
+  integrity sha512-jI2L9bptoeoV6BVe04RRjq88pMedDJmEVTK09cu2W2F4ZrVQZwcndoXMWy5YzX3pMW2RWWbYTMm9Z/mkHRLtJw==
   dependencies:
     "@babel/runtime" "^7.14.0"
     "@esbuild-plugins/node-resolve" "^0.1.4"
     "@fal-works/esbuild-plugin-global-externals" "^2.1.1"
-    esbuild "^0.11.16"
+    esbuild "^0.11.20"
     gray-matter "^4.0.3"
     jsdom "^16.5.3"
     remark-frontmatter "^3.0.0"
     remark-mdx-frontmatter "^1.0.1"
     uvu "^0.5.1"
-    xdm "^1.9.0"
+    xdm "^1.11.0"
 
 meow@^8.0.0:
   version "8.1.2"
@@ -8364,10 +8364,10 @@ ws@^7.4.4:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.5.tgz#a484dd851e9beb6fdb420027e3885e8ce48986c1"
   integrity sha512-xzyu3hFvomRfXKH8vOFMU3OguG6oOvhXMo3xsGy3xWExqaM2dxBbVxuD99O7m3ZUFMvvscsZDqxfgMaRr/Nr1g==
 
-xdm@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/xdm/-/xdm-1.9.0.tgz#f25316b2a4343769839a740b752290face356998"
-  integrity sha512-qHn/wxuXqjG324PWWTbiZrrnJBd5atcJ4Zz/CvEyRD1rWFuRz3p60VJRYbJxEv6hvqrpoM9szp+Gi3N6b+0dXg==
+xdm@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/xdm/-/xdm-1.11.0.tgz#a8307c9f94385b43d5dba1902a5a077c81cd0884"
+  integrity sha512-gWPvH5VfO6Tg6SiMQ23EJIh6Hr0ZIrkAo90dl+tW3wS/X053daN91tKhrOkd6CNm9yHdV9esuSCq3Gf5ghXWmg==
   dependencies:
     "@rollup/pluginutils" "^4.0.0"
     "@types/estree-jsx" "^0.0.1"
