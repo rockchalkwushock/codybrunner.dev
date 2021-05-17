@@ -79,7 +79,7 @@ export async function prepareMDX(source: MDXSource): Promise<Post> {
   try {
     // mdx-bundler processes the frontMatter internally from the file. No need for gray-matter anymore.
     const { code, frontmatter } = await bundleMDX(source.file, {
-      xdmOptions(options) {
+      xdmOptions(_input, options) {
         return {
           ...options,
           remarkPlugins: [
