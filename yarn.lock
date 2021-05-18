@@ -5333,7 +5333,7 @@ node-emoji@^1.10.0, node-emoji@^1.8.1:
   dependencies:
     lodash.toarray "^4.4.0"
 
-node-fetch@2.6.1:
+node-fetch@2.6.1, node-fetch@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
@@ -7304,6 +7304,13 @@ stealthy-require@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
+
+strava@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/strava/-/strava-1.3.2.tgz#bc93e03ca87b470e4a78ad6f0b80af4cb4d9341d"
+  integrity sha512-8WeHUw/XCOMzuQmFOMK3ja7q7N0LxcRo2/rSR87eHKXdVWabZK5e2VraCdbKs36oSABD4gS4aKg8w/7Q9esCsg==
+  dependencies:
+    node-fetch "^2.6.1"
 
 stream-browserify@3.0.0:
   version "3.0.0"
