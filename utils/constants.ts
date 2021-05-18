@@ -13,6 +13,7 @@ const year = formatDateTime(new Date(), 'full-year')
 type Constants = {
   age: number
   author: string
+  books: Array<{ href: string; image: string; title: string }>
   copyright: string
   externalLinks: {
     github: string
@@ -48,6 +49,32 @@ export const constants: Constants = {
       ? parseInt(year) - 1988
       : parseInt(year) - 1 - 1988,
   author: 'Cody Brunner',
+  books: [
+    {
+      href: 'https://www.amazon.com/dp/B00Y94ZTEA/ref=dp_kinw_strp_1',
+      image:
+        'https://images-na.ssl-images-amazon.com/images/I/510gQa74-gL._SX330_BO1,204,203,200_.jpg',
+      title: "Marriage and Lasting Relationships with Asperger's Syndrome",
+    },
+    {
+      href: 'https://pragprog.com/titles/liveview/programming-phoenix-liveview/',
+      image:
+        'https://pragprog.com/titles/liveview/programming-phoenix-liveview/liveview-beta-500.jpg',
+      title: 'Programming Phoenix LiveView',
+    },
+    {
+      href: 'https://pragprog.com/titles/elixir16/programming-elixir-1-6/',
+      image:
+        'https://pragprog.com/titles/elixir16/programming-elixir-1-6/elixir16.jpg',
+      title: 'Programming Elixir 1.6',
+    },
+    {
+      href: 'https://pragprog.com/titles/cdc-elixir/learn-functional-programming-with-elixir/',
+      image:
+        'https://pragprog.com/titles/cdc-elixir/learn-functional-programming-with-elixir/cdc-elixir.jpg',
+      title: 'Learning Functional Programming with Elixir',
+    },
+  ],
   copyright: `© 2017-${year}`,
   externalLinks: {
     github: 'https://github.com/rockchalkwushock',
