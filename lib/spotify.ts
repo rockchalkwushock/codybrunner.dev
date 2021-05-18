@@ -9,12 +9,15 @@ import {
   CurrentTrackResponse,
   RecentTrack,
   RecentTrackResponse,
+  TopArtist,
+  TopArtistsResponse,
 } from '@interfaces/spotify'
 
 const spotify = {
   CURRENT_TRACK: 'https://api.spotify.com/v1/me/player/currently-playing',
   RECENT_TRACK: 'https://api.spotify.com/v1/me/player/recently-played',
   TOKEN: 'https://accounts.spotify.com/api/token',
+  TOP_ARTISTS: 'https://api.spotify.com/v1/me/top/artists',
 }
 
 /**
@@ -26,6 +29,17 @@ export async function fetchNowPlaying(
 ): Promise<CurrentEpisode | CurrentTrack | RecentTrack> {
   try {
     const response = await fetch('/api/spotify/now-playing')
+    return await response.json()
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+export async function fetchTopArtists(
+  _context: QueryFunctionContext
+): Promise<CurrentEpisode | CurrentTrack | RecentTrack> {
+  try {
+    const response = await fetch('/api/spotify/top-artists')
     return await response.json()
   } catch (error) {
     throw new Error(error)
@@ -136,6 +150,39 @@ export async function getNowPlaying(): Promise<
 
     // Resolve with the currently playing track.
     return Promise.resolve<CurrentEpisode | CurrentTrack>(response)
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+export async function getTopArtists(): Promise<Array<TopArtist>> {
+  try {
+    // Authenticate with Spotify.
+    const { access_token } = await getAccessToken()
+
+    // Fetch top 10 artists from Spotify.
+    const res = await fetch(`${spotify.TOP_ARTISTS}?limit=10`, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
+
+    // If the request fails...
+    if (res.status === 204 || res.status > 400) {
+      // Reject with the appropriate data envelope.
+      return Promise.reject([])
+    }
+
+    const artists = (await res.json()) as TopArtistsResponse
+
+    // Resolve with the top 10 artists list.
+    return Promise.resolve<Array<TopArtist>>(
+      artists.items.map(({ external_urls, images, name }) => ({
+        image: images[2],
+        name,
+        url: external_urls.spotify,
+      }))
+    )
   } catch (error) {
     throw new Error(error)
   }
