@@ -11,13 +11,18 @@ export const TopArtists: React.FC = () => {
     <>
       {status === 'loading' && <Loader className="animate-spin h-12 w-12" />}
       {status === 'success' && data && (
-        <div className="border border-transparent flex flex-col p-4 rounded-lg shadow-md">
+        <div className="flex flex-col p-2">
           <header className="flex items-center justify-center mb-4 w-full">
-            <h2 className="font-medium italic text-2xl">Top Artists</h2>
+            <h2 className="font-medium italic text-accent text-2xl">
+              Top Artists
+            </h2>
           </header>
           <ol className="flex flex-col space-y-2">
             {data.map(({ image, name, url }) => (
-              <li className="p-4 rounded-lg shadow-md" key={url}>
+              <li
+                className="bg-accent p-4 rounded-lg shadow-md text-accent-secondary"
+                key={url}
+              >
                 <a
                   className="flex items-center space-x-6"
                   href={url}

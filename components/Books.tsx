@@ -4,13 +4,18 @@ import { constants } from '@utils/constants'
 
 export const Books: React.FC = () => {
   return (
-    <div className="border border-transparent flex flex-col p-4 rounded-lg shadow-md">
+    <div className="flex flex-col p-2">
       <header className="flex items-center justify-center mb-4 w-full">
-        <h2 className="font-medium italic text-2xl">Currently Reading</h2>
+        <h2 className="font-medium italic text-accent text-2xl">
+          Currently Reading
+        </h2>
       </header>
       <ol className="flex flex-col space-y-2">
         {constants.books.map(({ href, image, title }) => (
-          <li className="p-4 rounded-lg shadow-md" key={href}>
+          <li
+            className="bg-accent p-4 rounded-lg shadow-md text-accent-secondary"
+            key={href}
+          >
             <a
               className="flex items-center justify-between"
               href={href}

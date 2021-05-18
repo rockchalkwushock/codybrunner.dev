@@ -47,6 +47,9 @@ body {
   .text-accent {
     @apply text-fuchsia-900 dark:text-teal-200;
   }
+  .text-accent-secondary {
+    @apply text-coolGray-50 dark:text-coolGray-900;
+  }
   .text-primary {
     @apply text-black dark:text-white;
   }

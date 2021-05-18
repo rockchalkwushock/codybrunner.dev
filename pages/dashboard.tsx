@@ -4,6 +4,7 @@ import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { Books } from '@components/Books'
 import { TopArtists } from '@components/TopArtists'
 import { TopTracks } from '@components/TopTracks'
+import { DashboardLayout } from '@layouts/DashboardLayout'
 
 const Dashboard: React.FC = () => {
   const pageMetaData: PageMetaData = {
@@ -13,11 +14,13 @@ const Dashboard: React.FC = () => {
   }
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      {/* Books is static so it should always be first. */}
-      <Books />
-      {/* Dynamic UI */}
-      <TopArtists />
-      <TopTracks />
+      <DashboardLayout>
+        {/* Books is static so it should always be first. */}
+        <Books />
+        {/* Dynamic UI */}
+        <TopArtists />
+        <TopTracks />
+      </DashboardLayout>
     </AnimatedPage>
   )
 }
