@@ -72,6 +72,7 @@ export const constants: Constants = {
     { path: '/about', text: 'About' },
     { path: '/blog', text: 'Blog' },
     { path: '/contact', text: 'Contact' },
+    { path: '/dashboard', text: 'Dashboard' },
     { path: '/projects', text: 'Projects' },
     { path: '/CodyBrunner.pdf', text: 'Resume' },
   ],
