@@ -32,7 +32,10 @@ export async function fetchNowPlaying(
 ): Promise<CurrentEpisode | CurrentTrack | RecentTrack> {
   try {
     const response = await fetch('/api/spotify/now-playing')
-    return await response.json()
+    return (await response.json()) as
+      | CurrentEpisode
+      | CurrentTrack
+      | RecentTrack
   } catch (error) {
     throw new Error(error)
   }
@@ -40,10 +43,10 @@ export async function fetchNowPlaying(
 
 export async function fetchTopArtists(
   _context: QueryFunctionContext
-): Promise<CurrentEpisode | CurrentTrack | RecentTrack> {
+): Promise<Array<TopArtist>> {
   try {
     const response = await fetch('/api/spotify/top-artists')
-    return await response.json()
+    return (await response.json()) as Array<TopArtist>
   } catch (error) {
     throw new Error(error)
   }
@@ -51,10 +54,10 @@ export async function fetchTopArtists(
 
 export async function fetchTopTracks(
   _context: QueryFunctionContext
-): Promise<CurrentEpisode | CurrentTrack | RecentTrack> {
+): Promise<Array<TopTrack>> {
   try {
     const response = await fetch('/api/spotify/top-tracks')
-    return await response.json()
+    return (await response.json()) as Array<TopTrack>
   } catch (error) {
     throw new Error(error)
   }
