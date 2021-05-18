@@ -193,6 +193,16 @@ export interface TopArtistsResponse {
   next: Maybe<string>
 }
 
+export interface TopTracksResponse {
+  items: Array<Track>
+  total: number
+  limit: number
+  offset: number
+  href: string
+  previous: Maybe<string>
+  next: Maybe<string>
+}
+
 /**
  * Parsed Typings
  */
@@ -219,6 +229,14 @@ export interface RecentTrack {
 }
 
 export interface TopArtist {
+  image: Image
+  name: string
+  url: string
+}
+
+export interface TopTrack {
+  album: string
+  artist: string
   image: Image
   name: string
   url: string

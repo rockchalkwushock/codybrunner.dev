@@ -11,6 +11,8 @@ import {
   RecentTrackResponse,
   TopArtist,
   TopArtistsResponse,
+  TopTrack,
+  TopTracksResponse,
 } from '@interfaces/spotify'
 
 const spotify = {
@@ -18,6 +20,7 @@ const spotify = {
   RECENT_TRACK: 'https://api.spotify.com/v1/me/player/recently-played',
   TOKEN: 'https://accounts.spotify.com/api/token',
   TOP_ARTISTS: 'https://api.spotify.com/v1/me/top/artists',
+  TOP_TRACKS: 'https://api.spotify.com/v1/me/top/tracks',
 }
 
 /**
@@ -40,6 +43,17 @@ export async function fetchTopArtists(
 ): Promise<CurrentEpisode | CurrentTrack | RecentTrack> {
   try {
     const response = await fetch('/api/spotify/top-artists')
+    return await response.json()
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+export async function fetchTopTracks(
+  _context: QueryFunctionContext
+): Promise<CurrentEpisode | CurrentTrack | RecentTrack> {
+  try {
+    const response = await fetch('/api/spotify/top-tracks')
     return await response.json()
   } catch (error) {
     throw new Error(error)
@@ -179,6 +193,44 @@ export async function getTopArtists(): Promise<Array<TopArtist>> {
     return Promise.resolve<Array<TopArtist>>(
       artists.items.map(({ external_urls, images, name }) => ({
         image: images[2],
+        name,
+        url: external_urls.spotify,
+      }))
+    )
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+export async function getTopTracks(): Promise<Array<TopTrack>> {
+  try {
+    // Authenticate with Spotify.
+    const { access_token } = await getAccessToken()
+
+    // Fetch top 10 tracks from Spotify.
+    const res = await fetch(`${spotify.TOP_TRACKS}?limit=10`, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
+
+    // If the request fails...
+    if (res.status === 204 || res.status > 400) {
+      // Reject with the appropriate data envelope.
+      return Promise.reject([])
+    }
+
+    const tracks = (await res.json()) as TopTracksResponse
+
+    // Resolve with the top 10 tracks list.
+    return Promise.resolve<Array<TopTrack>>(
+      tracks.items.map(({ album, artists, external_urls, name }) => ({
+        album: album.name,
+        artist: artists
+          .map(a => a.name)
+          .join(', ')
+          .trim(),
+        image: album.images[2],
         name,
         url: external_urls.spotify,
       }))
