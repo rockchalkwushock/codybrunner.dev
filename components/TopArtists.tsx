@@ -18,7 +18,12 @@ export const TopArtists: React.FC = () => {
           <ol className="flex flex-col space-y-2">
             {data.map(({ image, name, url }) => (
               <li className="p-4 rounded-lg shadow-md" key={url}>
-                <a href={url} rel="noopener noreferrer" target="_blank">
+                <a
+                  className="flex items-center space-x-6"
+                  href={url}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   <img
                     alt={name}
                     className="h-16 rounded-full w-16"
