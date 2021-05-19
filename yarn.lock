@@ -438,6 +438,7 @@
   integrity sha512-sM0nhZnszTFykYnH0UVL3AvWra2IgeJkC9s3SfnMcAhdGuLWBOO5o2NS8AJW1hj8BMdqR58mh7sp+pvgKsVPpQ==
   dependencies:
     lodash "^4.17.20"
+
 "@supabase/gotrue-js@^1.13.2":
   version "1.13.2"
   resolved "https://registry.yarnpkg.com/@supabase/gotrue-js/-/gotrue-js-1.13.2.tgz#9c15a08530ef1eb76cf52699789a3ceecfdfa9c7"
@@ -1973,7 +1974,6 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-cross-spawn@^7.0.2, cross-spawn@^7.0.3:
 cross-fetch@^3.0.6, cross-fetch@^3.1.0:
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.4.tgz#9723f3a3a247bf8b89039f3a380a9244e8fa2f39"
@@ -1981,7 +1981,7 @@ cross-fetch@^3.0.6, cross-fetch@^3.1.0:
   dependencies:
     node-fetch "2.6.1"
 
-cross-spawn@^7.0.0, cross-spawn@^7.0.2:
+cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
   integrity sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==
@@ -5350,6 +5350,7 @@ next-themes@^0.0.14:
   version "0.0.14"
   resolved "https://registry.yarnpkg.com/next-themes/-/next-themes-0.0.14.tgz#2b9861990bc453149e23d8e6ef1a25a119e36675"
   integrity sha512-x09OaM+wg3SIlEjOv8B21aw/E36jxTtfW3Dm/DPwMsSMluGt7twe1LigA6nc+mXP1u0qu9MxBaIrPPH6UTiKnA==
+
 next-tick@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
