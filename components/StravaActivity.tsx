@@ -17,19 +17,15 @@ export const StravaActivity: React.FC = () => {
               Strava Activity
             </h2>
           </header>
-          <h4 className="font-medium italic mb-2 text-accent text-lg underline">
+          <h4 className="font-medium italic mb-2 text-accent text-xl underline">
             YTD Totals
           </h4>
-          <div className="bg-accent flex flex-col mb-4 p-4 rounded-lg shadow-md text-accent-secondary">
-            <span className="text-lg">
-              Total Distance Ran: {data.totals.ytdRunDistance}
-            </span>
-            <span className="opacity-70 text-lg">
-              Total Runs: {data.totals.ytdTotalRuns}
-            </span>
+          <div className="bg-accent flex flex-col mb-4 p-4 rounded-lg shadow-md text-accent-secondary text-lg">
+            <span>Total Distance Ran: {data.totals.ytdRunDistance}</span>
+            <span>Total Runs: {data.totals.ytdTotalRuns}</span>
           </div>
 
-          <h4 className="font-medium italic mb-2 text-accent text-lg underline">
+          <h4 className="font-medium italic mb-2 text-accent text-xl underline">
             Weekly Activity
           </h4>
           <ol className="flex flex-col space-y-2">
