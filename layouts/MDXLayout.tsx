@@ -5,6 +5,7 @@ import { Avatar } from '@components/Avatar'
 import { CodeBlock } from '@components/CodeBlock'
 import { PaginationButton } from '@components/PaginationButton'
 import { PostShare } from '@components/PostShare'
+import { PostViews } from '@components/PostViews'
 import { Post } from '@interfaces/blog'
 import { constants } from '@utils/constants'
 import { formatDateTime } from '@utils/dateTime'
@@ -44,8 +45,10 @@ export const MDXLayout: React.FC<Props> = ({
               )}
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <p className="text-secondary lg:pr-4">{frontMatter.readingTime}</p>
+          <div className="flex items-center space-x-2 text-secondary">
+            <span>{frontMatter.readingTime}</span>
+            <span>•</span>
+            <PostViews slug={frontMatter.slug} />
           </div>
         </div>
       </header>

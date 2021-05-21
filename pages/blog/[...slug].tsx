@@ -1,12 +1,9 @@
 import * as React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { useMutation } from 'react-query'
 
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { Post } from '@interfaces/blog'
 import { MDXLayout } from '@layouts/MDXLayout'
-// import { useGetPostViews } from '@hooks/useGetPostViews'
-// import { usePostViewsMutation } from '@hooks/usePostViewsMutation'
 import { appRegex, paths } from '@utils/constants'
 import { getFiles } from '@utils/helpers'
 import { getAllPostsFrontMatter, parsePost } from '@utils/mdx'
@@ -19,16 +16,6 @@ const Article: React.FC<Props> = ({
   previousPost,
   source,
 }) => {
-  const { mutate } = useMutation<unknown, unknown, string, unknown>(
-    async slug => {
-      try {
-        const response = await fetch(`/api/views/${slug}`, { method: 'POST' })
-        return await response.json()
-      } catch (error) {
-        throw new Error(error)
-      }
-    }
-  )
   const pageMetaData: PageMetaData = {
     createdAt: frontMatter.createdAt,
     description: frontMatter.description,
@@ -39,9 +26,6 @@ const Article: React.FC<Props> = ({
     updatedAt: frontMatter.updatedAt,
   }
 
-  React.useEffect(() => {
-    mutate(frontMatter.slug)
-  }, [frontMatter, mutate])
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
       <MDXLayout
@@ -77,28 +61,26 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps<
-  Props,
-  { slug: Array<string> }
-> = async ctx => {
-  try {
-    const post = await parsePost(ctx.params!.slug.join('/'))
-    const posts = await getAllPostsFrontMatter()
+export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
+  async ctx => {
+    try {
+      const post = await parsePost(ctx.params!.slug.join('/'))
+      const posts = await getAllPostsFrontMatter()
 
-    return {
-      props: {
-        ...post,
-        nextPost:
-          posts.find(p => p.nextPost === post.frontMatter.slug)?.frontMatter
-            .slug || null,
-        previousPost:
-          posts.find(p => p.previousPost === post.frontMatter.slug)?.frontMatter
-            .slug || null,
-      },
+      return {
+        props: {
+          ...post,
+          nextPost:
+            posts.find(p => p.nextPost === post.frontMatter.slug)?.frontMatter
+              .slug || null,
+          previousPost:
+            posts.find(p => p.previousPost === post.frontMatter.slug)
+              ?.frontMatter.slug || null,
+        },
+      }
+    } catch (error) {
+      throw new Error(error)
     }
-  } catch (error) {
-    throw new Error(error)
   }
-}
 
 export default Article
