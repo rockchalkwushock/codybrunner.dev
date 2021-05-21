@@ -39,7 +39,7 @@ export const appRegex = {
   blogSource: /data\/blog\//,
   mdx: /\.mdx?$/,
   tsx: /\.tsx?$/,
-  url: /https:\/\/codybrunner.dev/g,
+  url: /(https:\/\/codybrunner.dev)|(https:\/\/staging.codybrunner.dev)|(https:\/\/pr-\d+.codybrunner.dev)/g,
 }
 
 export const constants: Constants = {
