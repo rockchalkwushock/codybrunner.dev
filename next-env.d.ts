@@ -25,6 +25,7 @@ declare namespace NodeJS {
     // Custom Environment Variables
     AMPLITUDE_API_KEY: string
     GITHUB_TOKEN: string
+    HASH_CUT: string
     NEXT_PUBLIC_SUPABASE_ANON_KEY: string
     NEXT_PUBLIC_SUPABASE_URL: string
     SPOTIFY_CLIENT_ID: string
