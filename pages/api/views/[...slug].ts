@@ -1,17 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-// import { CurrentEpisode, CurrentTrack, RecentTrack } from '@interfaces/spotify'
-import { supabaseAdmin } from '@lib/supabaseAdmin'
+import { Maybe } from '@interfaces/helpers'
+import { getPostViews, putPostViews } from '@lib/supabaseAdmin'
 import { appRegex } from '@utils/constants'
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<unknown>) => {
-  console.log(req.headers)
-  // req.query.slug = ['archive', '[year]', '[post-slug]']
-  // querySlug = 'archive/2018/abc'
-  const querySlug = (req.query.slug as Array<string>)
-    .join(',')
-    .replace(',', '/')
-
+const handler = async (
+  req: NextApiRequest,
+  res: NextApiResponse<Maybe<number>>
+) => {
   // If we are in production and the referer is not the app itself
   // then reject the query and tell the browser this was a bad request.
   if (
@@ -21,46 +17,33 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<unknown>) => {
     return res.status(400).json(null)
   }
 
-  if (req.method === 'POST') {
-    console.log('====================================')
-    console.log('POST')
-    console.log('====================================')
-    const supabaseResponse = await supabaseAdmin.rpc('increment_post_view', {
-      post_slug: querySlug,
-    })
-    console.log({ supabaseResponse })
-    return res.status(200).json({
-      message: `Successfully incremented post: ${querySlug}`,
-    })
-  }
+  // req.query.slug = ['archive', '[year]', '[post-slug]']
+  // slug = 'archive/2018/abc'
+  const slug = (req.query.slug as Array<string>).join(',').replace(',', '/')
 
-  if (req.method === 'GET') {
-    console.log('====================================')
-    console.log('GET')
-    console.log('====================================')
-    const supabaseResponse = await supabaseAdmin
-      .from('posts')
-      .select('post_views')
-      .filter('slug', 'eq', req.query.slug)
+  // Get the user's IP Address
+  // The following are only present in production.
+  const address =
+    req.headers['x-real-ip'] ||
+    req.headers['x-vercel-forwarded-for'] ||
+    req.headers['x-forwarded-for']
 
-    console.log({ supabaseResponse })
-
-    if (supabaseResponse.data) {
-      return res.status(200).json({
-        views: supabaseResponse.data[0]?.view_count || null,
-      })
+  try {
+    if (req.method === 'POST') {
+      await putPostViews(address as string, slug)
+      return res.status(200)
     }
-  }
 
-  return res.status(400).json({
-    message: 'Unsupported Request',
-  })
-  // try {
-  //   const response = await getPostViews()
-  //   return res.status(200).json(response)
-  // } catch (error) {
-  //   throw new Error(error)
-  // }
+    if (req.method === 'GET') {
+      const views = await getPostViews(slug)
+      console.log({ views })
+      return res.status(200).json(views!)
+    }
+
+    return res.status(400)
+  } catch (error) {
+    throw new Error(error)
+  }
 }
 
 export default handler

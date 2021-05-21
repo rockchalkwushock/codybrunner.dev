@@ -5,9 +5,8 @@ import { QueryFunctionContext } from 'react-query'
  */
 
 export async function fetchPostViews(
-  _context: QueryFunctionContext
-): Promise<unknown> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _context: QueryFunctionContext<['get-post-views', string]>
+): Promise<number> {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     queryKey: [_key, slug],
@@ -22,16 +21,15 @@ export async function fetchPostViews(
 }
 
 export async function updatePostViews(
-  _context: QueryFunctionContext
-): Promise<unknown> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _context: QueryFunctionContext<['update-post-views', string]>
+): Promise<void> {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     queryKey: [_key, slug],
   } = _context
   try {
     console.log('updatePostViews', { slug })
-    const response = await fetch('/api/views' + slug, { method: 'POST' })
+    const response = await fetch(`/api/views/${slug}`, { method: 'POST' })
     return await response.json()
   } catch (error) {
     throw new Error(error)
