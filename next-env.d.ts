@@ -28,8 +28,5 @@ declare namespace NodeJS {
     SPOTIFY_CLIENT_ID: string
     SPOTIFY_CLIENT_SECRET: string
     SPOTIFY_REFRESH_TOKEN: string
-    STRAVA_CLIENT_ID: string
-    STRAVA_CLIENT_SECRET: string
-    STRAVA_REFRESH_TOKEN: string
   }
 }

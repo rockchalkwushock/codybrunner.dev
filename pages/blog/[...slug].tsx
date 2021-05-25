@@ -47,7 +47,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       process.env.NODE_ENV === 'production'
         ? // TODO: Find a better way to do this!
           // FIXME: <== Do that soon!
-          !path.includes('adding-my-strava-data-to-my-website')
+          !path.includes('')
         : true
     )
     // Map the path into the static paths object required by Next.js
@@ -61,28 +61,26 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps<
-  Props,
-  { slug: Array<string> }
-> = async ctx => {
-  try {
-    const post = await parsePost(ctx.params!.slug.join('/'))
-    const posts = await getAllPostsFrontMatter()
+export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
+  async ctx => {
+    try {
+      const post = await parsePost(ctx.params!.slug.join('/'))
+      const posts = await getAllPostsFrontMatter()
 
-    return {
-      props: {
-        ...post,
-        nextPost:
-          posts.find(p => p.nextPost === post.frontMatter.slug)?.frontMatter
-            .slug || null,
-        previousPost:
-          posts.find(p => p.previousPost === post.frontMatter.slug)?.frontMatter
-            .slug || null,
-      },
+      return {
+        props: {
+          ...post,
+          nextPost:
+            posts.find(p => p.nextPost === post.frontMatter.slug)?.frontMatter
+              .slug || null,
+          previousPost:
+            posts.find(p => p.previousPost === post.frontMatter.slug)
+              ?.frontMatter.slug || null,
+        },
+      }
+    } catch (error) {
+      throw new Error(error)
     }
-  } catch (error) {
-    throw new Error(error)
   }
-}
 
 export default Article
