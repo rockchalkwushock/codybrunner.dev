@@ -1,4 +1,4 @@
-import { format as f, formatDuration, intervalToDuration } from 'date-fns'
+import { format as f } from 'date-fns'
 
 const formats = {
   'day-month': 'dd MMMM',
@@ -32,13 +32,3 @@ export const formatDateTime = (date: Date | number | string, format: Formats) =>
  * @description Converts date string to ISO 8061 timestamp.
  */
 export const toISO8601 = (date: string): string => new Date(date).toISOString()
-
-export const formatStravaSeconds = (seconds: number) => {
-  return formatDuration(
-    intervalToDuration({
-      end: new Date(2021, 0, 1, 0, 0, seconds),
-      start: new Date(2021, 0, 1, 0, 0, 0),
-    }),
-    { format: ['hours', 'minutes'] }
-  )
-}
