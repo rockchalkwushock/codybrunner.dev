@@ -56,7 +56,7 @@ const CSP = `
   img-src * blob: data:;
   media-src 'none';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.amplitude.com/ http://platform.twitter.com/widget.js;
-  script-src-elem 'unsafe-inline' http://platform.twitter.com/widget.js /(https://)(codybrunner.dev|staging.codybrunner.dev|pr-d+.codybrunner.dev)/;
+  script-src-elem 'unsafe-inline' http://platform.twitter.com/widget.js /(https://)(codybrunner.dev|staging.codybrunner.dev|pr-d+.codybrunner.dev)//;
   style-src 'self' 'unsafe-inline';
 `
 
