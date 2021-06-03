@@ -21,7 +21,7 @@ module.exports = withTM({
       },
     ]
   },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  webpack: (config, { dev, isServer }) => {
     if (!isServer) {
       // https://github.com/vercel/next.js/issues/7755
       config.resolve = {
@@ -52,11 +52,10 @@ const CSP = `
   connect-src *;
   default-src 'self';
   font-src 'self';
-  frame-src https://appt.link/ http://platform.twitter.com/ https://www.youtube.com/;
+  frame-src https://appt.link/ *.twitter.com/ *.youtube.com/;
   img-src * blob: data:;
   media-src 'none';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.amplitude.com/ http://platform.twitter.com/widget.js;
-  script-src-elem 'unsafe-inline' http://platform.twitter.com/widget.js https://codybrunner.dev/ https://staging.codybrunner.dev/ /https://pr-\d+.codybrunner.dev\//;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.amplitude.com/ *.twitter.com;
   style-src 'self' 'unsafe-inline';
 `
 

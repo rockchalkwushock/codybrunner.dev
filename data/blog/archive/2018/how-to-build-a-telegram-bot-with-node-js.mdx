@@ -152,9 +152,9 @@ Through @BotFather we can use commands to add information about our bot such as 
 
 ## Deploying the bot
 
-I decided to write tests that can be found [here](https://github.com/rockchalkwushock/telegram_chuck_norris_bot/tree/master/__tests__) and use CircleCi to handle the deployment of the bot. Providing the `BOT_TOKEN` & `NOW_TOKEN` to CircleCi we can easily kickback and let it manage making sure our bot is ready for production before shipping. The full `config.yml` can be found [here](https://github.com/rockchalkwushock/telegram_chuck_norris_bot/blob/master/.circleci/config.yml).
+I decided to write tests that can be found [here](https://github.com/rockchalkwushock/telegram_chuck_norris_bot/tree/master/__tests__) and use CircleCi to handle the deployment of the bot. Providing the `BOT_TOKEN` & `NOW_TOKEN` to CircleCi we can easily kickback and let it manage making sure our bot is ready for production before shipping. The full `config.yaml` can be found [here](https://github.com/rockchalkwushock/telegram_chuck_norris_bot/blob/master/.circleci/config.yml).
 
-```yaml:.circleci/config.yml
+```yaml:.circleci/config.yaml
 deploy_bot:
   docker:
     - image: 'circleci/node:latest'
