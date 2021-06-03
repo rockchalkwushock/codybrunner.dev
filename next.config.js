@@ -52,10 +52,11 @@ const CSP = `
   connect-src *;
   default-src 'self';
   font-src 'self';
-  frame-src https://appt.link/;
+  frame-src https://appt.link/ http://platform.twitter.com/ https://www.youtube.com/;
   img-src * blob: data:;
   media-src 'none';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.amplitude.com/;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.amplitude.com/ http://platform.twitter.com/widget.js;
+  script-src-elem 'unsafe-inline' http://platform.twitter.com/widget.js;
   style-src 'self' 'unsafe-inline';
 `
 

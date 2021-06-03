@@ -30,21 +30,10 @@ export async function getMDXBySlug(
   type: 'about' | 'blog',
   slug: string
 ): Promise<MDXSource> {
-  // Check if the post resides in the 'archive' directory because if it does
-  // it's written in 'md' not 'mdx' so we need to append the correct extension.
-  const isArchivedPost = slug.includes('archive')
   try {
     const file =
       type === 'blog' && slug
-        ? await readFile(
-            join(
-              root,
-              'data',
-              type,
-              `${slug}.${isArchivedPost ? 'md' : 'mdx'}`
-            ),
-            'utf8'
-          )
+        ? await readFile(join(root, 'data', type, `${slug}.mdx`), 'utf8')
         : await readFile(join(root, 'data', `${type}.mdx`), 'utf8')
 
     return { file, slug }

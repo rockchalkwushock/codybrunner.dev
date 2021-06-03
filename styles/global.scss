@@ -172,6 +172,17 @@ body {
     }
   }
 
+  // Fix style issue with <Tweet /> from mdx-embed.
+  .mdx-embed {
+    .twitter-tweet-mdx-embed {
+      .twitter-tweet {
+        iframe {
+          @apply bg-transparent rounded-2xl;
+        }
+      }
+    }
+  }
+
   .rehype-code-title:defined {
     @apply border-b border-fuchsia-900 leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg dark:border-teal-200;
   }
