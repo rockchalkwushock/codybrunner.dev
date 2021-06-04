@@ -8,12 +8,13 @@ import { constants } from '@utils/constants'
 
 export const Header: React.FC = () => {
   const { asPath } = useRouter()
+  const pickedOptions = [...constants.menu.slice(0, 3), constants.menu[5]]
   return (
     <header className="bg-primary flex grid-in-header items-center justify-between sticky top-0 w-full z-50">
       <div className="hidden lg:flex lg:items-center lg:space-x-40 lg:text-accent lg:text-2xl">
         <h1 className="">codybrunner.dev</h1>
         <ul className="flex space-x-8">
-          {constants.menu.slice(0, 3).map(({ path, text }) => (
+          {pickedOptions.map(({ path, text }) => (
             <AnimatedMenuItem
               aria-disabled={asPath === path}
               className="text-center w-full"

@@ -20,6 +20,29 @@ body {
   .pagination-button {
     @apply bg-accent border border-transparent px-8 py-2 rounded-lg shadow-md text-teal-200 dark:text-fuchsia-800 text-xl;
   }
+  .project-card {
+    @apply bg-accent border border-accent flex flex-col p-4 rounded-lg shadow-md text-accent-secondary;
+
+    :first-child {
+      @apply flex items-center justify-between;
+
+      div {
+        @apply flex items-center space-x-2;
+      }
+
+      svg {
+        @apply h-5 w-5;
+      }
+    }
+
+    a > h2 {
+      @apply text-lg uppercase hover:underline;
+    }
+
+    p {
+      @apply text-gray-300 dark:text-gray-500;
+    }
+  }
   .social-button {
     @apply bg-transparent duration-100 ease-in-out rounded-full text-accent transition-all hover:p-2 hover:text-white;
     a > svg {
@@ -43,6 +66,9 @@ body {
   }
   .bg-secondary {
     @apply bg-coolGray-400 dark:bg-blueGray-200;
+  }
+  .border-accent {
+    @apply border-fuchsia-900 dark:border-teal-200;
   }
   .text-accent {
     @apply text-fuchsia-900 dark:text-teal-200;
