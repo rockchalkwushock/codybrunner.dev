@@ -11,6 +11,14 @@ module.exports = {
     if (url.includes('post-styles-template')) {
       return
     }
+    if (url.includes('archive')) {
+      return {
+        loc: url,
+        changefreq: 'never',
+        priority: config.priority,
+        lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
+      }
+    }
     return {
       loc: url,
       changefreq: config.changefreq,
