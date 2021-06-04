@@ -4,7 +4,7 @@ import { GetStaticProps } from 'next'
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { PostListItem } from '@components/PostListItem'
 import { Post } from '@interfaces/blog'
-import { getAllPostsFrontMatter } from '@utils/mdx'
+import { filterPosts, getAllPostsFrontMatter } from '@utils/mdx'
 
 interface Props {
   posts: Array<Post>
@@ -39,7 +39,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     return {
       props: {
         // Give the client the 3 latest posts.
-        posts: posts.slice(-3),
+        posts: filterPosts(posts, p => !p.frontMatter.archived).slice(-3),
       },
     }
   } catch (error) {

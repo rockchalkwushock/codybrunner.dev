@@ -9,7 +9,7 @@ export const Nav: React.FC = () => {
   const { asPath } = useRouter()
   return (
     <nav className="grid-in-nav mx-4 md:border-b md:border-t md:border-fuchsia-900 md:flex md:justify-end md:dark:border-teal-200 lg:mx-0">
-      <ul className="hidden md:gap-4 md:grid md:grid-areas-nav md:grid-cols-nav md:grid-rows-nav md:py-8">
+      <ul className="hidden md:gap-4 md:grid md:grid-areas-nav md:grid-cols-nav md:grid-rows-nav md:h-52 md:py-8">
         {constants.menu.slice(1).map(({ path, text }) => (
           <AnimatedMenuItem
             aria-disabled={asPath === path}
