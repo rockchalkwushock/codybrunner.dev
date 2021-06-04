@@ -46,16 +46,29 @@ module.exports = withTM({
   },
 })
 
+//   -- default-src 'self';
+//   script-src 'self' 'unsafe-eval' 'unsafe-inline' *.youtube.com *.twitter.com cdn.usefathom.com;
+//   -- child-src *.youtube.com *.google.com *.twitter.com;
+//   -- style-src 'self' 'unsafe-inline' *.googleapis.com;
+//   -- img-src * blob: data:;
+//   -- media-src 'none';
+//   -- connect-src *;
+//   -- font-src 'self';
+
+// child-src https://appt.link/ https://api.amplitude.com/ *.twitter.com *.youtube.com;
+// frame-src https://appt.link/ *.twitter.com/ *.youtube.com/;
+// script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.amplitude.com/ *.twitter.com;
+
 // https://securityheaders.com
 const CSP = `
-  child-src https://appt.link/ https://api.amplitude.com/;
+  child-src https://appt.link/ https://api.amplitude.com/ *.twitter.com *.youtube.com;
   connect-src *;
   default-src 'self';
   font-src 'self';
   frame-src https://appt.link/ *.twitter.com/ *.youtube.com/;
   img-src * blob: data:;
   media-src 'none';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.amplitude.com/ *.twitter.com;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api.amplitude.com/ *.twitter.com/;
   style-src 'self' 'unsafe-inline';
 `
 
@@ -80,7 +93,7 @@ const securityHeaders = [
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
   {
     key: 'X-Frame-Options',
-    value: 'ALLOW-FROM https://appt.link/',
+    value: 'SAMEORIGIN',
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
   {
