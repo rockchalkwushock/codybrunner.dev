@@ -27,7 +27,7 @@ export const Nav: React.FC = () => {
             >
               <span
                 aria-disabled={asPath === path}
-                className="text-accent text-xl lg:group-hover:bg-fuchsia-400 lg:dark:group-hover:bg-teal-600 lg:group-hover:border lg:group-hover:border-fuchsia-400 lg:dark:group-hover:border-teal-600 lg:group-hover:duration-300 lg:group-hover:ease-in-out lg:group-hover:px-4 lg:group-hover:py-1 lg:group-hover:rounded-full lg:group-hover:scale-105 lg:group-hover:shadow-md lg:group-hover:transform-gpu lg:group-hover:transition lg:group-hover:uppercase"
+                className="text-accent text-xl lg:group-hover:bg-fuchsia-400 lg:dark:group-hover:bg-teal-600 lg:group-hover:border lg:group-hover:border-fuchsia-400 lg:dark:group-hover:border-teal-600 lg:group-hover:px-4 lg:group-hover:py-1 lg:group-hover:rounded-full lg:group-hover:shadow-md lg:group-hover:uppercase"
               >
                 {text.toLowerCase()}
               </span>
