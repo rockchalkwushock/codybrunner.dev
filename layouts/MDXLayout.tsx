@@ -4,17 +4,21 @@ import { getMDXComponent } from 'mdx-bundler/client'
 import { Avatar } from '@components/Avatar'
 import { CodeBlock } from '@components/CodeBlock'
 import { PaginationButton } from '@components/PaginationButton'
+import { PostLink } from '@components/PostLink'
 import { PostShare } from '@components/PostShare'
 import { Post } from '@interfaces/blog'
 import { constants } from '@utils/constants'
 import { formatDateTime } from '@utils/dateTime'
 
-interface Props extends Post {}
+interface Props extends Post {
+  relatedPosts?: Array<Post>
+}
 
 export const MDXLayout: React.FC<Props> = ({
   frontMatter,
   nextPost,
   previousPost,
+  relatedPosts,
   source,
 }) => {
   const MDXContent = React.useMemo(() => getMDXComponent(source), [source])
@@ -70,6 +74,22 @@ export const MDXLayout: React.FC<Props> = ({
       <hr className="divider" />
       <PostShare frontMatter={frontMatter} />
       <hr className="divider" />
+      {!!relatedPosts && !!relatedPosts.length && (
+        <>
+          <section>
+            <h1 className="mb-4 text-accent text-4xl">Related Posts</h1>
+            <ul className="flex flex-col items-center justify-center space-y-4 lg:items-start">
+              {relatedPosts.map(({ frontMatter }) => (
+                <PostLink key={frontMatter.slug} slug={frontMatter.slug}>
+                  <h2 className="text-lg underline">{frontMatter.title}</h2>
+                </PostLink>
+              ))}
+            </ul>
+          </section>
+          <hr className="divider" />
+        </>
+      )}
+
       <section
         className={`flex ${
           previousPost && nextPost
