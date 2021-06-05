@@ -6,15 +6,17 @@ import { Post } from '@interfaces/blog'
 import { MDXLayout } from '@layouts/MDXLayout'
 import { appRegex, paths } from '@utils/constants'
 import { getFiles } from '@utils/helpers'
-import { getAllPostsFrontMatter, parsePost } from '@utils/mdx'
+import { getAllPostsFrontMatter, getRelatedPosts, parsePost } from '@utils/mdx'
 
-interface Props extends Post {}
+interface Props extends Post {
+  relatedPosts?: Array<Post>
+}
 
 const Article: React.FC<Props> = ({
   frontMatter,
   nextPost,
   previousPost,
-
+  relatedPosts,
   source,
 }) => {
   const pageMetaData: PageMetaData = {
@@ -32,6 +34,7 @@ const Article: React.FC<Props> = ({
         frontMatter={frontMatter}
         nextPost={nextPost}
         previousPost={previousPost}
+        relatedPosts={relatedPosts}
         source={source}
       />
     </AnimatedPage>
@@ -68,6 +71,7 @@ export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
           previousPost:
             posts.find(p => p.previousPost === post.frontMatter.slug)
               ?.frontMatter.slug || null,
+          relatedPosts: getRelatedPosts(post, posts),
         },
       }
     } catch (error) {
