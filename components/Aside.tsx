@@ -18,7 +18,7 @@ export const Aside: React.FC = () => {
           </ul>
         </li>
         <li className="bg-accent flex flex-col items-center justify-center p-2 rounded-lg shadow-md w-48">
-          <p className="text-coolGray-50 text-center dark:text-coolGray-900 lg:text-lg">
+          <p className="text-accent-secondary text-center lg:text-lg">
             Cody is a {constants.age} year old American software developer,
             Jayhawk, and US Navy veteran originally hailing from the boondocks
             of Kansas and now currently living with his wife and step-doggo in{' '}

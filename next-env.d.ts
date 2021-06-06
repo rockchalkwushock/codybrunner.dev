@@ -24,6 +24,7 @@ declare namespace NodeJS {
     NEXT_PUBLIC_VERCEL_URL: string
     // Custom Environment Variables
     AMPLITUDE_API_KEY: string
+    GITHUB_TOKEN: string
     SPOTIFY_CLIENT_ID: string
     SPOTIFY_CLIENT_SECRET: string
     SPOTIFY_REFRESH_TOKEN: string
