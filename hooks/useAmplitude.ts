@@ -3,9 +3,7 @@ import { useRouter } from 'next/router'
 
 import { trackEvent } from '@lib/amplitude'
 
-type UseAmplitude = (
-  skipPageTracking?: boolean
-) => {
+type UseAmplitude = (skipPageTracking?: boolean) => {
   setEvent: (
     eventName: string,
     attributes?: Record<string, unknown> | undefined
