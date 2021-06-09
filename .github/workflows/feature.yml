@@ -46,10 +46,10 @@ jobs:
           CI: true
 
       - name: Linting
-        run: pnpm run eslint
+        run: pnpx eslint
 
       - name: Type checking
-        run: pnpm run tsc
+        run: pnpx tsc
 
       - name: Build
         run: pnpm build
