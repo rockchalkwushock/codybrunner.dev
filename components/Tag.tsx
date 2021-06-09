@@ -25,8 +25,7 @@ const colorMap: Record<string, Styles> = {
   colombia: {
     bg: {
       default: 'bg-gradient-to-b from-yellow-300 via-blue-300 to-red-300',
-      dark:
-        'bg-gradient-to-b dark:from-yellow-500 dark:via-blue-500 dark:to-red-500',
+      dark: 'bg-gradient-to-b dark:from-yellow-500 dark:via-blue-500 dark:to-red-500',
     },
     border: {
       default: 'border-blueGray-500',
