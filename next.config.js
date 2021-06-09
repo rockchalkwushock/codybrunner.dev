@@ -52,7 +52,7 @@ const CSP = `
   connect-src *;
   default-src 'self';
   font-src 'self';
-  frame-src appt.link platform.twitter.com *.youtube.com;
+  frame-src appt.link giphy.com platform.twitter.com *.youtube.com;
   img-src * blob: data:;
   media-src 'none';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' api.amplitude.com platform.twitter.com *.youtube.com;
