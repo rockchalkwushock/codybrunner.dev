@@ -30,7 +30,7 @@ It's been about two years now since the Yarn dev team released `yarn@2` otherwis
 
 `pnpm` is yet another package manager for the JavaScript ecosystem similar to `npm` & `yarn`. Where `pnpm` differs from the latter two is that:
 
-1. `npm` and `yarn` both will create a new `node_modules` directory with fresh installs of the dependencies of your projects. So if you have 10 `react` projects on your machine there are 10 installs of `react` regardless of version on your machine as well. `pnpm` instead installs all dependencies in one location on your hard disk and hard links them to the `node_modules/.pnpm` in your projects. In this case there would only be one install of `react` (unless your projects utilize different version of the dependency) for all 10 projects. The `node_modules` for each project would reference back to the dependencies location on the hard disk.
+`npm` and `yarn` both will create a new `node_modules` directory with fresh installs of the dependencies of your projects. So if you have 10 `react` projects on your machine there are 10 installs of `react` regardless of version on your machine as well. `pnpm` instead installs all dependencies in one location on your hard disk and hard links them to the `node_modules/.pnpm` in your projects. In this case there would only be one install of `react` (unless your projects utilize different version of the dependency) for all 10 projects. The `node_modules` for each project would reference back to the dependencies location on the hard disk.
 
 ## Installing
 
@@ -89,7 +89,7 @@ devDependencies:
 ...
 ```
 
-However this was not the case for this website. I continuously received and error message about `esbuild` could not be found or that the versions were in conflict. I finally just branched off of staging and removed the majority of the source code, `node_modules`, and emptied the `package.json`. Turns out that `esbuild` was not being installed at the top level anymore as `mdx-bundler` was expecting and thus the build would fail. There went 3 hours of my day 🤦🏻‍♂️.
+However this was not the case for this website. I continuously received and error message about `esbuild` could not be found or that the versions were in conflict. I finally just branched off of staging and removed the majority of the source code, `node_modules`, and emptied the `package.json`. It turns out that the way `pnpm` installs packages the `esbuild` dependency of `mdx-bundler` is no longer at the top level where `mdx-bundler` expected it to be. Installing the correct version of `esbuild` as a dev dependency fixed the issue. There went 3 hours of my day 🤦🏻‍♂️.
 
 The next issue was my development pipeline. I use [commitlint](https://commitlint.js.org/#/), [husky](https://typicode.github.io/husky/#/), and [lint-staged](https://github.com/okonet/lint-staged). At first I just updated this to `pnpm run <script>` however I would get an error back saying `"<script> is not a script!"`. Makes sense because `commitlint` is not a script in my `package.json` it's a binary to be ran. So instead I needed to make use of `pnpx`. In the `.husky` directory I need to change the commands in the bash scripts to read like so:
 
@@ -166,11 +166,9 @@ The last problem I encountered was deploying to Vercel. At the time of writing V
 
 I opened a discussion on adding support for `pnpm` to Vercel [here](https://github.com/vercel/vercel/discussions/6342).
 
-## My Lazy Ass
+## Aliasing
 
-As stated at the beginning of this post I avoided moving to XXX because of the cognitive load, pnpm is nearly a one-for-one with classic Yarn but I really really did not want to have to remember that I no longer have Yarn on my machine so I updated the aliases in my `.zshrc` to use `pnpm` instead
-
-> Laziness FTW!!!
+The last thing I did was to map the `pnpm` commands to the aliases I had in my `.zshrc` for `yarn`. I really did not want to deal with completely new aliases hence the mapping of the commands.
 
 ```shell
 # Yarn related aliases
