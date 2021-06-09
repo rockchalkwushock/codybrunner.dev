@@ -7,6 +7,21 @@ function splitArray<T>(arr: Array<T>) {
   return [firstHalf, secondHalf]
 }
 
+export const Giphy: React.FC<{ giphyId: string }> = ({ giphyId }) => {
+  return (
+    <div className="h-32 mb-6 relative w-full md:h-44">
+      <iframe
+        allowFullScreen
+        className="absolute giphy-embed"
+        height="100%"
+        src={`https://giphy.com/embed/${giphyId}`}
+        title={`Giphy Embed: ${giphyId}`}
+        width="100%"
+      />
+    </div>
+  )
+}
+
 export const Grid: React.FC = ({ children }) => {
   return (
     <div className="bg-secondary gap-4 grid grid-cols-3 justify-items-center p-4 place-items-center rounded-lg shadow-md md:grid-cols-5">
