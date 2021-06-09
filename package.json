@@ -24,7 +24,6 @@
     "lint": "eslint",
     "new": "plop",
     "postbuild": "next-sitemap",
-    "preinstall": "npx only-allow pnpm",
     "prepare": "husky install",
     "start": "next start -p 4000",
     "type-check": "tsc"
