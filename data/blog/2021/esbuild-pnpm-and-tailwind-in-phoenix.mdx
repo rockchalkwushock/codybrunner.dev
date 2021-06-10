@@ -1,7 +1,7 @@
 ---
 archived: false
 createdAt: 06/10/2021
-description: Refactoring the generated client-side build in Phoenix applications to use esbuild, pnpm, and tailwindcss.
+description: Refactoring the generated client-side build in Phoenix applications to use Esbuild, PNPM, and TailwindCSS.
 keywords:
   - elixir
   - esbuild
@@ -10,7 +10,7 @@ keywords:
   - phoenix liveview
   - tailwindcss
   - webpack
-published: false
+published: true
 tags:
   - elixir
   - live-view
@@ -20,6 +20,8 @@ title: Esbuild, PNPM, & Tailwind in Phoenix
 ---
 
 import { Signature } from '../components/MDXComponents.tsx'
+
+In the last two months between protests in Colombia and my wife and I running to get things Colombia required for my visa at the last minute I've been doing a lot of reading and dives into source code when it comes to Elixir and Phoenix. I want this to be my new stack and really would just like to pivot my career into the stack but maybe even more so embedded software with the [Nerves Project](https://www.nerves-project.org/). Our raspberry-pi module's arrived this week so plan on seeing some elixir-based raspberry-pi posts coming soon. This post is about my experience in customizing the client-side JavaScript code Phoenix ships with so that the build process makes use of the lightning fast esbuild bundler and tailwindcss with the new just-in-time mode enabled.
 
 ## Bootstrapping a Phoenix Application
 
@@ -31,7 +33,7 @@ mix phx.new my_phoenix_app --live
 
 ## Switching to pnpm
 
-I recently moved to using [pnpm](https://pnpm.io/) instead of [yarn](https://yarnpkg.com/), you can read about that [here](https://codybrunner.dev/blog/2021/migrating-from-yarn-to-pnpm). By default Phoenix ships using `npm` as the package manager for JavaScript dependencies. To make the switch inside the app to the `pnpm` we will need to update a few files.
+I recently moved to using [pnpm](https://pnpm.io/) instead of [yarn](https://yarnpkg.com/), you can read about that [here](https://codybrunner.dev/blog/2021/migrating-from-yarn-to-pnpm). By default Phoenix ships using `npm` as the package manager for JavaScript dependencies. To make the switch inside the app to the `pnpm` we will need to add one file and update a few others:
 
 ```shell
 touch pnpm-workspace.yaml
@@ -49,6 +51,8 @@ By telling `pnpm` that the `assets` directory is a workspace when running comman
 ```
 
 The next thing we will need to do is update the aliased commands in the `mix.exs` file to reference the usage of `pnpm`:
+
+> **Note**: If you are shipping your code in a docker container you can keep the line in your `.dockerignore` file as `assets/node_modules/`.
 
 ```diff:mix.exs
 defmodule MyPhoenixApp.MixProject do
@@ -242,6 +246,7 @@ module.exports = (env, options) => {
 +       new ESBuildMinifyPlugin({
 +         target: 'es2015',
 +       }),
++         css: true,
 +     ],
 +   },
     output: {
@@ -266,8 +271,12 @@ touch assets/postcss.config.js assets/tailwind.config.js
 ```
 
 ```javascript:assets/postcss.config.js
+We will add a `postcss.config.js`, `tailwind.config.js`, add the tailwind base CSS to our `app.scss` file, and finally we will update our webpack config to use the `postcss-loader` in the pipeline of loaders for our CSS files:
+
 module.exports = {
   plugins: [
+  // Order of plugins is important.
+  // autoprefixer should always be last.
     'postcss-import',
     'tailwindcss',
     'postcss-preset-env',
@@ -280,6 +289,8 @@ module.exports = {
 module.exports = {
   mode: 'jit',
   purge: [
+  // These are the files we will want tailwind to watch for changes in
+  // and purge the old CSS for the new.
     '../lib/my_phoenix_app_web/templates/**/*',
     '../lib/my_phoenix_app_web/views/**/*',
     '../lib/my_phoenix_app_web/live/**/*',
@@ -293,6 +304,7 @@ module.exports = {
 @import 'tailwindcss/utilities';
 
 @import './phoenix.css';
+// Any custom CSS or custom Tailwind-related CSS must be below the above imports.
 ```
 
 ```diff:assets/webpack.config.js
@@ -332,7 +344,7 @@ module.exports = (env, options) => {
       minimizer: [
         new ESBuildMinifyPlugin({
           target: 'es2015',
-+         css: true,
+          css: true,
         }),
       ],
     },
@@ -350,6 +362,8 @@ module.exports = (env, options) => {
 ```
 
 ```json:assets/package.json
+Now on to the scripts that we will need to add back. Without specifically the `watch` script if we are to run `mix start (mix phx.server)` our application will fail to start because the script does not exist.
+
 {
   "scripts": {
     "build": "NODE_ENV=production TAILWIND_MODE=build webpack --mode production",
@@ -362,7 +376,31 @@ module.exports = (env, options) => {
 
 ## Deploying the new build configuration to fly.io
 
+This is actually where things got tricky with Tailwind's new "just-in-time" mode. If you remove the `TAILWIND_MODE` segments of the scripts above what you will end up with is tailwind not swapping out the old utilities declared on an element for the new ones on save. So you will see no changes in the browser. Furthermore I found that when building a production build tailwind would ship all of tailwind in the bundle however any utilities being referenced were not present. See belows example:
+
+```html
+<!-- Development Source-->
+<h1 class="text-green-500 text-xl">Hello Phoenix LiveView</h1>
+<style>
+  .text-green-500 {
+    --tw-text-opacity: 1 !important;
+    color: rgba(34, 197, 94, var(--tw-text-opacity)) !important;
+  }
+  .text-xl {
+    --tw-text-opacity: 1 !important;
+    color: rgba(34, 197, 94, var(--tw-text-opacity)) !important;
+  }
+</style>
+<!-- Build Source -->
+<h1 class="text-green-500 text-xl">Hello Phoenix LiveView</h1>
+<style></style>
+```
+
+It turns out that this has to do with how tailwind is operating in specific environments under the hood.
+
 ```diff:Dockerfile
+I came across [fly.io](https://fly.io/) a few weeks ago and walked through there example phoenix app for deploying to their platform and I'm so impressed with them. They have become my go to for hosting when it comes to elixir and phoenix. You can check out that example app [here](https://fly.io/docs/getting-started/elixir/) if you are interested in trying them out.
+
 FROM hexpm/elixir:1.11.2-erlang-23.3.2-alpine-3.13.3 AS build
 
 # Yes we will still install npm, work with me here.
@@ -431,7 +469,9 @@ ENV SECRET_KEY_BASE=nokey
 ENV PORT=4000
 
 CMD ["bin/my_phoenix_app", "start"]
-
 ```
 
 <Signature>~ Cody 🚀</Signature>
+And that's it! We now have crazy fast installation and dependency management with
+`pnpm`. We have an even faster client-side build thanks to `esbuild`. We have "just-in-time"
+support with `tailwind`! 🎉
