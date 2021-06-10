@@ -49,7 +49,7 @@ jobs:
         run: pnpx eslint
 
       - name: Type checking
-        run: pnpm run tsc
+        run: pnpm run type-check
 
       - name: Build
         run: pnpm build
