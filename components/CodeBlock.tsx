@@ -1,6 +1,10 @@
 import * as React from 'react'
-import Highlight, { Language, Prism } from 'prism-react-renderer'
-import theme from 'prism-react-renderer/themes/nightOwl'
+import Highlight, {
+  Language,
+  Prism,
+} from '@rockchalkwushock/prism-react-renderer'
+// @ts-ignore
+import theme from '@rockchalkwushock/prism-react-renderer/themes/nightOwl'
 import { CheckCircle, Copy, XCircle } from 'react-feather'
 
 import { useCopyToClipboard } from '@hooks/useCopyToClipboard'

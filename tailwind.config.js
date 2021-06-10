@@ -20,11 +20,11 @@ module.exports = {
         // animate-wiggle
         wiggle: 'wiggle 1s ease-in-out infinite',
       },
-      backgroundImage: theme => ({
+      backgroundImage: {
         // bg-instagram
         instagram:
           'radial-gradient(circle at 30% 107%, #fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%)',
-      }),
+      },
       colors: {
         // These must be included manually.
         current: 'currentColor',
@@ -99,19 +99,5 @@ module.exports = {
     // Will enabled the ability to do the following:
     // bg-black dark:bg-white
     typography: ['dark'],
-    extend: {
-      animation: ['group-hover', 'hover'],
-      backgroundImage: ['group-hover', 'hover'],
-      borderRadius: ['hover'],
-      gradientColorStops: ['group-hover'],
-      padding: ['hover'],
-      stroke: ['group-hover'],
-      transform: ['hover'],
-      transformOrigin: ['hover'],
-      transitionDelay: ['hover'],
-      transitionDuration: ['hover'],
-      transitionProperty: ['hover'],
-      transitionTimingFunction: ['hover'],
-    },
   },
 }

@@ -144,6 +144,13 @@ export const projects: Record<
       source: 'https://github.com/rockchalkwushock/chakra',
       url: '',
     },
+    {
+      description:
+        'Ice Bear is a Telegram bot my wife and I use as an automated reminder app to keep up with daily life stuff.',
+      name: 'Ice Bear (in development)',
+      source: 'https://github.com/rockchalkwushock/ice_bear',
+      url: 't.me/ice_bear_reminder_bot',
+    },
   ],
   enterprise: [
     {

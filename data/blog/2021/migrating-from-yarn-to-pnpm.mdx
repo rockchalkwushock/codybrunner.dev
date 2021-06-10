@@ -1,0 +1,196 @@
+---
+archived: false
+createdAt: 06/08/2021
+description: My experience moving from classic yarn to pnpm as my package manager in JavaScript land.
+keywords:
+  - Yarn
+  - pnpm
+  - package manager
+  - JavaScript
+published: true
+tags:
+  - cli
+  - javascript
+title: Migrating from yarn to pnpm
+---
+
+import { Tweet } from 'mdx-embed'
+import { Signature } from '../components/MDXComponents.tsx'
+
+It's been about two years now since the Yarn dev team released `yarn@2` otherwise known as `berry`. It was a significant change to the initial project and I remember the rumblings in Dev Twitter over the changes. I myself have never given `berry` a try mostly because I didn't want to deal with the cognitive load of changing a piece of tooling that was so crucial to my daily workflow. I was scrolling Twitter one night and came across this tweet from [@jaredpalmer](https://twitter.com/jaredpalmer) and snagged the link to check it out later (and by later I mean when I finally get bothered enough by the 90 opened tabs in Safari):
+
+<Tweet
+  align="center"
+  hidesConversation={true}
+  theme="dark"
+  tweetLink="jaredpalmer/status/1393220729173430272"
+/>
+
+## What is pnpm?
+
+`pnpm` is yet another package manager for the JavaScript ecosystem similar to `npm` & `yarn`. Where `pnpm` differs from the latter two is that:
+
+`npm` and `yarn` both will create a new `node_modules` directory with fresh installs of the dependencies of your projects. So if you have 10 `react` projects on your machine there are 10 installs of `react` regardless of version on your machine as well. `pnpm` instead installs all dependencies in one location on your hard disk and hard links them to the `node_modules/.pnpm` in your projects. In this case there would only be one install of `react` (unless your projects utilize different version of the dependency) for all 10 projects. The `node_modules` for each project would reference back to the dependencies location on the hard disk.
+
+## Installing
+
+I use [homebrew](https://brew.sh) when I can for installing tooling and other software on my machine so when I was able to install `pnpm` via `homebrew` I was very happy. FYI the official documentation does not show this as an install method, however I did verify that it is not malicious:
+
+```shell
+brew search pnpm
+brew info pnpm
+  pnpm: stable 6.7.3 (bottled)
+  📦🚀 Fast, disk space efficient package manager
+  https://pnpm.js.org
+  /usr/local/Cellar/pnpm/6.7.3 (631 files, 8.9MB) *
+    Poured from bottle on 2021-06-08 at 13:38:58
+  From: https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/pnpm.rb
+  License: MIT
+  ==> Dependencies
+  Required: node ✔
+  ==> Analytics
+  install: 1,474 (30 days), 3,179 (90 days), 9,829 (365 days)
+  install-on-request: 1,475 (30 days), 3,178 (90 days), 9,827 (365 days)
+  build-error: 0 (30 days)
+brew install pnpm
+```
+
+Everything after this is almost entirely identical to using `yarn`. You can look at the official [documentation](https://pnpm.io/motivation) for more information on commands.
+
+You will also get `pnpx` installed globally which is the equivalent of `npx`.
+
+`pnpm` even has support for workspaces, which I have not played with yet but plan on doing so in the future.
+
+## Issues with the migration
+
+First off I just removed `yarn` and all it's artifacts from my machine so every project broke. So needless-to-say that has been fun migrating over projects.
+
+> "yarn" cannot be found 🤦🏻‍♂️
+
+Most of them have been as simple as:
+
+```shell
+rm -rf node_modules yarn.lock
+pnpm -i
+
+Packages: +1176
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Packages are hard linked from the content-addressable store to the virtual store.
+Content-addressable store is at: /Users/codybrunner/.pnpm-store/v3
+Virtual store is at:             node_modules/.pnpm
+Progress: resolved 1175, reused 512, downloaded 663, added 1176, done
+
+dependencies:
+
+...
+
+devDependencies:
+
+...
+```
+
+However this was not the case for this website. I continuously received and error message about `esbuild` could not be found or that the versions were in conflict. I finally just branched off of staging and removed the majority of the source code, `node_modules`, and emptied the `package.json`. It turns out that the way `pnpm` installs packages the `esbuild` dependency of `mdx-bundler` is no longer at the top level where `mdx-bundler` expected it to be. Installing the correct version of `esbuild` as a dev dependency fixed the issue. There went 3 hours of my day 🤦🏻‍♂️.
+
+The next issue was my development pipeline. I use [commitlint](https://commitlint.js.org/#/), [husky](https://typicode.github.io/husky/#/), and [lint-staged](https://github.com/okonet/lint-staged). At first I just updated this to `pnpm run <script>` however I would get an error back saying `"<script> is not a script!"`. Makes sense because `commitlint` is not a script in my `package.json` it's a binary to be ran. So instead I needed to make use of `pnpx`. In the `.husky` directory I need to change the commands in the bash scripts to read like so:
+
+```diff:.husky/commit-msg
+- yarn run commitlint -e $1
++ pnpx commitlint -e $1
+```
+
+I ran into a similar `"<script> is not a script!"` issues with my CI/CD workflows on GitHub:
+
+```diff:.github/workflows/feature.yml
+    steps:
+      - name: Linting
+-       run: yarn run eslint
++       run: pnpx eslint
+
+      - name: Type checking
+-       run: yarn run tsc
++       run: pnpx tsc
+```
+
+Updating the steps to be ran in the CI/CD was actually not as painful as I imagined it would be. Even handling the caching in the container was pretty straightforward. Since I was already using the [setup-node](https://github.com/marketplace/actions/setup-node-js-environment) action `npm` was present and one of the official ways to install `pnpm` is by running:
+
+```shell
+npm install -g pnpm
+```
+
+The [documentation](https://pnpm.io/continuous-integration#github-actions) on using `pnpm` with GitHub Actions on `pnpm`'s site says that you must run this command with root level permissions though so I needed to add a `sudo` to the front of that in my yaml file.
+
+```diff:.github/workflows/feature.yml
+steps:
+  ...
+- - name Get Yarn Cache
+-   id: yarn-cache
+-   run: echo "::set-output name=dir::$(yarn cache dir)"
+
+  - name: Install Node
+    uses: actions/setup-node@v2
+    with:
+      node-version: ${{ matrix.node }}
+
+- - name: Cache Dependencies
++ - name: Cache .pnpm-store
++   uses: actions/cache@v2.1.5
++   id: pnpm-cache
+    with:
+-     path: ${{ steps.yarn-cache.outputs.dir }}
+-     key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
++     path: ~/.pnpm-store
++     key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      restore-keys: |
+-       ${{ runner.os }}-yarn-
++       ${{ runner.os }}-node-
+
++ - name: Install pnpm
++   run: sudo npm install -g pnpm
+
+  - name: Install Dependencies
+-   if: steps.yarn-cache.outputs.cache-hit != 'true'
+-   run: yarn install --frozen-lockfile
++   if: steps.pnpm-cache.outputs.cache-hit != 'true'
++   run: pnpm install --frozen-lockfile
+```
+
+The last problem I encountered was deploying to Vercel. At the time of writing Vercel does not support `pnpm` as a package manager option so when Vercel goes to install dependencies and build your project for deployment the deployment will fail **IF** you have the following in your `package.json` like I did:
+
+```json:package.json
+{
+  "scripts": {
+    "preinstall": "npx only-allow pnpm"
+  }
+}
+```
+
+I opened a discussion on adding support for `pnpm` to Vercel [here](https://github.com/vercel/vercel/discussions/6342).
+
+## Aliasing
+
+The last thing I did was to map the `pnpm` commands to the aliases I had in my `.zshrc` for `yarn`. I really did not want to deal with completely new aliases hence the mapping of the commands.
+
+```shell
+# Yarn related aliases
+# These have been updated to alias the use of pnpm NOT Yarn
+# and to not mess with my own mental modal I am keeping the
+# aliases the same where they can be
+
+alias ya="pnpm add";
+alias yb="pnpm run build";
+alias yc="pnpm run commit";
+alias yd="pnpm run dev";
+alias yga="pnpm add -g";
+alias ygl="pnpm ls -g";
+alias ygr="pnpm rm -g";
+alias ygu="pnpm up -g -i";
+alias yi="pnpm i"
+alias yl="pnpm run lint";
+alias yr="pnpm rm";
+alias ys="pnpm start";
+alias yt="pnpm t";
+alias ytc="pnpm run type-check";
+alias yu="pnpm up -i";
+```
+
+<Signature>~ Cody 🚀</Signature>

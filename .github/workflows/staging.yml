@@ -22,37 +22,37 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Get Yarn Cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache Dependencies
-        uses: actions/cache@v2.1.5
-        with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
       - name: Install Node
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Cache .pnpm-store
+        uses: actions/cache@v2.1.5
+        id: pnpm-cache
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install pnpm
+        run: sudo npm install -g pnpm
+
       - name: Install Dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        if: steps.pnpm-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
         env:
           CI: true
 
       - name: Linting
-        run: yarn run eslint
+        run: pnpx eslint
 
       - name: Type checking
-        run: yarn run tsc
+        run: pnpx tsc
 
       - name: Build
-        run: yarn build
+        run: pnpm build
 
       - name: Deploying
         uses: amondnet/vercel-action@v20.0.0

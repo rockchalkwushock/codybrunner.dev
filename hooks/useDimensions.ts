@@ -1,8 +1,6 @@
 import * as React from 'react'
 
-type UseDimensions = (
-  ref: React.RefObject<HTMLElement>
-) => {
+type UseDimensions = (ref: React.RefObject<HTMLElement>) => {
   height: number
   width: number
 }

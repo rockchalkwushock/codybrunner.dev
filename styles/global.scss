@@ -7,9 +7,6 @@ body {
   scroll-behavior: smooth;
 }
 
-#__next {
-}
-
 @layer components {
   .divider {
     @apply border-fuchsia-900 my-8 dark:border-teal-200;
