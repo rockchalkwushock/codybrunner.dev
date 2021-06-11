@@ -1,0 +1,135 @@
+---
+archived: false
+createdAt: 06/11/2021
+description: An introduction to the Telegram bot I am creating for me and my wife to use as an automated reminder application using Elixir and Phoenix LiveView.
+keywords:
+  - bot
+  - elixir
+  - otp
+  - phoenix
+  - phoenix liveview
+  - reminder application
+  - telegram
+published: true
+tags:
+  - elixir
+  - live-view
+  - phoenix
+title: 'Ice Bear: An Elixir Telegram Bot'
+---
+
+import { Giphy, Signature } from '../components/MDXComponents.tsx'
+
+One thing my wife and I struggle with is keeping track of all the things and reminding each other of all the things. We've got reminders in calendars that send us push notifications and things we told each other to do in WhatsApp, Telegram, or IRL. It can be a real cluster fuck at times and things get forgotten. As stated above we use the [Telegram](https://telegram.org/) messaging
+app, and it happens to be our primary form of messaging. Telegram has a [Bot API](https://core.telegram.org/bots/api) and I just so happened to have worked with this API years ago with NodeJS building a [Chuck Norris Joke Bot](https://www.codybrunner.dev/blog/archive/2018/how-to-build-a-telegram-bot-with-node-js). This time around
+though I will be using Elixir and Phoenix LiveView to create a real-time automated reminder bot for just me and my wife to use. This will be significantly more complex than making an API call to a third party API and returning a random Chuck Norris joke. This is the first of what will be quite a few posts as I build out this service. In this post I just want to get down the MVP requirements and log some things I should keep in the back of my mind about the internal logic and data models. As I learned in my time at Appointlet data is what matters not code, and Elixir is all about making sure your data is in front of you at all times and not be hidden in complexity.
+
+This is the first full blown application I will write in Elixir/Phoenix and I'm sure there are going to be **a lot** of learning moments. That's just another reason to document the process of creating this. It will be super challenging as I've spent just about the last 3 years working solely in the frontend and JavaScript land. I'm excited to move fast and break shit so my wife and I can have a better system for handling the "adult stuff".
+
+## Why Ice Bear?
+
+My wife absolutely loves Ice Bear from [We Bare Bears](https://en.wikipedia.org/wiki/We_Bare_Bears) and I got admit he's a cute, smart, hacker, ninja, bad ass kind of like this Colombian woman I just happened to be married too so yeah fucking Ice Bear it is!
+
+<Giphy giphyId="10ZpyYs0OvVlnO" />
+
+## Tech Stack
+
+As alluded to above this application will be build using Elixir/Phoenix and obviously will be using the Telegram Bot API. Below are some other libraries and technologies I will make use of to achieve the end result I'm looking for. I'm going to use fly.io as my hosting service for the bot.
+
+- [Elixir](https://elixir-lang.org/)
+- [Phoenix LiveView](https://www.phoenixframework.org/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Telegram Bot API](https://core.telegram.org/bots/api)
+- [Timex](https://hexdocs.pm/timex/getting-started.html)
+- [fly.io](https://fly.io/)
+
+## Minimum Viable Product Requirements
+
+My wife and I should be able to...
+
+- authenticate with the bot.
+- be the only user's to access the bot.
+- create a reminder.
+- read a reminder.
+- read all reminders.
+- read all reminders with filters. (i.e. completed/uncompleted/today/etc)
+- update a reminder.
+- delete a reminder.
+- assign each other or both of us to a reminder.
+
+## Data Models
+
+### Reminder
+
+The below `schema` is what I'm defining as the MVP for this feature. Obviously the most important thing for what my wife and I are looking for are the fields that will manage the recurring state of the reminder. I am big on using enums in place of booleans thanks to the dynamically typed shit show that is JavaScript and the wonders of coercion. Elixir is also a dynamically typed language so using enums will guard against accidental coercion and with enums we have a defined set of possible answers to give the API which is always nice.
+
+```elixir
+defmodule IceBear.Reminder do
+  use Ecto.Schema
+  alias IceBear.User
+
+  schema "reminders" do
+    field :alert, Ecto.Enum, values: [
+      :none,
+      :five_minutes,
+      :fifteen_minutes,
+      :thirty_minutes,
+      :hour,
+      :two_hours,
+      :day,
+      :two_days
+    ], :default :none
+    field :completed_at, :datetime
+    field :datetime, :string
+    field :end_repeat, :datetime
+    field :name, :string
+    field :notes, :string
+    field :priority, Ecto.Enum, values: [
+      :high,
+      :low,
+      :medium
+    ], :default :low
+    field :repeat, Ecto.Enum, values: [
+      :none,
+      :daily,
+      :weekly,
+      :bi_weekly,
+      :monthly,
+      :bi_monthly,
+      :quarterly,
+      :yearly,
+      :mondays,
+      :tuesdays,
+      :wednesdays,
+      :thursdays,
+      :fridays,
+      :saturdays,
+      :sundays
+    ], :default :none
+    field :status, Ecto.Enum, values: [:completed, :uncompleted], :default :uncompleted
+    has_many :assignees, User
+  end
+end
+```
+
+### User
+
+The `user` model is going to be a little bit of a learning experience here. My wife and I will be whitelisted on the server as the only users who can access IceBear. The problem with that is anyone could just look up our `username` on Telegram and try to force their way in. I'm going to have to read up on authentication with Telegram bots and find a secure way to verify the identity of the user matches the whitelist. Maybe over engineering this with 2FA would be a good solution (I've also never done that so it could be fun!). At any rate the `schema` below is open to a lot of change.
+
+```elixir
+defmodule IceBear.User do
+  use Ecto.Schema
+
+  schema "users" do
+    field :username, :string
+  end
+end
+```
+
+## Other Considerations
+
+Automation is what we are going for here so we want reminders to be broadcasted to us when they are set to be broadcasted. I have pretty much zero experience with `GenServer`, but I do believe this will be a good time to lean on this internal feature of Elixir. I think what will need to happen is when the current datetime turns over to the next day the `GenServer` should start tracking the time. As it tracks the time with a 1 second tick it will check the reminders for the current day (not **all** reminders in the table) and if the current time is equal to the `datetime` then Ice Bear can broadcast the reminder to the `assignees`. I will need to do a lot of research and reading into how to achieve this and perhaps I will find a better solution I'm honestly not very sure about this and will likely turn to [Elixir Forum](https://elixirforum.com/) for advice from the seasoned vets.
+
+Recurring reminders are going to be tricky. I really would only like to have one entry in the `reminders` table for each reminder, not an entry for every possible recurring date (that could get costly!). So what I'm thinking is that I will need to write an algorithm that executes in a cron job to cleanup the recurring reminders every day. The idea would be to check if a reminder is both in a `recurring` state that is not `:none` and that it happened today (will run the cron job at like 2345 everyday). If the conditions are met then the algorithm will need to take into effect the selected `recurring` state option and fast forward the `datetime` property. So for example if I have reminder that is recurring every Thursday an I created it this week then the first time it would recur is 17 June 2021. When that reminder has occurred my algorithm would update the `datetime` field to be 24 June 2021 so the following week I would get the reminder again.
+
+<Signature>~ Cody 🚀</Signature>
