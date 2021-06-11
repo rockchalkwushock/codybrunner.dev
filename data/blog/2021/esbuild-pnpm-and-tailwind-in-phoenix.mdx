@@ -270,13 +270,13 @@ pnpm add -D autoprefixer postcss postcss-import postcss-loader postcss-preset-en
 touch assets/postcss.config.js assets/tailwind.config.js
 ```
 
-```javascript:assets/postcss.config.js
 We will add a `postcss.config.js`, `tailwind.config.js`, add the tailwind base CSS to our `app.scss` file, and finally we will update our webpack config to use the `postcss-loader` in the pipeline of loaders for our CSS files:
 
+```javascript:assets/postcss.config.js
 module.exports = {
   plugins: [
-  // Order of plugins is important.
-  // autoprefixer should always be last.
+    // Order of plugins is important.
+    // autoprefixer should always be last.
     'postcss-import',
     'tailwindcss',
     'postcss-preset-env',
@@ -289,8 +289,8 @@ module.exports = {
 module.exports = {
   mode: 'jit',
   purge: [
-  // These are the files we will want tailwind to watch for changes in
-  // and purge the old CSS for the new.
+    // These are the files we will want tailwind to watch for changes in
+    // and purge the old CSS for the new.
     '../lib/my_phoenix_app_web/templates/**/*',
     '../lib/my_phoenix_app_web/views/**/*',
     '../lib/my_phoenix_app_web/live/**/*',
@@ -361,9 +361,9 @@ module.exports = (env, options) => {
 }
 ```
 
-```json:assets/package.json
 Now on to the scripts that we will need to add back. Without specifically the `watch` script if we are to run `mix start (mix phx.server)` our application will fail to start because the script does not exist.
 
+```json:assets/package.json
 {
   "scripts": {
     "build": "NODE_ENV=production TAILWIND_MODE=build webpack --mode production",
@@ -373,8 +373,6 @@ Now on to the scripts that we will need to add back. Without specifically the `w
   },
 }
 ```
-
-## Deploying the new build configuration to fly.io
 
 This is actually where things got tricky with Tailwind's new "just-in-time" mode. If you remove the `TAILWIND_MODE` segments of the scripts above what you will end up with is tailwind not swapping out the old utilities declared on an element for the new ones on save. So you will see no changes in the browser. Furthermore I found that when building a production build tailwind would ship all of tailwind in the bundle however any utilities being referenced were not present. See belows example:
 
@@ -398,9 +396,11 @@ This is actually where things got tricky with Tailwind's new "just-in-time" mode
 
 It turns out that this has to do with how tailwind is operating in specific environments under the hood.
 
-```diff:Dockerfile
+## Deploying the new build configuration to fly.io
+
 I came across [fly.io](https://fly.io/) a few weeks ago and walked through there example phoenix app for deploying to their platform and I'm so impressed with them. They have become my go to for hosting when it comes to elixir and phoenix. You can check out that example app [here](https://fly.io/docs/getting-started/elixir/) if you are interested in trying them out.
 
+```diff:Dockerfile
 FROM hexpm/elixir:1.11.2-erlang-23.3.2-alpine-3.13.3 AS build
 
 # Yes we will still install npm, work with me here.
@@ -471,7 +471,8 @@ ENV PORT=4000
 CMD ["bin/my_phoenix_app", "start"]
 ```
 
-<Signature>~ Cody 🚀</Signature>
 And that's it! We now have crazy fast installation and dependency management with
 `pnpm`. We have an even faster client-side build thanks to `esbuild`. We have "just-in-time"
 support with `tailwind`! 🎉
+
+<Signature>~ Cody 🚀</Signature>
