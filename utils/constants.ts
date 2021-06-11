@@ -142,14 +142,13 @@ export const projects: Record<
       description: 'Chakra is a url shortener built with Elixir.',
       name: 'chakra',
       source: 'https://github.com/rockchalkwushock/chakra',
-      url: '',
     },
     {
       description:
         'Ice Bear is a Telegram bot my wife and I use as an automated reminder app to keep up with daily life stuff.',
       name: 'Ice Bear (in development)',
-      source: 'https://github.com/rockchalkwushock/ice_bear',
-      url: 't.me/ice_bear_reminder_bot',
+      source: 'https://github.com/rockchalkwushock/ice-bear',
+      url: 'https://t.me/icebarebot',
     },
   ],
   enterprise: [
