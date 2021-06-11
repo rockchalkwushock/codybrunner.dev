@@ -27,12 +27,12 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Cache .pnpm-store
-        uses: actions/cache@v2.1.5
-        id: pnpm-cache
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      # - name: Cache .pnpm-store
+      #   uses: actions/cache@v2.1.5
+      #   id: pnpm-cache
+      #   with:
+      #     path: ~/.pnpm-store
+      #     key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Install pnpm
         run: sudo npm install -g pnpm
