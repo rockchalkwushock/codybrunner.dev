@@ -39,7 +39,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     return {
       props: {
         // Give the client the 3 latest posts.
-        posts: filterPosts(posts, p => !p.frontMatter.archived).slice(-3),
+        posts: filterPosts(posts, p => !p.frontMatter.archived).slice(-5),
       },
     }
   } catch (error) {
