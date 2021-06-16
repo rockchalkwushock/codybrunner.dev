@@ -1,16 +1,17 @@
 ---
 archived: false
-createdAt: 06/11/2021
+createdAt: 06/16/2021
 description: 'Part 2: Getting Ice Bear all set up for his big adventure! In this post I setup Fly.io, GitHub, Phoenix, and Telegram.'
 keywords:
   - fly.io
   - elixir
   - github
+  - github actions
   - phoenix
   - phoenix liveview
   - telegram
   - telegram bot
-published: false
+published: true
 tags:
   - elixir
   - live-view
@@ -20,7 +21,11 @@ title: 'Ice Bear: Setup'
 
 import { Signature } from '../components/MDXComponents.tsx'
 
+In this post I will bootstrap Ice Bear as a Phoenix LiveView project and get the development pipeline setup so I can hit the ground running in the following posts. I will setup the client-side JavaScript build to use `pnpm` as the package manager, update the build process to use `webpack@5` & `esbuild` as well as add support for `tailwindcss` in `jit` mode. I will also setup deployments to [fly.io](https://fly.io) and use GitHub Actions to run our CI/CD pipeline.
+
 ## Bringing Life to Ice Bear
+
+I am learning LiveView currently so I am going to go ahead and make Ice Bear a LiveView project. Maybe I use it and maybe I don't. Honestly not all that sure at this point.
 
 ```shell
 mix phx.new ice_bear --live
@@ -46,22 +51,28 @@ You can also run your app inside IEx (Interactive Elixir) as:
     $ iex -S mix phx.server
 ```
 
-One of the first things we should do is update the `.gitignore` to ignore any file that has `secret` in it as this is where Phoenix is expecting us to put environment variables that are super secret and could get us double probation if they end up on GitHub!
+One of the first things I should do is update the `.gitignore` to ignore any file that has `secret` in its name as this is where Phoenix is expecting me to put environment variables that are super secret and could get me double probation if they end up on GitHub!
 
 ```ignore:.gitignore
 # Secrets
 /config/*.secret.exs
+
+# Editor
+.vscode
+
+# Misc.
+.DS_Store
 ```
 
-Here is a link to the [initial commit](https://github.com/rockchalkwushock/ice-bear/commit/aba12121c37b54ff638e1add700453ebfad0610b) if you need to refer to anything. From here on out any link to the official repository of Ice Bear will be links to the merged PR's.
+Here is a link to the [initial commit](https://github.com/rockchalkwushock/ice-bear/commit/b8fd076d847686df4d235082dfe21fffef393af0) if you need to refer to anything. From here on out any link to the official repository of Ice Bear will be links to the merged PR's that follow these posts and are hopefully scoped well 🤞🏻.
 
-### Updating the Client-Side JavaScript Build
+## Configuring Ice Bear's Database
 
-I am not going to touch to heavily on this because you can read a more in depth article on how to this [here](https://codybrunner.dev/blog/2021/esbuild-pnpm-and-tailwind-in-phoenix). What I am doing here is to move JavaScript dependency management to `pnpm`, JavaScript bundling to be handled by `webpack@5` and `esbuild-loader`, and add support for `tailwindcss` in `jit` mode.
+I need to make a few quick changes before I tell `mix` to create Ice Bear's databases. First I will create a file for my dev environment secrets so I am not exposing things I shouldn't in my git history. I am also going to update all of the config files to use `import Config` instead of `use Mix.Config` since the latter is scheduled for deprecation in the future; however the first thing I should do is install the dependencies for the Phoenix application since I purposefully skipped that when creating Ice Bear with `mix`:
 
-## Configuring Ice Bear's database
-
-We need to make a few quick changes before we tell `mix` to create Ice Bear's databases. First create a secrets file for our dev environment so we are not exposing things we shouldn't in our git history. We are also going to update all of our config files to use `import Config` instead of `use Mix.Config` since the latter is scheduled for deprecation in the future:
+```shell
+mix deps.get
+```
 
 ```shell
 touch config/dev.secrets.exs
@@ -75,7 +86,7 @@ config :ice_bear, IceBear.Repo,
   password: "YOUR PASSWORD"
 ```
 
-And now in the `dev.exs` we need to import the config and remove a few lines of code:
+And now in the `dev.exs` I need to import the config and remove a few lines of code:
 
 ```diff:config/dev.exs
 - use Mix.Config
@@ -97,7 +108,8 @@ config :ice_bear, IceBear.Repo,
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :ice_bear, IceBearWeb.Endpoint,
-  http: [port: 4000],
+- http: [port: 4000],
++ http: [port: 5000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -157,6 +169,8 @@ config :phoenix, :plug_init_mode, :runtime
 + import_config "dev.secret.exs"
 ```
 
+> **NOTE** I updated the port number to be 5000 in my application because my blog that is built using [NextJS](https://nextjs.org) runs on 4000. I am writing these posts as I develope Ice Bear so this prevents port clashes for me.
+
 ```shell
 mix ecto.setup
 
@@ -164,10 +178,21 @@ Compiling 13 files (.ex)
 Generated ice_bear app
 The database for IceBear.Repo has been created
 
-10:15:40.163 [info]  Migrations already up
+05:15:49.536 [info]  Migrations already up
 ```
 
-You can find all the diffs for the files touched in this section in [Pull Request #1](https://github.com/rockchalkwushock/ice-bear/pull/1).
+You can find all the diffs for the files touched in this section in:
+
+- [Pull Request #1: Setup Database](https://github.com/rockchalkwushock/ice-bear/pull/1)
+
+## Updating the Client-Side JavaScript Build
+
+> **NOTE** You can choose to skip this step if you'd like too.
+
+I am not going to touch to heavily on this because you can read a more in depth article on how to do this [here](https://codybrunner.dev/blog/2021/esbuild-pnpm-and-tailwind-in-phoenix). What I am doing here is to move JavaScript dependency management to `pnpm`, JavaScript bundling to be handled by `webpack@5` and `esbuild-loader`, and add support for `tailwindcss` in `jit` mode.
+
+- [Pull Request #2: Switch to Esbuild](https://github.com/rockchalkwushock/ice-bear/pull/2)
+- [Pull Request #3: Add TailwindCSS Support](https://github.com/rockchalkwushock/ice-bear/pull/3)
 
 ## The BotFather
 
@@ -175,13 +200,13 @@ Telegram has a bot that is specifically designed for the purpose of creating you
 
 ![Starting up the BotFather](/images/2021/ice-bear/bot-father.png)
 
-To create a new bot we will send the command `/newbot` to BotFather and he will prompt us for a bot name and bot username. The only thing to note is that the username must be include `bot` in some way shape or form. Unfortunately as you can see many of the names I wanted were already taken but I was able to create Ice Bear under the username [@icebarebot](https://t.me/icebarebot):
+To create a new bot I will send the command `/newbot` to BotFather and he will prompt me for a bot name and bot username. The only thing to note is that the username must be include `bot` in some way shape or form. Unfortunately as you can see many of the names I wanted were already taken but I was able to create Ice Bear under the username [@icebarebot](https://t.me/icebarebot):
 
 > **Note:** Please be advised the token you see is no longer active or associated with Ice Bear.
 
 ![Creating a new bot with Bot Father](/images/2021/ice-bear/newbot.png)
 
-The first thing we will want to do after creating the bot is to take the API Token and put it somewhere safe and somewhere where it will not end up being committed to GitHub. For now we will add the token to `dev.secret.exs` file for injecting the API Token into our development environment at build time.
+The first thing I will do after creating Ice Bear on Telegram is to take the API token and add it to my `dev.secret.exs` file so it does not accidentally get added to the repositories git history and pushed up to GitHub:
 
 ```diff:config/dev.secret.exs
 import Config
@@ -192,7 +217,6 @@ config :ice_bear, IceBear.Repo,
 
 + config :ice_bear,
 +   bot_token: "YOUR API TOKEN HERE"
-
 ```
 
 After creating your new bot you should have a very similar profile (besides name and username of course). You can go through BotFather's list of commands to customize the profile like you see for Ice Bear below:
@@ -203,6 +227,462 @@ After creating your new bot you should have a very similar profile (besides name
 
 ## Deploying Ice Bear with Fly.io
 
+I found [fly.io](https://fly.io) a few weeks ago and I really love this service for deploying Elixir/Phoenix apps! They have a great tutorial for setting up a Phoenix app for deployment to their platform [here](https://fly.io/docs/getting-started/elixir/).
+
+The first thing I will do is get the CLI tools for fly.io installed on my machine. If you are not on macOS or not using HomeBrew please refer to the [installation docs](https://fly.io/docs/getting-started/installing-flyctl/).
+
+```shell
+brew install superfly/tap/flyctl
+```
+
+I won't go through much of setting up this process here because it's almost verbatim the article referenced above. I will note some significant changes that pertain to Ice Bear though:
+
+I need to add the Telegram API token to fly.io and to our `runtime.exs`:
+
+```shell
+fly secrets set TELEGRAM_BOT_TOKEN=<YOUR TELEGRAM API TOKEN>
+```
+
+```diff:config/runtime.exs
+import Config
+
+if config_env() == :prod do
+  secret_key_base =
+    System.get_env("SECRET_KEY_BASE") ||
+      raise """
+      environment variable SECRET_KEY_BASE is missing.
+      You can generate one by calling: mix phx.gen.secret
+      """
+
+  app_name =
+    System.get_env("FLY_APP_NAME") ||
+      raise "FLY_APP_NAME not available"
+
++ bot_token =
++   System.get_env("TELEGRAM_BOT_TOKEN") ||
++     raise """
++     environment variable TELEGRAM_BOT_TOKEN is missing.
++     """
+
+  config :ice_bear, IceBearWeb.Endpoint,
+    server: true,
+    url: [host: "#{app_name}.fly.dev", port: 80],
+    http: [
+      port: String.to_integer(System.get_env("PORT") || "4000"),
+      # IMPORTANT: support IPv6 addresses
+      transport_options: [socket_opts: [:inet6]]
+    ],
+    secret_key_base: secret_key_base
+
+  database_url =
+    System.get_env("DATABASE_URL") ||
+      raise """
+      environment variable DATABASE_URL is missing.
+      For example: ecto://USER:PASS@HOST/DATABASE
+      """
+
+  config :ice_bear, IceBear.Repo,
+    url: database_url,
+    # IMPORTANT: Or it won't find the DB server
+    socket_options: [:inet6],
+    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
+
++ config :ice_bear,
++   bot_token: bot_token
+end
+```
+
+When trying to deploy to fly.io the first time it failed with a Webpack related error. Since I removed all of the files under `/assets/static` it no longer existed and thus there was no `static` directory for the `copy-webpack-plugin` to copy. This may still be used later so I removed the call for the plugin to be used from the `plugins` list and commented out the importing of the plugin for the time being:
+
+```diff:assets/webpack.config.js
+// Native
+const { resolve } = require('path')
+// Third-Party
+- const CopyWebpackPlugin = require('copy-webpack-plugin')
++ // const CopyWebpackPlugin = require('copy-webpack-plugin')
+// https://github.com/privatenumber/esbuild-loader
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
+const { sync } = require('glob')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+
+module.exports = (env, options) => {
+  const devMode = options.mode !== 'production'
+
+  return {
+    devtool: devMode ? 'eval-cheap-module-source-map' : undefined,
+    entry: {
+      app: sync('./vendor/**/*.js').concat(['./js/app.js']),
+    },
+    module: {
+      rules: [
+        {
+          exclude: /node_modules/,
+          loader: 'esbuild-loader',
+          test: /\.js$/,
+        },
+        {
+          test: /\.[s]?css$/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader',
+            'postcss-loader',
+            'sass-loader',
+          ],
+        },
+      ],
+    },
+    optimization: {
+      minimizer: [
+        new ESBuildMinifyPlugin({
+          target: 'es2015',
+          css: true,
+        }),
+      ],
+    },
+    output: {
+      filename: '[name].js',
+      path: resolve(__dirname, '../priv/static/js'),
+      publicPath: '/js/',
+    },
+    plugins: [
+      new MiniCssExtractPlugin({ filename: '../css/app.css' }),
+-     new CopyWebpackPlugin({ patterns: [{ from: 'static/', to: '../' }] }),
+    ],
++   plugins: [new MiniCssExtractPlugin({ filename: '../css/app.css' })],
+  }
+}
+```
+
+- [Pull Request #4: Deploy to Fly.io](https://github.com/rockchalkwushock/ice-bear/pull/4)
+
 ## CI/CD with GitHub Actions
+
+I want to have a good automated development pipeline to catch bugs and problems before I release Ice Bear to the world. The last thing I want is my wife texting me to say Ice Bear doesn't work 🤦🏻‍♂️. To make sure I am not releasing a non functional Ice Bear I will use [GitHub Actions](https://docs.github.com/en/actions) to test Ice Bear's code.
+
+The first thing I want to do is add [Credo](https://hexdocs.pm/credo/overview.html) and [Dialyxir](https://hexdocs.pm/dialyxir/readme.html) to statically analyze Ice Bear's code. Phoenix already ships with a test suite setup and ready to go for you using [ExUnit](https://hexdocs.pm/ex_unit/1.12/ExUnit.html) so no need to do much there.
+
+```diff:mix.exs
+defmodule IceBear.MixProject do
+  def project do
+    [
+      app: :ice_bear,
+      version: "0.1.0",
+      elixir: "~> 1.7",
+      elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
+-     deps: deps()
++     deps: deps(),
++     dialyzer: [
++       plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
++     ]
+    ]
+  end
+  ...
+  defp deps do
+    [
+      {:phoenix, "~> 1.5.8"},
+      {:phoenix_ecto, "~> 4.1"},
+      {:ecto_sql, "~> 3.4"},
+      {:postgrex, ">= 0.0.0"},
+      {:phoenix_live_view, "~> 0.15.1"},
+      {:floki, ">= 0.27.0", only: :test},
+      {:phoenix_html, "~> 2.11"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_live_dashboard, "~> 0.4"},
+      {:telemetry_metrics, "~> 0.4"},
+      {:telemetry_poller, "~> 0.4"},
+      {:gettext, "~> 0.11"},
+      {:jason, "~> 1.0"},
+-     {:plug_cowboy, "~> 2.0"}
++     {:plug_cowboy, "~> 2.0"},
++     {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
++     {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false}
+    ]
+  end
+  ...
+end
+```
+
+```diff:.gitignore
++ /priv/plts/*.plt
++ /priv/plts/*.plt.hash
+```
+
+```diff:.dockerignore
++ priv/plts/
+```
+
+```shell
+mix deps.get
+mix credo gen.config
+```
+
+Now that I have `credo` & `dialyxir` installed and configured in Ice Bear's code base I can start putting together the workflows for Ice Bear's CI/CD pipeline.
+
+```shell
+mkdir -p .github/workflows
+touch .github/workflows/release.yml .github/workflows/staging.yml
+```
+
+### Validating Ice Bear
+
+The `staging.yml` is present to check any code that I am trying to merge into the `staging` branch. It will statically analyze and run tests against Ice Bear's code. When following a proper git workflow this will make sure any features or bug fixes don't accidentally introduce bugs into Ice Bear.
+
+```yml:.github/workflows/staging.yml
+name: Staging
+
+# Workflow will only run when a PR is opened against the staging branch.
+on:
+  pull_request:
+    branches:
+      - staging
+
+# Execute in test environment.
+env:
+  MIX_ENV: test
+
+jobs:
+  # In this job I make sure I can successfully:
+  # 1. Checkout the code base.
+  # 2. Install elixir, erlang, node, & pnpm.
+  # 3. Retrieve cached dependencies for (Elixir/OTP) and (Node) to speed up the workflow if they exist.
+  # 4. Install the dependencies for bot (Elixir/OTP) and (Node).
+  dependencies:
+    name: Initialize Ice Bear
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        elixir: ['1.11']
+        node: ['14.x']
+        otp: ['24.0.2']
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install Elixir/OTP
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install pnpm
+        run: sudo npm install -g pnpm
+
+      - name: Retrieve Cached Dependencies (Elixir/OTP)
+        uses: actions/cache@v2
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+            priv/plts
+          key: ${{ runner.os }}-mix-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+
+      - name: Retrieve Cached Dependencies (Node)
+        uses: actions/cache@v2
+        id: pnpm-cache
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-node-${{ matrix.node }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies (Elixir/OTP)
+        if: steps.mix-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p priv/plts
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+          mix deps.compile
+          mix dialyzer --plt
+
+      - name: Install Dependencies (Node)
+        if: steps.pnpm-cache.outputs.cache-hit != 'true'
+        run: pnpm install
+
+  # In this job I make sure that Ice Bear successfully passes static code analysis.
+  # - The job will not run if the "dependencies" job fails.
+  # - The job will reach for the cached dependencies from the "dependencies" job to run faster.
+  # 1. Checks code formatting is appropriate.
+  # 2. Checks for credo errors.
+  # 3. Checks for dialyzer errors.
+  static-code-analysis:
+    name: Analyze Ice Bear
+    needs: dependencies
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        elixir: ['1.11']
+        node: ['14.x']
+        otp: ['24.0.2']
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install Elixir/OTP
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+
+      - name: Retrieve Cached Dependencies (Elixir/OTP)
+        uses: actions/cache@v2
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+            priv/plts
+          key: ${{ runner.os }}-mix-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+
+      - name: Check Formatting
+        run: mix format --check-formatted
+
+      - name: Run Credo
+        run: mix credo
+
+      - name: Run Dialyzer
+        run: mix dialyzer --no-check --ignore-exit-status
+
+  # In this job I make sure Ice Bear successfully passes all tests.
+  # - The job will not run if the "dependencies" job fails.
+  # - The job will reach for the cached dependencies from the "dependencies" job to run faster.
+  # 1. Checks for failing tests.
+  test:
+    name: Test Ice Bear
+    needs: dependencies
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        elixir: ['1.11']
+        node: ['14.x']
+        otp: ['24.0.2']
+
+    services:
+      db:
+        env:
+          POSTGRES_PASSWORD: postgres
+        image: postgres:11
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports: ['5432:5432']
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install Elixir/OTP
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install pnpm
+        run: sudo npm install -g pnpm
+
+      - name: Retrieve Cached Dependencies (Elixir/OTP)
+        uses: actions/cache@v2
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+            priv/plts
+          key: ${{ runner.os }}-mix-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+
+      - name: Retrieve Cached Dependencies (Node)
+        uses: actions/cache@v2
+        id: pnpm-cache
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-node-${{ matrix.node }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run Test Suite
+        run: mix test --trace --slowest 10
+```
+
+### Deploying Ice Bear
+
+The `release.yml` is really only present to automate the deployment of Ice Bear to fly.io so I don't have to do it manually.
+
+```yml:.github/workflows/release.yml
+name: Release
+
+# Workflow will only run when code is pushed to the production branch.
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  deploy:
+    name: Deploy Ice Bear
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: superfly/flyctl-actions@1.1
+        env:
+          # DO NOT FORGET TO ADD THE TOKEN TO YOUR GITHUB SECRETS!!!
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        with:
+          args: "deploy"
+```
+
+Before pushing the code to master I will want to make sure I add the API token for fly.io or the `release` workflow will fail:
+
+```shell
+flyctl auth token
+```
+
+You can copy and paste this token into the "Secrets" UI on GitHub:
+
+> https://github.com/[username]/[repo-name]/settings/secrets/actions
+
+- [Pull Request #5: Adds CI/CD with GitHub Actions](https://github.com/rockchalkwushock/ice-bear/pull/5)
+
+## Wrap Up
+
+And I believe that does it! Merging `staging` into `production` should kick off the `release` pipeline and deploy Ice Bear to fly.io. From now on I can checkout the `staging` branch and build a feature for Ice Bear, open a PR against `staging` and see that all is good in the Ice Bear hood, and then merge the feature addition to production so my wife and I can take advantage of all Ice Bear ahs to offer! This was a crazy long post and it's my hope that every post following this is much shorter and scoped to particular features as I build out Ice Bear.
 
 <Signature>~ Cody 🚀</Signature>
