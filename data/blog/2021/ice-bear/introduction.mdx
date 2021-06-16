@@ -133,3 +133,5 @@ Automation is what we are going for here so we want reminders to be broadcasted 
 Recurring reminders are going to be tricky. I really would only like to have one entry in the `reminders` table for each reminder, not an entry for every possible recurring date (that could get costly!). So what I'm thinking is that I will need to write an algorithm that executes in a cron job to cleanup the recurring reminders every day. The idea would be to check if a reminder is both in a `recurring` state that is not `:none` and that it happened today (will run the cron job at like 2345 everyday). If the conditions are met then the algorithm will need to take into effect the selected `recurring` state option and fast forward the `datetime` property. So for example if I have reminder that is recurring every Thursday an I created it this week then the first time it would recur is 17 June 2021. When that reminder has occurred my algorithm would update the `datetime` field to be 24 June 2021 so the following week I would get the reminder again.
 
 <Signature>~ Cody 🚀</Signature>
+
+[Setting Up Ice Bear](https://codybrunner.dev/blog/2021/ice-bear/setting-up-ice-bear)
