@@ -1,0 +1,181 @@
+---
+archived: false
+createdAt: 06/17/2021
+description: "Part 3: Writing my own Telegram client to better understand underlying API's in Elixir and how these applications get used in the greater context of a Phoenix application."
+keywords:
+  - elixir
+  - phoenix
+  - phoenix liveview
+  - telegram
+  - telegram bot
+  - telegram client
+published: false
+tags:
+  - elixir
+  - live-view
+  - phoenix
+title: 'Ice Bear: Telegram Client'
+---
+
+import { Signature } from '../components/MDXComponents.tsx'
+
+As I stated in the introduction post this is the first Elixir/Phoenix application that I have built that is not just following along with a tutorial. I could easily use one of the many clients present on [hex.pm](https://hex.pm/) for creating a Telegram bot. The whole point of this project is not just to create something that will help me an my wife keep track of our task better, but to really gain a better understanding of the core technologies being used. So I am reinventing the wheel, and yes it comes at the cost of speed, but with the pay off of knowledge.
+
+## Requirements for my Telegram Client
+
+1. Must be able to make authenticated requests to the [Bot API](https://core.telegram.org/bots) as Ice Bear.
+2. Must be able to query the bot.
+3. Must be able to get updates.
+4. Must be able to send messages.
+
+There is quite a bit more to the Telegram Bot API, but at this point in time I don't see anything else my wife and I would need to achieve the MVP of this project. So unlike the other Telegram Clients available for me to use this will be a pretty stripped down client with minimal functionality, and I'm okay with that. At any point in the future I will easily be able to extend the internal client to add functionality.
+
+Before I get started writing the client let's take a look at the Telegram Bot API and see what I need. All requests will look similar to the following:
+
+```shell
+# https://api.telegram.org/bot<token>/METHOD_NAME
+# https://api.telegram.org/botabc:123/getMe
+```
+
+This tells me I need to have the base uri for the Telegram API as a constant in the client application so I can easily reach for it and cut down on having that string everywhere. Elixir has a nice way of creating constants inside of modules using what is known as a [module attribute](https://elixir-lang.org/getting-started/module-attributes.html):
+
+```elixir
+defmodule IceBear.Telegram do
+  # ...
+  @api_base_uri "https://api.telegram.org"
+  # ...
+end
+```
+
+This is great because when I later want to assemble the full address for the request I can use one of two methods for stitching the request uri together.
+
+```elixir
+defmodule IceBear.Telegram do
+  # ...
+  @api_base_uri "https://api.telegram.org"
+  # ...
+  # Concatenation Operator: @api_base_uri <> token <> "/bot" <> method
+  # String interpolation: "#{@api_base_uri}#{token}/bot#{method}"
+end
+```
+
+Telegram has a quite a few endpoints, but these from the looks of them are what I will be using:
+
+- [/getMe](https://core.telegram.org/bots/api#getme)
+- [/getUpdates](https://core.telegram.org/bots/api#getupdates)
+- [/sendMessage](https://core.telegram.org/bots/api#sendmessage)
+
+## Finding an HTTP Client
+
+There are quite a few HTTP clients available on [hex.pm](https://hex.pm/). I read about options for an HTTP client in this [article](https://blog.appsignal.com/2020/07/28/the-state-of-elixir-http-clients.html) from [AppSignal](https://www.appsignal.com/). I really wanted to go for something native instead of reaching for a third-party library; however after reading the article the native [httpc](http://erlang.org/doc/man/httpc.html) module that is part of the BEAM didn't feel like a good choice with its limitations. The article sold me on giving the library [Finch](https://hexdocs.pm/finch/Finch.html) a try over the popular [HTTPoison](https://hexdocs.pm/httpoison/readme.html) and [Tesla](https://hexdocs.pm/tesla/readme.html).
+
+## Working with Finch 🐦
+
+First off I need to add `finch` to my `mix.exs` and install it as a dependency to Ice Bear.
+
+```diff:mix.exs
+defmodule IceBear.MixProject do
+  ...
+  defp deps do
+    [
+      {:phoenix, "~> 1.5.8"},
+      {:phoenix_ecto, "~> 4.1"},
+      {:ecto_sql, "~> 3.4"},
+      {:postgrex, ">= 0.0.0"},
+      {:phoenix_live_view, "~> 0.15.1"},
+      {:floki, ">= 0.27.0", only: :test},
+      {:phoenix_html, "~> 2.11"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_live_dashboard, "~> 0.4"},
+      {:telemetry_metrics, "~> 0.4"},
+      {:telemetry_poller, "~> 0.4"},
+      {:gettext, "~> 0.11"},
+      {:jason, "~> 1.0"},
+      {:plug_cowboy, "~> 2.0"},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+-     {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false}
++     {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
++     {:finch, "~> 0.7.0"}
+    ]
+  end
+  ...
+end
+```
+
+```shell
+mix deps.get
+```
+
+The next thing I will do is to create a sub directory of `/lib/ice_bear` that will encompass the context of my Telegram client code. I will start off with just creating the `client.ex`.
+
+```shell
+mkdir lib/ice_bear/telegram
+touch lib/ice_bear/telegram/client.ex
+```
+
+The `child_spec/0` function will be used in `lib/ice_bear/application.ex` to start up the Finch connection pool in Ice Bear's supervision tree.
+
+```elixir:lib/ice_bear/telegram/client.ex
+defmodule IceBear.Telegram.Client do
+  @api_base_uri "https://api.telegram.org"
+  @pool_size 2
+
+  def child_spec do
+    {Finch,
+     name: __MODULE__,
+     pools: %{
+       @api_base_uri => [size: @pool_size]
+     }}
+  end
+end
+```
+
+```diff:lib/ice_bear/application.ex
+defmodule IceBear.Application do
+  ...
+  def start(_type, _args) do
+    children = [
+      # Start the Ecto repository
+      IceBear.Repo,
+      # Start the Telemetry supervisor
+      IceBearWeb.Telemetry,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: IceBear.PubSub},
+      # Start the Endpoint (http/https)
+-     IceBearWeb.Endpoint
++     IceBearWeb.Endpoint,
++     # Start Finch Connection Pool.
++     IceBear.Telegram.Client.child_spec()
+    ]
+
+    # See https://hexdocs.pm/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: IceBear.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+  ...
+end
+```
+
+Now we can slide on over to `iex` and check to see if this code is running as I would expect it too:
+
+```shell
+iex -S mix
+Erlang/OTP 24 [erts-12.0.2] [source] [64-bit] [smp:16:16] [ds:16:16:10] [async-threads:1] [jit] [dtrace]
+
+Compiling 2 files (.ex)
+Interactive Elixir (1.12.1) - press Ctrl+C to exit (type h() ENTER for help)
+iex(1)> IceBear.Telegram.Client.child_spec()
+{Finch,
+ [
+   name: IceBear.Telegram.Client,
+   pools: %{"https://api.telegram.org" => [size: 2]}
+ ]}
+iex(2)>
+```
+
+## C
+
+## D
+
+<Signature>~ Cody 🚀</Signature>
