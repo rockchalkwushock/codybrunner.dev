@@ -168,38 +168,38 @@ const colorMap: Record<string, Styles> = {
   },
   sql: {
     bg: {
-      default: 'bg-lightBlue-200',
-      dark: 'dark:bg-lightBlue-500',
+      default: 'bg-sky-200',
+      dark: 'dark:bg-sky-500',
     },
     border: {
-      default: 'border-lightBlue-500',
+      default: 'border-sky-500',
     },
   },
   tailwindcss: {
     bg: {
-      default: 'bg-lightBlue-200',
-      dark: 'dark:bg-lightBlue-500',
+      default: 'bg-sky-200',
+      dark: 'dark:bg-sky-500',
     },
     border: {
-      default: 'border-lightBlue-500',
+      default: 'border-sky-500',
     },
   },
   typescript: {
     bg: {
-      default: 'bg-lightBlue-200',
-      dark: 'dark:bg-lightBlue-500',
+      default: 'bg-sky-200',
+      dark: 'dark:bg-sky-500',
     },
     border: {
-      default: 'border-lightBlue-500',
+      default: 'border-sky-500',
     },
   },
   vscode: {
     bg: {
-      default: 'bg-lightBlue-200',
-      dark: 'dark:bg-lightBlue-500',
+      default: 'bg-sky-200',
+      dark: 'dark:bg-sky-500',
     },
     border: {
-      default: 'border-lightBlue-500',
+      default: 'border-sky-500',
     },
   },
 }

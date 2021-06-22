@@ -38,12 +38,12 @@ export const CodeBlock: React.FC<Props> = ({ code, language }) => {
               <XCircle className="absolute right-4 text-red-300 top-4" />
             )}
             {tokens.map((line, i) => (
-              <div {...getLineProps({ line, key: i })}>
+              <div key={i} {...getLineProps({ line, key: i })}>
                 <span className="inline-block opacity-30 select-none w-8">
                   {i + 1}
                 </span>
                 {line.map((token, key) => (
-                  <span {...getTokenProps({ token, key })} />
+                  <span key={key} {...getTokenProps({ token, key })} />
                 ))}
               </div>
             ))}

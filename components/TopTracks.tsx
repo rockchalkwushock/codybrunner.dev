@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Loader } from 'react-feather'
 
+import { Image, externalURLLoader } from './Image'
 import { useTopTracks } from '@hooks/useTopTracks'
 
 export const TopTracks: React.FC = () => {
@@ -29,10 +30,13 @@ export const TopTracks: React.FC = () => {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  <img
+                  <Image
                     alt={name}
                     className="h-16 rounded-full w-16"
+                    height={64}
+                    loader={externalURLLoader}
                     src={image.url}
+                    width={64}
                   />
                   <div className="flex flex-col space-y-0 5">
                     <span className="font-medium text-xl">{name}</span>

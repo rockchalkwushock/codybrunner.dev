@@ -7,9 +7,8 @@ module.exports = withTM({
   env: {
     AMPLITUDE_API_KEY: process.env.AMPLITUDE_API_KEY,
   },
-  future: {
-    strictPostcssConfiguration: true,
-    webpack5: true,
+  eslint: {
+    dirs: ['components', 'hooks', 'layouts', 'lib', 'pages', 'utils'],
   },
   reactStrictMode: true,
   // https://github.com/leerob/leerob.io/blob/main/next.config.js
@@ -21,7 +20,7 @@ module.exports = withTM({
       },
     ]
   },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  webpack: (config, { dev, isServer }) => {
     if (!isServer) {
       // https://github.com/vercel/next.js/issues/7755
       config.resolve = {
@@ -52,6 +51,7 @@ const CSP = `
   connect-src *;
   default-src 'self';
   font-src 'self';
+  frame-ancestors 'self' https://appt.link/';
   frame-src appt.link giphy.com platform.twitter.com *.youtube.com;
   img-src * blob: data:;
   media-src 'none';
@@ -78,10 +78,11 @@ const securityHeaders = [
     value: 'origin-when-cross-origin',
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
-  {
-    key: 'X-Frame-Options',
-    value: 'ALLOW-FROM https://appt.link/',
-  },
+  // Opt for 'frame-ancestors' instead, better modern browser support.
+  // {
+  //   key: 'X-Frame-Options',
+  //   value: 'ALLOW-FROM https://appt.link/',
+  // },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
   {
     key: 'X-Content-Type-Options',
@@ -93,10 +94,11 @@ const securityHeaders = [
     value: 'on',
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
-  {
-    key: 'Strict-Transport-Security',
-    value: 'max-age=31536000; includeSubDomains; preload',
-  },
+  // Get this for free from Vercel.
+  // {
+  //   key: 'Strict-Transport-Security',
+  //   value: 'max-age=31536000; includeSubDomains; preload',
+  // },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy
   // Opt-out of Google FLoC: https://amifloced.org/
   {

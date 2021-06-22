@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Loader } from 'react-feather'
 
+import { Image, externalURLLoader } from './Image'
 import { useTopArtists } from '@hooks/useTopArtists'
 
 export const TopArtists: React.FC = () => {
@@ -29,10 +30,13 @@ export const TopArtists: React.FC = () => {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  <img
+                  <Image
                     alt={name}
                     className="h-16 rounded-full w-16"
+                    height={64}
+                    loader={externalURLLoader}
                     src={image.url}
+                    width={64}
                   />
                   <span className="text-xl">{name}</span>
                 </a>

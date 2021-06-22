@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import { Image, externalURLLoader } from './Image'
 import { constants } from '@utils/constants'
 
 export const Books: React.FC = () => {
@@ -22,7 +23,14 @@ export const Books: React.FC = () => {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <img alt={title} className="h-20 w-18" src={image} />
+              <Image
+                alt={title}
+                className="h-20 w-16"
+                height={100}
+                loader={externalURLLoader}
+                src={image}
+                width={100}
+              />
               <h2 className="text-right md:text-xl">{title}</h2>
             </a>
           </li>
