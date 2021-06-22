@@ -51,6 +51,7 @@ const CSP = `
   connect-src *;
   default-src 'self';
   font-src 'self';
+  frame-ancestors 'self' https://appt.link/';
   frame-src appt.link giphy.com platform.twitter.com *.youtube.com;
   img-src * blob: data:;
   media-src 'none';
@@ -77,10 +78,11 @@ const securityHeaders = [
     value: 'origin-when-cross-origin',
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
-  {
-    key: 'X-Frame-Options',
-    value: 'ALLOW-FROM https://appt.link/',
-  },
+  // Opt for 'frame-ancestors' instead, better modern browser support.
+  // {
+  //   key: 'X-Frame-Options',
+  //   value: 'ALLOW-FROM https://appt.link/',
+  // },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
   {
     key: 'X-Content-Type-Options',
@@ -92,10 +94,11 @@ const securityHeaders = [
     value: 'on',
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
-  {
-    key: 'Strict-Transport-Security',
-    value: 'max-age=31536000; includeSubDomains; preload',
-  },
+  // Get this for free from Vercel.
+  // {
+  //   key: 'Strict-Transport-Security',
+  //   value: 'max-age=31536000; includeSubDomains; preload',
+  // },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy
   // Opt-out of Google FLoC: https://amifloced.org/
   {
