@@ -7,9 +7,8 @@ module.exports = withTM({
   env: {
     AMPLITUDE_API_KEY: process.env.AMPLITUDE_API_KEY,
   },
-  future: {
-    strictPostcssConfiguration: true,
-    webpack5: true,
+  eslint: {
+    dirs: ['components', 'hooks', 'layouts', 'lib', 'pages', 'utils'],
   },
   reactStrictMode: true,
   // https://github.com/leerob/leerob.io/blob/main/next.config.js
@@ -21,7 +20,7 @@ module.exports = withTM({
       },
     ]
   },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  webpack: (config, { dev, isServer }) => {
     if (!isServer) {
       // https://github.com/vercel/next.js/issues/7755
       config.resolve = {
