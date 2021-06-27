@@ -25,7 +25,7 @@ class MyDocument extends Document {
           <link href="/favicons/site.webmanifest" rel="manifest" />
           <link href="/favicons/favicon.ico" rel="shortcut icon" />
         </Head>
-        <body className="max-w-5xl mx-auto">
+        <body className="bg-primary max-w-5xl mx-auto text-primary">
           <Main />
           <NextScript />
         </body>

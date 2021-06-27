@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   darkMode: false,
   important: true,
@@ -9,6 +11,7 @@ module.exports = {
   purge: ['./components/*.tsx', './layouts/*.tsx', './pages/**/*.tsx'],
   theme: {
     colors: {
+      black: colors.black,
       // These must be included manually.
       current: 'currentColor',
       transparent: 'transparent',
@@ -16,6 +19,7 @@ module.exports = {
       linkedIn: '#0072B1',
       // bg-twitter || text-twitter
       twitter: '#1DA1F2',
+      white: colors.white,
     },
     extend: {
       animation: {
@@ -72,12 +76,6 @@ module.exports = {
           '50%': { transform: 'rotate(12deg) scale(0.95)' },
         },
       },
-      stroke: theme => ({
-        'accent-1': theme('colors.teal.200'),
-        'accent-2': theme('colors.fuchsia.900'),
-        'accent-3': theme('colors.amber.200'),
-        'accent-4': theme('colors.amber.500'),
-      }),
     },
   },
   variants: {
