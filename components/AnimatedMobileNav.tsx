@@ -197,7 +197,7 @@ export const AnimatedMobileNav: React.FC = () => {
       ref={containerRef}
     >
       <motion.div
-        className="absolute bg-blueGray-200 bottom-0 left-0 shadow-lg top-0 z-20"
+        className="absolute bottom-0 left-0 shadow-lg top-0 z-20"
         variants={mobileNavVariants}
       />
       <AnimatedMenu onNavigate={onNavigate} />

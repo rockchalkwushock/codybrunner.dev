@@ -10,12 +10,10 @@ interface Props extends Pick<Post, 'frontMatter'> {}
 export const ArchivedPost: React.FC<Props> = ({ frontMatter }) => {
   return (
     <PostLink slug={frontMatter.slug}>
-      <li className="bg-accent border border-transparent flex p-4 rounded-lg shadow-md text-coolGray-900 md:justify-between">
+      <li className="border border-transparent flex p-4 rounded-lg shadow-md md:justify-between">
         <div className="flex flex-col md:flex-col">
           <h2 className="text-lg underline">{frontMatter.title}</h2>
-          <span className="italic text-accent-secondary">
-            {frontMatter.description}
-          </span>
+          <span className="italic">{frontMatter.description}</span>
           <ul className="hidden md:flex md:items-center md:mt-2 md:space-x-4">
             {frontMatter.tags.map(tag => (
               <Tag key={tag} tag={tag} />

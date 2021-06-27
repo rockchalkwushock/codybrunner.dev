@@ -1,5 +1,3 @@
-const colors = require('tailwindcss/colors')
-
 module.exports = {
   darkMode: false,
   important: true,
@@ -10,6 +8,15 @@ module.exports = {
   ],
   purge: ['./components/*.tsx', './layouts/*.tsx', './pages/**/*.tsx'],
   theme: {
+    colors: {
+      // These must be included manually.
+      current: 'currentColor',
+      transparent: 'transparent',
+      // bg-linkedIn || text-linkedIn
+      linkedIn: '#0072B1',
+      // bg-twitter || text-twitter
+      twitter: '#1DA1F2',
+    },
     extend: {
       animation: {
         // animate-move
@@ -23,17 +30,6 @@ module.exports = {
         // bg-instagram
         instagram:
           'radial-gradient(circle at 30% 107%, #fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%)',
-      },
-      colors: {
-        // These must be included manually.
-        current: 'currentColor',
-        transparent: 'transparent',
-        // bg-linkedIn || text-linkedIn
-        linkedIn: '#0072B1',
-        // bg-twitter || text-twitter
-        twitter: '#1DA1F2',
-        // Exposes the whole Tailwind color palette.
-        ...colors,
       },
       fill: theme => ({
         // fill-spotify

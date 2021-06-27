@@ -13,7 +13,7 @@ export const NowPlaying: React.FC = () => {
     // animate-move block overflow-x-hidden transform translate-x-full
     <div className="flex items-center space-x-2">
       <div className="flex-shrink-0 h-5 relative w-5">
-        <div className="absolute bg-black inset-0 rounded-full">
+        <div className="absolute inset-0 rounded-full">
           <svg className="h-5 rounded-full w-5" viewBox="0 0 168 168">
             <path
               className="fill-spotify"
@@ -46,7 +46,7 @@ export const NowPlaying: React.FC = () => {
                 (data as CurrentTrack)['artist']}{' '}
               -
             </span>
-            <span className="text-secondary">{data.name}</span>
+            <span className="">{data.name}</span>
           </a>
         </div>
       )}

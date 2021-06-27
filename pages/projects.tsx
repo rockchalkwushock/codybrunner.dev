@@ -19,7 +19,7 @@ const Projects: React.FC = () => {
           <div className="flex overflow-x-scroll space-x-2 md:space-x-4">
             {Object.keys(projects).map(key => (
               <Tab key={`${key}--Tab`} projectKey={key as ProjectKey}>
-                <button className="bg-accent border border-transparent px-4 py-2 rounded-full text-accent-secondary uppercase">
+                <button className="border border-transparent px-4 py-2 rounded-full uppercase">
                   {key}
                 </button>
               </Tab>

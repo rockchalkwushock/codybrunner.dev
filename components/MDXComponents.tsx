@@ -24,7 +24,7 @@ export const Giphy: React.FC<{ giphyId: string }> = ({ giphyId }) => {
 
 export const Grid: React.FC = ({ children }) => {
   return (
-    <div className="bg-secondary gap-4 grid grid-cols-3 justify-items-center p-4 place-items-center rounded-lg shadow-md md:grid-cols-5">
+    <div className="gap-4 grid grid-cols-3 justify-items-center p-4 place-items-center rounded-lg shadow-md md:grid-cols-5">
       {children}
     </div>
   )

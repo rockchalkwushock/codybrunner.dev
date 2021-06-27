@@ -9,16 +9,16 @@ body {
 
 @layer components {
   .divider {
-    @apply border-teal-200 my-8;
+    @apply my-8;
   }
   .draft-banner {
-    @apply border-2 danger-theme flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
+    @apply border-2 flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
   }
   .pagination-button {
-    @apply bg-accent border border-transparent px-8 py-2 rounded-lg shadow-md text-fuchsia-800  text-xl;
+    @apply border border-transparent px-8 py-2 rounded-lg shadow-md text-xl;
   }
   .project-card {
-    @apply bg-accent border border-accent flex flex-col p-4 rounded-lg shadow-md text-accent-secondary;
+    @apply border flex flex-col p-4 rounded-lg shadow-md;
 
     :first-child {
       @apply flex items-center justify-between;
@@ -37,11 +37,10 @@ body {
     }
 
     p {
-      @apply text-gray-500;
     }
   }
   .social-button {
-    @apply bg-transparent duration-100 ease-in-out rounded-full text-accent transition-all hover:p-2 hover:text-white;
+    @apply bg-transparent duration-100 ease-in-out rounded-full transition-all hover:p-2;
     a > svg {
       @apply h-8 w-8;
     }
@@ -49,34 +48,6 @@ body {
 }
 
 @layer utilities {
-  .bg-accent {
-    @apply bg-teal-200;
-  }
-  .bg-primary {
-    @apply bg-coolGray-800;
-  }
-  .bg-secondary {
-    @apply bg-blueGray-200;
-  }
-  .border-accent {
-    @apply border-teal-200;
-  }
-  .text-accent {
-    @apply text-teal-200;
-  }
-  .text-accent-secondary {
-    @apply text-coolGray-900;
-  }
-  .text-primary {
-    @apply text-white;
-  }
-  .text-secondary {
-    @apply text-coolGray-300;
-  }
-  // One-Offs
-  .danger-theme {
-    @apply bg-red-500 text-red-200;
-  }
   .night-owl-theme {
     background-color: rgb(1, 22, 39, 1);
     color: rgb(214, 222, 235, 1);
@@ -84,11 +55,10 @@ body {
 }
 
 .prose {
-  @apply text-coolGray-100;
   a {
-    @apply font-normal text-accent hover:no-underline hover:text-fuchsia-400;
+    @apply font-normal hover:no-underline;
     > code {
-      @apply font-normal italic hover:no-underline hover:text-fuchsia-400;
+      @apply font-normal italic hover:no-underline;
       &::after,
       &::before {
         content: none;
@@ -101,27 +71,25 @@ body {
   }
 
   blockquote {
-    @apply bg-accent border border-transparent font-light italic rounded-md shadow-lg text-black;
+    @apply border border-transparent font-light italic rounded-md shadow-lg;
     > p {
       @apply my-2;
       a {
-        @apply text-fuchsia-900;
       }
       code {
-        @apply bg-transparent p-0 rounded-none text-black;
+        @apply bg-transparent p-0 rounded-none;
         &::after,
         &::before {
           content: none;
         }
       }
       strong {
-        @apply text-black;
       }
     }
   }
 
   code {
-    @apply bg-blueGray-500 font-normal italic px-2 py-1 rounded-full;
+    @apply font-normal italic px-2 py-1 rounded-full;
     &::after,
     &::before {
       content: none;
@@ -129,7 +97,7 @@ body {
   }
 
   del {
-    @apply font-semibold text-red-600;
+    @apply font-semibold;
   }
 
   h1,
@@ -143,20 +111,18 @@ body {
   h1,
   h2,
   h3 {
-    @apply text-accent;
   }
 
   h4,
   h5 {
-    @apply text-fuchsia-400;
   }
 
   h6 {
-    @apply font-mono text-indigo-400 text-2xl;
+    @apply font-mono text-2xl;
   }
 
   hr {
-    @apply border-blueGray-400 my-8;
+    @apply my-8;
   }
 
   img {
@@ -164,15 +130,13 @@ body {
   }
 
   strong {
-    @apply font-semibold text-accent;
+    @apply font-semibold;
   }
 
   ol > li::before {
-    @apply text-accent;
   }
 
   ul > li::before {
-    @apply bg-accent;
   }
 
   .contains-task-list {
@@ -201,7 +165,7 @@ body {
   }
 
   .rehype-code-title:defined {
-    @apply border-b border-teal-200 leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg;
+    @apply border-b leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg;
   }
 
   .rehype-code-title + pre {

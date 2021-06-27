@@ -14,83 +14,83 @@ type Styles = {
 // not just the "color" (eg: "red").
 const colorMap: Record<string, Styles> = {
   cli: {
-    bg: 'bg-rose-500',
-    border: 'border-rose-500',
+    bg: '',
+    border: '',
   },
   colombia: {
-    bg: 'bg-gradient-to-b from-yellow-500 via-blue-500 to-red-500',
-    border: 'border-blueGray-500',
+    bg: '',
+    border: '',
   },
   django: {
-    bg: 'bg-blue-500',
-    border: 'border-blue-500',
+    bg: '',
+    border: '',
   },
   elixir: {
-    bg: 'bg-purple-500',
-    border: 'border-purple-500',
+    bg: '',
+    border: '',
   },
   graphql: {
-    bg: 'bg-pink-500',
-    border: 'border-pink-500',
+    bg: '',
+    border: '',
   },
   hugo: {
-    bg: 'bg-teal-500',
-    border: 'border-teal-500',
+    bg: '',
+    border: '',
   },
   javascript: {
-    bg: 'bg-yellow-500',
-    border: 'border-yellow-500',
+    bg: '',
+    border: '',
   },
   'live-view': {
-    bg: 'bg-orange-500',
-    border: 'border-orange-500',
+    bg: '',
+    border: '',
   },
   nextjs: {
-    bg: 'bg-cyan-500',
-    border: 'border-cyan-500',
+    bg: '',
+    border: '',
   },
   nodejs: {
-    bg: 'bg-green-500',
-    border: 'border-green-500',
+    bg: '',
+    border: '',
   },
   personal: {
-    bg: 'bg-violet-500',
-    border: 'border-violet-500',
+    bg: '',
+    border: '',
   },
   phoenix: {
-    bg: 'bg-orange-500',
-    border: 'border-orange-500',
+    bg: '',
+    border: '',
   },
   python: {
-    bg: 'bg-blue-500',
-    border: 'border-blue-500',
+    bg: '',
+    border: '',
   },
   react: {
-    bg: 'bg-cyan-500',
-    border: 'border-cyan-500',
+    bg: '',
+    border: '',
   },
   tailwindcss: {
-    bg: 'bg-sky-500',
-    border: 'border-sky-500',
+    bg: '',
+    border: '',
   },
   typescript: {
-    bg: 'bg-sky-500',
-    border: 'border-sky-500',
+    bg: '',
+    border: '',
   },
   vscode: {
-    bg: 'bg-sky-500',
-    border: 'border-sky-500',
+    bg: '',
+    border: '',
   },
 }
 
 export const Tag: React.FC<Props> = ({ tag }) => {
   const colors = colorMap[tag] || {
-    bg: 'bg-blueGray-500',
-    border: 'border-blueGray-500',
+    bg: '',
+    border: '',
   }
   return (
     <div
-      className={`${colors.bg} ${colors.border} border flex items-center justify-center px-2 py-0.5 rounded-full text-primary text-xs`}
+      className={`${colors.bg} ${colors.border} border flex items-center justify-center px-2 py-0.5 rounded-full text-xs`}
     >
       {tag}
     </div>

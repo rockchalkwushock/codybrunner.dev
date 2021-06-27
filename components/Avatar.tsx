@@ -7,7 +7,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Avatar: React.FC<Props> = ({ className }) => {
   return (
-    <div className={`bg-white relative rounded-full ${className ?? ''}`}>
+    <div className={`relative rounded-full ${className ?? ''}`}>
       <Image
         alt={constants.author}
         className="rounded-full"

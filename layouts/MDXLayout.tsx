@@ -26,7 +26,7 @@ export const MDXLayout: React.FC<Props> = ({
     <>
       {!frontMatter.published && <span className="draft-banner">DRAFT</span>}
       <header className="flex flex-col space-y-8 w-full">
-        <h1 className="text-accent text-5xl text-center md:text-left">
+        <h1 className="text-5xl text-center md:text-left">
           {frontMatter.title}
         </h1>
         <div className="flex flex-col items-center w-full md:flex-row md:justify-between">
@@ -34,14 +34,14 @@ export const MDXLayout: React.FC<Props> = ({
             <Avatar className="h-9 mr-2 w-9 lg:hidden" />
 
             <div className="flex flex-col">
-              <p className="text-secondary">
+              <p className="">
                 {`${constants.author} / ${formatDateTime(
                   frontMatter.createdAt,
                   'full-date-localized'
                 )}`}
               </p>
               {frontMatter.updatedAt && (
-                <span className="text-secondary">
+                <span className="">
                   Updated:{' '}
                   {formatDateTime(frontMatter.updatedAt, 'full-date-localized')}
                 </span>
@@ -49,7 +49,7 @@ export const MDXLayout: React.FC<Props> = ({
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <p className="text-secondary lg:pr-4">{frontMatter.readingTime}</p>
+            <p className="lg:pr-4">{frontMatter.readingTime}</p>
           </div>
         </div>
       </header>
@@ -77,7 +77,7 @@ export const MDXLayout: React.FC<Props> = ({
       {!!relatedPosts && !!relatedPosts.length && (
         <>
           <section>
-            <h1 className="mb-4 text-accent text-4xl">Related Posts</h1>
+            <h1 className="mb-4 text-4xl">Related Posts</h1>
             <ul className="flex flex-col items-center justify-center space-y-4 lg:items-start">
               {relatedPosts.map(({ frontMatter }) => (
                 <PostLink key={frontMatter.slug} slug={frontMatter.slug}>

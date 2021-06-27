@@ -8,8 +8,8 @@ import { constants } from '@utils/constants'
 export const Header: React.FC = () => {
   const { asPath } = useRouter()
   return (
-    <header className="bg-primary flex grid-in-header items-center justify-between sticky top-0 w-full z-50">
-      <div className="hidden lg:flex lg:items-center lg:space-x-40 lg:text-accent lg:text-2xl">
+    <header className="flex grid-in-header items-center justify-between sticky top-0 w-full z-50">
+      <div className="hidden lg:flex lg:items-center lg:space-x-40 lg:text-2xl">
         <h1 className="">codybrunner.dev</h1>
         <ul className="flex space-x-8">
           {constants.menu.map(({ path, text }) => (
@@ -21,15 +21,13 @@ export const Header: React.FC = () => {
               <MenuLink
                 aria-disabled={asPath === path}
                 className={`flex items-center justify-center ${
-                  asPath === path
-                    ? 'font-semibold text-fuchsia-500 underline'
-                    : 'group'
+                  asPath === path ? 'font-semibold underline' : 'group'
                 }`}
                 to={path}
               >
                 <span
                   aria-disabled={asPath === path}
-                  className="lg:group-hover:text-teal-600 lg:group-hover:ease-in-out lg:group-hover:scale-105 lg:group-hover:transform-gpu lg:group-hover:transition"
+                  className="lg:group-hover:ease-in-out lg:group-hover:scale-105 lg:group-hover:transform-gpu lg:group-hover:transition"
                 >
                   {text.toLowerCase()}
                 </span>
