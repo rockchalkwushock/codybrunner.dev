@@ -1,8 +1,7 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  // Enables the use of dark mode with 'next-themes'.
-  darkMode: 'class',
+  darkMode: false,
   important: true,
   mode: 'jit',
   plugins: [
@@ -96,8 +95,5 @@ module.exports = {
     gridTemplateAreas: ['responsive'],
     gridTemplateColumns: ['responsive'],
     gridTemplateRows: ['responsive'],
-    // Will enabled the ability to do the following:
-    // bg-black dark:bg-white
-    typography: ['dark'],
   },
 }

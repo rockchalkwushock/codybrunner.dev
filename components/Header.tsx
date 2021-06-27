@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 
 import { AnimatedMenuItem, AnimatedMobileNav } from './AnimatedMobileNav'
 import { MenuLink } from './MenuLink'
-import { ThemeToggle } from './ThemeToggle'
 import { constants } from '@utils/constants'
 
 export const Header: React.FC = () => {
@@ -41,7 +40,6 @@ export const Header: React.FC = () => {
         </ul>
       </div>
       <AnimatedMobileNav />
-      <ThemeToggle />
     </header>
   )
 }
