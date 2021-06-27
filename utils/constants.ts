@@ -78,7 +78,6 @@ export const constants: Constants = {
   menu: [
     { path: '/', text: 'Home' },
     { path: '/about', text: 'About' },
-    { path: '/blog', text: 'Blog' },
     { path: '/contact', text: 'Contact' },
     { path: '/projects', text: 'Projects' },
     { path: '/CodyBrunner.pdf', text: 'Resume' },
