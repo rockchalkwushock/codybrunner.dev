@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 // import { ReactQueryDevtools } from 'react-query/devtools'
 
 import '../styles/global.scss'
-import { Nav } from '@components/Nav'
 import { Aside } from '@components/Aside'
 import { Footer } from '@components/Footer'
 import { Header } from '@components/Header'
@@ -32,7 +31,6 @@ const App: React.FC<Props> = ({ Component, pageProps, router }) => {
     <QueryClientProvider client={queryClientRef.current}>
       <div className="gap-y-2 grid grid-areas-mobile grid-cols-mobile grid-rows-mobile min-h-screen md:gap-8 md:grid-areas-tablet md:grid-cols-tablet md:grid-rows-tablet lg:grid-areas-desktop lg:grid-cols-desktop lg:grid-rows-desktop">
         <Header />
-        <Nav />
         <Aside />
         <AnimatePresence exitBeforeEnter onExitComplete={handleExit}>
           <Component {...pageProps} key={router.asPath} />
