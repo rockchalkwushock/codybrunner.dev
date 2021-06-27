@@ -73,7 +73,7 @@ const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ onNavigate }) => {
               aria-disabled={asPath === path}
               className={`flex items-center justify-center ${
                 asPath === path
-                  ? 'bg-teal-600 dark:bg-fuchsia-400 border border-teal-600 dark:border-fuchsia-400 px-4 py-1 rounded-full uppercase'
+                  ? 'bg-fuchsia-400 border border-fuchsia-400 px-4 py-1 rounded-full uppercase'
                   : ''
               }`}
               onClick={onNavigate}
@@ -81,7 +81,7 @@ const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ onNavigate }) => {
             >
               <span
                 aria-disabled={asPath === path}
-                className="text-teal-200 dark:text-fuchsia-900 text-2xl"
+                className="text-fuchsia-900 text-2xl"
               >
                 {text}
               </span>
@@ -122,13 +122,13 @@ const AnimatedMenuToggle: React.FC<AnimatedMenuToggleProps> = ({ toggle }) => {
     >
       <svg height="24" viewBox="0 0 23 23" width="24">
         <motion.path
-          className="stroke-accent-1 dark:stroke-accent-2"
+          className="stroke-accent-2"
           strokeLinecap="round"
           strokeWidth="3"
           variants={toggleVariants[0]}
         />
         <motion.path
-          className="stroke-accent-1 dark:stroke-accent-2"
+          className="stroke-accent-2"
           d="M 2 9.423 L 20 9.423"
           strokeLinecap="round"
           strokeWidth="3"
@@ -136,7 +136,7 @@ const AnimatedMenuToggle: React.FC<AnimatedMenuToggleProps> = ({ toggle }) => {
           variants={toggleVariants[1]}
         />
         <motion.path
-          className="stroke-accent-1 dark:stroke-accent-2"
+          className="stroke-accent-2"
           strokeLinecap="round"
           strokeWidth="3"
           variants={toggleVariants[2]}
@@ -197,7 +197,7 @@ export const AnimatedMobileNav: React.FC = () => {
       ref={containerRef}
     >
       <motion.div
-        className="absolute bg-coolGray-900 bottom-0 left-0 shadow-lg top-0 z-20 dark:bg-blueGray-200"
+        className="absolute bg-blueGray-200 bottom-0 left-0 shadow-lg top-0 z-20"
         variants={mobileNavVariants}
       />
       <AnimatedMenu onNavigate={onNavigate} />

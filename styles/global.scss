@@ -9,13 +9,13 @@ body {
 
 @layer components {
   .divider {
-    @apply border-fuchsia-900 my-8 dark:border-teal-200;
+    @apply border-teal-200 my-8;
   }
   .draft-banner {
     @apply border-2 danger-theme flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
   }
   .pagination-button {
-    @apply bg-accent border border-transparent px-8 py-2 rounded-lg shadow-md text-teal-200 dark:text-fuchsia-800 text-xl;
+    @apply bg-accent border border-transparent px-8 py-2 rounded-lg shadow-md text-fuchsia-800  text-xl;
   }
   .project-card {
     @apply bg-accent border border-accent flex flex-col p-4 rounded-lg shadow-md text-accent-secondary;
@@ -37,7 +37,7 @@ body {
     }
 
     p {
-      @apply text-gray-300 dark:text-gray-500;
+      @apply text-gray-500;
     }
   }
   .social-button {
@@ -46,42 +46,36 @@ body {
       @apply h-8 w-8;
     }
   }
-  .theme-toggle {
-    @apply bg-coolGray-900 dark:bg-blueGray-200 border-0 cursor-pointer duration-300 ease-in-out flex h-14 items-center justify-center mr-2 outline-none rounded-full top-0 transform-gpu transition w-14 z-20 focus:outline-none hover:scale-110;
-    > svg {
-      @apply h-7 stroke-accent-1 dark:stroke-accent-2 w-7;
-    }
-  }
 }
 
 @layer utilities {
   .bg-accent {
-    @apply bg-fuchsia-900 dark:bg-teal-200;
+    @apply bg-teal-200;
   }
   .bg-primary {
-    @apply bg-blueGray-200 dark:bg-coolGray-800;
+    @apply bg-coolGray-800;
   }
   .bg-secondary {
-    @apply bg-coolGray-400 dark:bg-blueGray-200;
+    @apply bg-blueGray-200;
   }
   .border-accent {
-    @apply border-fuchsia-900 dark:border-teal-200;
+    @apply border-teal-200;
   }
   .text-accent {
-    @apply text-fuchsia-900 dark:text-teal-200;
+    @apply text-teal-200;
   }
   .text-accent-secondary {
-    @apply text-coolGray-50 dark:text-coolGray-900;
+    @apply text-coolGray-900;
   }
   .text-primary {
-    @apply text-black dark:text-white;
+    @apply text-white;
   }
   .text-secondary {
-    @apply text-coolGray-700 dark:text-coolGray-300;
+    @apply text-coolGray-300;
   }
   // One-Offs
   .danger-theme {
-    @apply bg-red-200 text-red-500 dark:bg-red-500 dark:text-red-200;
+    @apply bg-red-500 text-red-200;
   }
   .night-owl-theme {
     background-color: rgb(1, 22, 39, 1);
@@ -90,11 +84,11 @@ body {
 }
 
 .prose {
-  @apply text-coolGray-900 dark:text-coolGray-100;
+  @apply text-coolGray-100;
   a {
-    @apply font-normal text-accent hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
+    @apply font-normal text-accent hover:no-underline hover:text-fuchsia-400;
     > code {
-      @apply font-normal italic hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
+      @apply font-normal italic hover:no-underline hover:text-fuchsia-400;
       &::after,
       &::before {
         content: none;
@@ -107,27 +101,27 @@ body {
   }
 
   blockquote {
-    @apply bg-accent border border-transparent font-light italic rounded-md shadow-lg text-white dark:text-black;
+    @apply bg-accent border border-transparent font-light italic rounded-md shadow-lg text-black;
     > p {
       @apply my-2;
       a {
-        @apply text-teal-200 dark:text-fuchsia-900;
+        @apply text-fuchsia-900;
       }
       code {
-        @apply bg-transparent p-0 rounded-none text-white dark:bg-transparent dark:text-black;
+        @apply bg-transparent p-0 rounded-none text-black;
         &::after,
         &::before {
           content: none;
         }
       }
       strong {
-        @apply text-white dark:text-black;
+        @apply text-black;
       }
     }
   }
 
   code {
-    @apply bg-blueGray-300 font-normal italic px-2 py-1 rounded-full dark:bg-blueGray-500;
+    @apply bg-blueGray-500 font-normal italic px-2 py-1 rounded-full;
     &::after,
     &::before {
       content: none;
@@ -154,11 +148,11 @@ body {
 
   h4,
   h5 {
-    @apply text-teal-600 dark:text-fuchsia-400;
+    @apply text-fuchsia-400;
   }
 
   h6 {
-    @apply font-mono text-indigo-600 text-2xl dark:text-indigo-400;
+    @apply font-mono text-indigo-400 text-2xl;
   }
 
   hr {
@@ -207,7 +201,7 @@ body {
   }
 
   .rehype-code-title:defined {
-    @apply border-b border-fuchsia-900 leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg dark:border-teal-200;
+    @apply border-b border-teal-200 leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg;
   }
 
   .rehype-code-title + pre {

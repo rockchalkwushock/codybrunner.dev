@@ -25,10 +25,7 @@ export const ProjectCard: React.FC<Props> = ({
             <h2>{name}</h2>
           </a>
           {isArchived && (
-            <Archive
-              aria-label="Archived"
-              className="text-red-300 dark:text-red-500"
-            />
+            <Archive aria-label="Archived" className="text-red-500" />
           )}
         </div>
 
@@ -40,7 +37,7 @@ export const ProjectCard: React.FC<Props> = ({
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Code className="text-blue-300 dark:text-blue-500" />
+              <Code className="text-blue-500" />
             </a>
           )}
         </div>
