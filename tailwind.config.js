@@ -44,13 +44,10 @@ module.exports = {
       // - grid-areas-mobile
       // - grid-areas-tablet
       // - grid-areas-desktop
-      // - grid-areas-nav
-      // - grid-in-<name> (i.e. grid-in-nav)
       gridTemplateAreas: {
-        mobile: ['header', 'section', 'nav', 'footer'],
-        tablet: ['header', 'section', 'nav', 'footer'],
-        desktop: ['header header', 'aside section', 'nav nav', 'footer footer'],
-        nav: ['nav-col-1', 'nav-col-2'],
+        mobile: ['header', 'section', 'footer'],
+        tablet: ['header', 'section', 'footer'],
+        desktop: ['header header', 'aside section', 'footer footer'],
       },
       // Defines the template columns using 'grid-template-columns':
       // Generates:
@@ -61,7 +58,6 @@ module.exports = {
         mobile: 'minmax(300px, auto)',
         tablet: 'minmax(300px, auto)',
         desktop: '300px minmax(300px, auto)',
-        nav: '150px 150px',
       },
       // Defines the template rows using 'grid-template-rows':
       // Generates:
@@ -72,7 +68,6 @@ module.exports = {
         mobile: '80px 1fr minmax(max-content, auto) minmax(max-content, auto)',
         tablet: '80px 1fr minmax(max-content, auto) minmax(max-content, auto)',
         desktop: '80px 1fr minmax(max-content, auto) minmax(max-content, auto)',
-        nav: '1fr 1fr 1fr',
       },
       keyframes: {
         move: { to: { transform: 'translateX(-100%)' } },
