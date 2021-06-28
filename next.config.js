@@ -50,13 +50,13 @@ const CSP = `
   child-src appt.link api.amplitude.com;
   connect-src *;
   default-src 'self';
-  font-src 'self';
+  font-src 'self' *.gstatic.com;
   frame-ancestors 'self' https://appt.link/';
   frame-src appt.link giphy.com platform.twitter.com *.youtube.com;
   img-src * blob: data:;
   media-src 'none';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' api.amplitude.com platform.twitter.com *.youtube.com;
-  style-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline' *.googleapis.com;
 `
 
 const securityHeaders = [

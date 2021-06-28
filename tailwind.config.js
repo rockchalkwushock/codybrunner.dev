@@ -1,4 +1,4 @@
-const colors = require('tailwindcss/colors')
+const { colors, fontFamily } = require('tailwindcss/defaultTheme')
 
 module.exports = {
   darkMode: false,
@@ -11,15 +11,42 @@ module.exports = {
   purge: ['./components/*.tsx', './layouts/*.tsx', './pages/**/*.tsx'],
   theme: {
     colors: {
-      black: colors.black,
       // These must be included manually.
+      black: '#000000',
+      blue: {
+        500: colors.blue[500],
+      },
       current: 'currentColor',
+      red: {
+        500: colors.red[500],
+      },
       transparent: 'transparent',
+      white: '#ffffff',
+      yellow: {
+        500: colors.yellow[500],
+      },
+      // Custom colors.
+      accent: {
+        blue: '#2d64ae',
+        green: '#64bb91',
+        magenta: '#d52f77',
+        orange: '#ec7f31',
+        purple: '#8b68de',
+        red: '#dd3a5e',
+        teal: '#5bbbc6',
+        yellow: '#f1c946',
+      },
+      gray: {
+        dark: '#172024',
+        light: '#263337',
+        medium: '#253236',
+      },
+      primary: '#fdfdfd',
+      secondary: '#f5f5f5',
       // bg-linkedIn || text-linkedIn
       linkedIn: '#0072B1',
       // bg-twitter || text-twitter
       twitter: '#1DA1F2',
-      white: colors.white,
     },
     extend: {
       animation: {
@@ -39,6 +66,11 @@ module.exports = {
         // fill-spotify
         spotify: 'rgba(30, 215, 96, 1)',
       }),
+      fontFamily: {
+        ...fontFamily,
+        sans: ['Quicksand', ...fontFamily.sans],
+        'custom-header': ['Open Sans'],
+      },
       // Defines the template areas using 'grid-template-areas':
       // Generates:
       // - grid-areas-mobile

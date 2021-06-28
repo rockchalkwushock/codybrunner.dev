@@ -26,7 +26,7 @@ export const MDXLayout: React.FC<Props> = ({
     <>
       {!frontMatter.published && <span className="draft-banner">DRAFT</span>}
       <header className="flex flex-col space-y-8 w-full">
-        <h1 className="text-5xl text-center md:text-left">
+        <h1 className="font-custom-header text-5xl text-center md:text-left">
           {frontMatter.title}
         </h1>
         <div className="flex flex-col items-center w-full md:flex-row md:justify-between">
@@ -34,14 +34,14 @@ export const MDXLayout: React.FC<Props> = ({
             <Avatar className="h-9 mr-2 w-9 lg:hidden" />
 
             <div className="flex flex-col">
-              <p className="">
+              <p>
                 {`${constants.author} / ${formatDateTime(
                   frontMatter.createdAt,
                   'full-date-localized'
                 )}`}
               </p>
               {frontMatter.updatedAt && (
-                <span className="">
+                <span>
                   Updated:{' '}
                   {formatDateTime(frontMatter.updatedAt, 'full-date-localized')}
                 </span>

@@ -60,8 +60,8 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
         archive: createArchivedPostMap(
           filterPosts(posts, p => p.frontMatter.archived)
         ),
-        // Give the client the 3 latest posts.
-        posts: filterPosts(posts, p => !p.frontMatter.archived).slice(-5),
+        // All posts for current year.
+        posts: filterPosts(posts, p => !p.frontMatter.archived),
       },
     }
   } catch (error) {

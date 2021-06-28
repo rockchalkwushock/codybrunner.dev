@@ -6,7 +6,6 @@ interface Props {
 
 type Styles = {
   bg: string
-  border: string
 }
 
 // This is kind of ridiculous but this is what I have to do
@@ -14,83 +13,59 @@ type Styles = {
 // not just the "color" (eg: "red").
 const colorMap: Record<string, Styles> = {
   cli: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-red',
   },
   colombia: {
-    bg: '',
-    border: '',
-  },
-  django: {
-    bg: '',
-    border: '',
+    bg: 'bg-gradient-to-b from-yellow-500 via-blue-500 to-red-500',
   },
   elixir: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-purple',
   },
   graphql: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-magenta',
   },
   hugo: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-magenta',
   },
   javascript: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-yellow',
   },
   'live-view': {
-    bg: '',
-    border: '',
-  },
-  nextjs: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-orange',
   },
   nodejs: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-green',
   },
   personal: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-purple',
   },
   phoenix: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-orange',
   },
   python: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-blue',
   },
   react: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-teal',
   },
   tailwindcss: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-teal',
   },
   typescript: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-blue',
   },
   vscode: {
-    bg: '',
-    border: '',
+    bg: 'bg-accent-blue',
   },
 }
 
 export const Tag: React.FC<Props> = ({ tag }) => {
   const colors = colorMap[tag] || {
-    bg: '',
-    border: '',
+    bg: 'bg-gray-light',
   }
   return (
     <div
-      className={`${colors.bg} ${colors.border} border flex items-center justify-center px-2 py-0.5 rounded-full text-xs`}
+      className={`${colors.bg} border-current border flex items-center justify-center px-2 py-0.5 rounded-full shadow-md text-xs`}
     >
       {tag}
     </div>
