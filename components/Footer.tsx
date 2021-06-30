@@ -11,7 +11,7 @@ export const Footer: React.FC = () => {
         <NowPlaying />
         <a
           aria-label="Link to source code on GitHub"
-          className="lg:text-lg"
+          className="text-primary lg:text-lg"
           href={constants.externalLinks.source}
           rel="noopener noreferrer"
           target="_blank"

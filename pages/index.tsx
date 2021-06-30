@@ -24,7 +24,7 @@ const Home: React.FC<Props> = ({ archive, posts }) => {
   }
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <h1 className="mb-4 text-2xl">Latest Posts</h1>
+      <h1 className="font-medium mb-4 text-3xl underline">Latest Posts</h1>
       <ul className="flex flex-col mb-8 overflow-y-scroll p-2 space-y-6 lg:space-y-4">
         {posts.map(({ frontMatter }) => (
           <PostListItem
@@ -34,12 +34,14 @@ const Home: React.FC<Props> = ({ archive, posts }) => {
           />
         ))}
       </ul>
-      <h1 className="mb-4 text-2xl">Archive</h1>
+      <h1 className="font-medium mb-4 text-3xl underline">Archive</h1>
       <ul className="flex flex-col mb-8 overflow-y-scroll p-2 space-y-6 lg:space-y-4">
         {Object.keys(archive).map(year => (
           <div key={year}>
-            <h2 className="mb-4 text-xl underline">{year}</h2>
-            <ul className="flex flex-col space-y-6">
+            <h2 className="font-medium mb-4 text-accent-magenta text-2xl">
+              {year}
+            </h2>
+            <ul className="flex flex-col space-y-6 lg:ml-4 lg:space-y-4">
               {archive[year].map(({ frontMatter, source }) => (
                 <ArchivedPost frontMatter={frontMatter} key={source} />
               ))}

@@ -25,8 +25,8 @@ export const MDXLayout: React.FC<Props> = ({
   return (
     <>
       {!frontMatter.published && <span className="draft-banner">DRAFT</span>}
-      <header className="flex flex-col space-y-8 w-full">
-        <h1 className="font-custom-header text-5xl text-center md:text-left">
+      <header className="flex flex-col space-y-6 w-full">
+        <h1 className="font-custom-header leading-tight text-brand text-5xl text-center md:text-left">
           {frontMatter.title}
         </h1>
         <div className="flex flex-col items-center w-full md:flex-row md:justify-between">
@@ -54,7 +54,7 @@ export const MDXLayout: React.FC<Props> = ({
         </div>
       </header>
       <hr className="divider" />
-      <article className="max-w-none prose prose-lg md:prose-xl tracking-wide md:tracking-normal">
+      <article className="max-w-none prose prose-xl tracking-wide">
         <MDXContent
           components={{
             // @ts-ignore

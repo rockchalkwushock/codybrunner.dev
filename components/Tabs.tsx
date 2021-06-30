@@ -47,7 +47,7 @@ export const Tab: React.FC<{ projectKey: ProjectKey }> = ({
       className:
         ctx[0] === projectKey
           ? // @ts-ignore
-            `${children.props.className}`
+            `${children.props.className} bg-accent-purple font-semibold text-primary`
           : // @ts-ignore
             children.props.className,
       onClick,

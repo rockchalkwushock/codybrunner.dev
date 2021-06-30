@@ -37,7 +37,7 @@ class MyDocument extends Document {
           <link href="/favicons/site.webmanifest" rel="manifest" />
           <link href="/favicons/favicon.ico" rel="shortcut icon" />
         </Head>
-        <body className="bg-gray-dark max-w-5xl mx-auto text-primary">
+        <body className="bg-gradient-to-bl from-gray-dark via-gray-medium to-accent-blue max-w-5xl mx-auto text-primary">
           <Main />
           <NextScript />
         </body>

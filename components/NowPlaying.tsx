@@ -46,7 +46,7 @@ export const NowPlaying: React.FC = () => {
                 (data as CurrentTrack)['artist']}{' '}
               -
             </span>
-            <span className="">{data.name}</span>
+            <span className="text-secondary">{data.name}</span>
           </a>
         </div>
       )}

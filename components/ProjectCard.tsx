@@ -13,18 +13,25 @@ export const ProjectCard: React.FC<Props> = ({
   url,
 }) => {
   return (
-    <div className="project-card">
-      <div>
-        <div>
+    <div className="bg-brand border border-brand flex flex-col p-4 rounded-lg shadow-md text-gray-dark">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
           <a
             aria-label={`Link to ${name}`}
             href={url || source}
             rel="noopener noreferrer"
             target="_blank"
           >
-            <h2>{name}</h2>
+            <h2 className="font-semibold text-lg uppercase hover:underline">
+              {name}
+            </h2>
           </a>
-          {isArchived && <Archive aria-label="Archived" className="" />}
+          {isArchived && (
+            <Archive
+              aria-label="Archived"
+              className="h-5 w-5 text-accent-red"
+            />
+          )}
         </div>
 
         <div>
@@ -35,7 +42,7 @@ export const ProjectCard: React.FC<Props> = ({
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Code className="" />
+              <Code className="h-5 w-5 text-accent-blue" />
             </a>
           )}
         </div>

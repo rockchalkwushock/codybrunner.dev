@@ -16,6 +16,7 @@ module.exports = {
       blue: {
         500: colors.blue[500],
       },
+      brand: '#5bbbc6',
       current: 'currentColor',
       red: {
         500: colors.red[500],
@@ -33,7 +34,6 @@ module.exports = {
         orange: '#ec7f31',
         purple: '#8b68de',
         red: '#dd3a5e',
-        teal: '#5bbbc6',
         yellow: '#f1c946',
       },
       gray: {
@@ -42,7 +42,7 @@ module.exports = {
         medium: '#253236',
       },
       primary: '#fdfdfd',
-      secondary: '#f5f5f5',
+      secondary: '#e4e4e4',
       // bg-linkedIn || text-linkedIn
       linkedIn: '#0072B1',
       // bg-twitter || text-twitter
