@@ -53,14 +53,16 @@ export const MDXLayout: React.FC<Props> = ({
             <p className="lg:pr-4">{frontMatter.readingTime}</p>
           </div>
         </div>
-        <div className="flex flex-col items-center md:flex-row md:space-x-2">
-          <h2 className="hidden md:block">Tags:</h2>
-          <ul className="flex space-x-2">
-            {frontMatter.tags.map(tag => (
-              <Tag key={tag} tag={tag} />
-            ))}
-          </ul>
-        </div>
+        {frontMatter.slug !== 'about' && (
+          <div className="flex flex-col items-center md:flex-row md:space-x-2">
+            <h2 className="hidden md:block">Tags:</h2>
+            <ul className="flex space-x-2">
+              {frontMatter.tags.map(tag => (
+                <Tag key={tag} tag={tag} />
+              ))}
+            </ul>
+          </div>
+        )}
       </header>
       <hr className="divider" />
       <article className="max-w-none prose prose-xl tracking-wide">
