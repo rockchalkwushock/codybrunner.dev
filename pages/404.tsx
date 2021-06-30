@@ -28,7 +28,7 @@ const Custom404: React.FC = () => {
         <div className="flex justify-evenly w-full">
           <NextLink href="/">
             <button
-              className="px-10 py-2 md:px-16 md:py-3 rounded-lg shadow-md"
+              className="bg-accent-blue px-10 py-2 md:px-16 md:py-3 rounded-lg shadow-md"
               onClick={() => setEvent('User navigated home from 404.')}
             >
               💊
@@ -36,7 +36,7 @@ const Custom404: React.FC = () => {
           </NextLink>
           <a
             aria-label="Go trip acid"
-            className="px-10 py-2 md:px-16 md:py-3 rounded-lg shadow-md"
+            className="bg-accent-red px-10 py-2 md:px-16 md:py-3 rounded-lg shadow-md"
             href="https://www.youtube.com/watch?v=3KObylIFm-c"
             onClick={() => setEvent('User chose to trip acid.')}
             rel="noopener noreferrer"

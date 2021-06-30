@@ -13,7 +13,7 @@ export const ProjectCard: React.FC<Props> = ({
   url,
 }) => {
   return (
-    <div className="bg-brand border border-brand flex flex-col p-4 rounded-lg shadow-md text-gray-dark">
+    <div className="bg-accent-purple border border-accent-purple flex flex-col p-4 rounded-lg shadow-md text-gray-dark">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <a
