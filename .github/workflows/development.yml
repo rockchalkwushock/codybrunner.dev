@@ -63,8 +63,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && contains(github.ref, 'staging') }}
         uses: amondnet/vercel-action@v20.0.0
         with:
-          alias-domains: |
-            {{BRANCH}}.codybrunner.dev
+          alias-domains: staging.codybrunner.dev
           github-comment: true
           github-token: ${{ github.token }}
           vercel-args: '--prod'
