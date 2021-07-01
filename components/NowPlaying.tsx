@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { useNowPlaying } from '@hooks/useNowPlaying'
-import { CurrentEpisode, CurrentTrack, RecentTrack } from '@interfaces/spotify'
+import { CurrentEpisode, CurrentTrack } from '@interfaces/spotify'
 
 export const NowPlaying: React.FC = () => {
   const { data, status } = useNowPlaying()
@@ -10,10 +10,9 @@ export const NowPlaying: React.FC = () => {
     // Just hide the UI should we encounter an error.
     <div className="hidden" />
   ) : (
-    // animate-move block overflow-x-hidden transform translate-x-full
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 text-lg">
       <div className="flex-shrink-0 h-5 relative w-5">
-        <div className="absolute bg-black inset-0 rounded-full">
+        <div className="absolute inset-0 rounded-full">
           <svg className="h-5 rounded-full w-5" viewBox="0 0 168 168">
             <path
               className="fill-spotify"
@@ -28,15 +27,8 @@ export const NowPlaying: React.FC = () => {
       {/* Success State */}
       {status === 'success' && data && (
         <div className="flex-grow overflow-x-hidden">
-          {/* If I am not listening to Spotify then display the following. */}
-          {((data as CurrentEpisode).isPlaying === false ||
-            (data as CurrentTrack).isPlaying === false ||
-            (data as RecentTrack).isLastPlayed === false) && (
-            <p className="">Not Playing</p>
-          )}
-
           <a
-            className="font-medium inline-flex items-center space-x-2 md:animate-move md:transform-gpu md:translate-x-full lg:text-lg"
+            className="font-medium inline-flex items-center space-x-2 md:animate-move md:transform-gpu md:translate-x-full"
             href={data.url!}
             target="_blank"
             rel="noopener noreferrer"
