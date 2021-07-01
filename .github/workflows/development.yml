@@ -52,7 +52,7 @@ jobs:
         run: pnpm build
 
       - name: Deploying Feature Branch
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'pull_request' }}
         uses: amondnet/vercel-action@v20.0.0
         with:
           alias-domains: pr-{{PR_NUMBER}}.codybrunner.dev
