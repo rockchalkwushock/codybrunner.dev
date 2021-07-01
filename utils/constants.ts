@@ -34,11 +34,8 @@ type Constants = {
 }
 
 export const appRegex = {
-  archive: /(blog\/archive\/.+)/,
-  blog: /blog\//,
   blogSource: /data\/blog\//,
   mdx: /\.mdx?$/,
-  tsx: /\.tsx?$/,
 }
 
 export interface Project {
@@ -95,13 +92,7 @@ export const constants: Constants = {
 }
 
 export const paths = {
-  api: join(root, 'pages', 'api'),
   blog: join(root, 'data', 'blog'),
-  components: join(root, 'components'),
-  hooks: join(root, 'hooks'),
-  lib: join(root, 'lib'),
-  pages: join(root, 'pages'),
-  utils: join(root, 'utils'),
 }
 
 export const projects: Record<
