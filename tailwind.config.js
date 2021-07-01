@@ -13,20 +13,24 @@ module.exports = {
     colors: {
       // These must be included manually.
       black: '#000000',
+      // Used for the gradient effect for <Tag tag="colombia" />
       blue: {
         500: colors.blue[500],
       },
+      // bg-brand || border-brand || text-brand
       brand: '#5bbbc6',
       current: 'currentColor',
+      // Used for the gradient effect for <Tag tag="colombia" />
       red: {
         500: colors.red[500],
       },
       transparent: 'transparent',
       white: '#ffffff',
+      // Used for the gradient effect for <Tag tag="colombia" />
       yellow: {
         500: colors.yellow[500],
       },
-      // Custom colors.
+      // bg-accent-blue || border-accent-blue || text-accent-blue
       accent: {
         blue: '#2d64ae',
         green: '#64bb91',
@@ -36,9 +40,10 @@ module.exports = {
         red: '#dd3a5e',
         yellow: '#f1c946',
       },
+      // bg-gray-dark || border-gray-dark || text-gray-dark
       gray: {
         dark: '#172024',
-        light: '#263337',
+        light: '#3B4F55',
         medium: '#253236',
       },
       primary: '#fdfdfd',

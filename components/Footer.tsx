@@ -6,12 +6,12 @@ import { constants } from '@utils/constants'
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="grid-in-footer flex flex-col mb-8 mx-4 space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 lg:mx-0">
-      <div className="flex flex-col items-center space-y-4 md:flex-col-reverse md:items-start md:space-y-2">
+    <footer className="grid-in-footer flex flex-col mb-8 mx-4 space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 md:mb-0 lg:mx-0">
+      <div className="flex flex-col items-center space-y-2 md:flex-col-reverse md:items-start">
         <NowPlaying />
         <a
           aria-label="Link to source code on GitHub"
-          className="text-primary lg:text-lg"
+          className="text-primary text-lg"
           href={constants.externalLinks.source}
           rel="noopener noreferrer"
           target="_blank"
