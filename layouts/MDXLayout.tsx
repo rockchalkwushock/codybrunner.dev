@@ -58,7 +58,9 @@ export const MDXLayout: React.FC<Props> = ({
             <h2 className="hidden md:block">Tags:</h2>
             <ul className="flex space-x-2">
               {frontMatter.tags.map(tag => (
-                <Tag key={tag} tag={tag} />
+                <Tag key={tag} tag={tag}>
+                  {tag}
+                </Tag>
               ))}
             </ul>
           </div>
