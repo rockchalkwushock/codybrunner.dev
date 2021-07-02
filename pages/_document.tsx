@@ -5,6 +5,18 @@ class MyDocument extends Document {
     return (
       <Html lang="en-US">
         <Head>
+          {/* Google Fonts */}
+          <link href="https://fonts.googleapis.com" rel="preconnect" />
+          <link
+            crossOrigin="anonymous"
+            href="https://fonts.gstatic.com"
+            rel="preconnect"
+          />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Quicksand:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+          />
+          {/* Favicons */}
           <link
             rel="apple-touch-icon"
             sizes="180x180"
@@ -25,7 +37,7 @@ class MyDocument extends Document {
           <link href="/favicons/site.webmanifest" rel="manifest" />
           <link href="/favicons/favicon.ico" rel="shortcut icon" />
         </Head>
-        <body className="bg-primary max-w-5xl mx-auto text-primary">
+        <body className="bg-gray-dark max-w-5xl mx-auto text-primary md:bg-gradient-to-tl md:from-gray-dark md:via-gray-medium md:to-accent-blue">
           <Main />
           <NextScript />
         </body>

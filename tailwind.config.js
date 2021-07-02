@@ -1,8 +1,7 @@
-const colors = require('tailwindcss/colors')
+const { colors, fontFamily } = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  // Enables the use of dark mode with 'next-themes'.
-  darkMode: 'class',
+  darkMode: false,
   important: true,
   mode: 'jit',
   plugins: [
@@ -11,6 +10,49 @@ module.exports = {
   ],
   purge: ['./components/*.tsx', './layouts/*.tsx', './pages/**/*.tsx'],
   theme: {
+    colors: {
+      // These must be included manually.
+      black: '#000000',
+      // Used for the gradient effect for <Tag tag="colombia" />
+      blue: {
+        500: colors.blue[500],
+      },
+      // bg-brand || border-brand || text-brand
+      brand: '#5bbbc6',
+      current: 'currentColor',
+      // Used for the gradient effect for <Tag tag="colombia" />
+      red: {
+        500: colors.red[500],
+      },
+      transparent: 'transparent',
+      white: '#ffffff',
+      // Used for the gradient effect for <Tag tag="colombia" />
+      yellow: {
+        500: colors.yellow[500],
+      },
+      // bg-accent-blue || border-accent-blue || text-accent-blue
+      accent: {
+        blue: '#2d64ae',
+        green: '#64bb91',
+        magenta: '#d52f77',
+        orange: '#ec7f31',
+        purple: '#8b68de',
+        red: '#dd3a5e',
+        yellow: '#f1c946',
+      },
+      // bg-gray-dark || border-gray-dark || text-gray-dark
+      gray: {
+        dark: '#172024',
+        light: '#3B4F55',
+        medium: '#253236',
+      },
+      primary: '#fdfdfd',
+      secondary: '#e4e4e4',
+      // bg-linkedIn || text-linkedIn
+      linkedIn: '#0072B1',
+      // bg-twitter || text-twitter
+      twitter: '#1DA1F2',
+    },
     extend: {
       animation: {
         // animate-move
@@ -25,33 +67,24 @@ module.exports = {
         instagram:
           'radial-gradient(circle at 30% 107%, #fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%)',
       },
-      colors: {
-        // These must be included manually.
-        current: 'currentColor',
-        transparent: 'transparent',
-        // bg-linkedIn || text-linkedIn
-        linkedIn: '#0072B1',
-        // bg-twitter || text-twitter
-        twitter: '#1DA1F2',
-        // Exposes the whole Tailwind color palette.
-        ...colors,
-      },
       fill: theme => ({
         // fill-spotify
         spotify: 'rgba(30, 215, 96, 1)',
       }),
+      fontFamily: {
+        ...fontFamily,
+        sans: ['Quicksand', ...fontFamily.sans],
+        'custom-header': ['Open Sans'],
+      },
       // Defines the template areas using 'grid-template-areas':
       // Generates:
       // - grid-areas-mobile
       // - grid-areas-tablet
       // - grid-areas-desktop
-      // - grid-areas-nav
-      // - grid-in-<name> (i.e. grid-in-nav)
       gridTemplateAreas: {
-        mobile: ['header', 'section', 'nav', 'footer'],
-        tablet: ['header', 'section', 'nav', 'footer'],
-        desktop: ['header header', 'aside section', 'nav nav', 'footer footer'],
-        nav: ['nav-col-1', 'nav-col-2'],
+        mobile: ['header', 'section', 'footer'],
+        tablet: ['header', 'section', 'footer'],
+        desktop: ['header header', 'aside section', 'footer footer'],
       },
       // Defines the template columns using 'grid-template-columns':
       // Generates:
@@ -62,7 +95,6 @@ module.exports = {
         mobile: 'minmax(300px, auto)',
         tablet: 'minmax(300px, auto)',
         desktop: '300px minmax(300px, auto)',
-        nav: '150px 150px',
       },
       // Defines the template rows using 'grid-template-rows':
       // Generates:
@@ -73,7 +105,6 @@ module.exports = {
         mobile: '80px 1fr minmax(max-content, auto) minmax(max-content, auto)',
         tablet: '80px 1fr minmax(max-content, auto) minmax(max-content, auto)',
         desktop: '80px 1fr minmax(max-content, auto) minmax(max-content, auto)',
-        nav: '1fr 1fr 1fr',
       },
       keyframes: {
         move: { to: { transform: 'translateX(-100%)' } },
@@ -82,12 +113,6 @@ module.exports = {
           '50%': { transform: 'rotate(12deg) scale(0.95)' },
         },
       },
-      stroke: theme => ({
-        'accent-1': theme('colors.teal.200'),
-        'accent-2': theme('colors.fuchsia.900'),
-        'accent-3': theme('colors.amber.200'),
-        'accent-4': theme('colors.amber.500'),
-      }),
     },
   },
   variants: {
@@ -96,8 +121,5 @@ module.exports = {
     gridTemplateAreas: ['responsive'],
     gridTemplateColumns: ['responsive'],
     gridTemplateRows: ['responsive'],
-    // Will enabled the ability to do the following:
-    // bg-black dark:bg-white
-    typography: ['dark'],
   },
 }

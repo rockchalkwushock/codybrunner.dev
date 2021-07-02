@@ -9,80 +9,23 @@ body {
 
 @layer components {
   .divider {
-    @apply border-fuchsia-900 my-8 dark:border-teal-200;
+    @apply border-brand my-8;
   }
   .draft-banner {
-    @apply border-2 danger-theme flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
+    @apply bg-accent-red border-2 flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
   }
   .pagination-button {
-    @apply bg-accent border border-transparent px-8 py-2 rounded-lg shadow-md text-teal-200 dark:text-fuchsia-800 text-xl;
-  }
-  .project-card {
-    @apply bg-accent border border-accent flex flex-col p-4 rounded-lg shadow-md text-accent-secondary;
-
-    :first-child {
-      @apply flex items-center justify-between;
-
-      div {
-        @apply flex items-center space-x-2;
-      }
-
-      svg {
-        @apply h-5 w-5;
-      }
-    }
-
-    a > h2 {
-      @apply text-lg uppercase hover:underline;
-    }
-
-    p {
-      @apply text-gray-300 dark:text-gray-500;
-    }
+    @apply bg-brand border border-transparent px-8 py-2 rounded-lg shadow-md text-gray-dark text-xl hover:bg-accent-purple hover:text-accent-yellow;
   }
   .social-button {
-    @apply bg-transparent duration-100 ease-in-out rounded-full text-accent transition-all hover:p-2 hover:text-white;
+    @apply bg-transparent duration-100 ease-in-out rounded-full text-brand transition-all hover:p-2 hover:text-white;
     a > svg {
       @apply h-8 w-8;
-    }
-  }
-  .theme-toggle {
-    @apply bg-coolGray-900 dark:bg-blueGray-200 border-0 cursor-pointer duration-300 ease-in-out flex h-14 items-center justify-center mr-2 outline-none rounded-full top-0 transform-gpu transition w-14 z-20 focus:outline-none hover:scale-110;
-    > svg {
-      @apply h-7 stroke-accent-1 dark:stroke-accent-2 w-7;
     }
   }
 }
 
 @layer utilities {
-  .bg-accent {
-    @apply bg-fuchsia-900 dark:bg-teal-200;
-  }
-  .bg-primary {
-    @apply bg-blueGray-200 dark:bg-coolGray-800;
-  }
-  .bg-secondary {
-    @apply bg-coolGray-400 dark:bg-blueGray-200;
-  }
-  .border-accent {
-    @apply border-fuchsia-900 dark:border-teal-200;
-  }
-  .text-accent {
-    @apply text-fuchsia-900 dark:text-teal-200;
-  }
-  .text-accent-secondary {
-    @apply text-coolGray-50 dark:text-coolGray-900;
-  }
-  .text-primary {
-    @apply text-black dark:text-white;
-  }
-  .text-secondary {
-    @apply text-coolGray-700 dark:text-coolGray-300;
-  }
-  // One-Offs
-  .danger-theme {
-    @apply bg-red-200 text-red-500 dark:bg-red-500 dark:text-red-200;
-  }
   .night-owl-theme {
     background-color: rgb(1, 22, 39, 1);
     color: rgb(214, 222, 235, 1);
@@ -90,11 +33,11 @@ body {
 }
 
 .prose {
-  @apply text-coolGray-900 dark:text-coolGray-100;
+  @apply text-primary;
   a {
-    @apply font-normal text-accent hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
+    @apply font-normal text-brand hover:font-bold hover:no-underline hover:text-accent-yellow;
     > code {
-      @apply font-normal italic hover:text-fuchsia-600 hover:no-underline dark:text-teal-400 dark:hover:text-fuchsia-400;
+      @apply font-normal italic hover:no-underline;
       &::after,
       &::before {
         content: none;
@@ -107,27 +50,27 @@ body {
   }
 
   blockquote {
-    @apply bg-accent border border-transparent font-light italic rounded-md shadow-lg text-white dark:text-black;
+    @apply bg-gray-light border border-transparent font-medium italic rounded-md shadow-lg text-accent-yellow;
     > p {
       @apply my-2;
       a {
-        @apply text-teal-200 dark:text-fuchsia-900;
+        @apply text-brand;
       }
       code {
-        @apply bg-transparent p-0 rounded-none text-white dark:bg-transparent dark:text-black;
+        @apply bg-transparent p-0 rounded-none text-accent-purple;
         &::after,
         &::before {
           content: none;
         }
       }
       strong {
-        @apply text-white dark:text-black;
+        @apply text-accent-magenta;
       }
     }
   }
 
   code {
-    @apply bg-blueGray-300 font-normal italic px-2 py-1 rounded-full dark:bg-blueGray-500;
+    @apply font-normal italic text-accent-purple;
     &::after,
     &::before {
       content: none;
@@ -135,7 +78,7 @@ body {
   }
 
   del {
-    @apply font-semibold text-red-600;
+    @apply font-semibold text-accent-red;
   }
 
   h1,
@@ -143,26 +86,26 @@ body {
   h3,
   h4,
   h5 {
-    @apply font-semibold;
+    @apply font-custom-header font-semibold;
   }
 
   h1,
   h2,
   h3 {
-    @apply text-accent;
+    @apply text-brand;
   }
 
   h4,
   h5 {
-    @apply text-teal-600 dark:text-fuchsia-400;
+    @apply text-accent-purple;
   }
 
   h6 {
-    @apply font-mono text-indigo-600 text-2xl dark:text-indigo-400;
+    @apply font-mono text-brand text-2xl uppercase;
   }
 
   hr {
-    @apply border-blueGray-400 my-8;
+    @apply my-8 border-brand;
   }
 
   img {
@@ -170,15 +113,15 @@ body {
   }
 
   strong {
-    @apply font-semibold text-accent;
+    @apply font-bold text-accent-magenta;
   }
 
   ol > li::before {
-    @apply text-accent;
+    @apply text-brand;
   }
 
   ul > li::before {
-    @apply bg-accent;
+    @apply bg-brand;
   }
 
   .contains-task-list {
@@ -200,14 +143,14 @@ body {
     .twitter-tweet-mdx-embed {
       .twitter-tweet {
         iframe {
-          @apply bg-transparent rounded-2xl;
+          @apply bg-transparent rounded-xl;
         }
       }
     }
   }
 
   .rehype-code-title:defined {
-    @apply border-b border-fuchsia-900 leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg dark:border-teal-200;
+    @apply border-b border-brand leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg;
   }
 
   .rehype-code-title + pre {

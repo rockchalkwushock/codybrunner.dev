@@ -29,21 +29,21 @@ export const CodeBlock: React.FC<Props> = ({ code, language }) => {
           <pre className={`${className} group relative`} style={style}>
             {status === 'inactive' ? (
               <Copy
-                className="absolute cursor-pointer opacity-0 right-4 top-4 group-hover:opacity-100 hover:text-amber-300"
+                className="absolute cursor-pointer opacity-0 right-4 top-4 group-hover:opacity-100 hover:text-accent-yellow"
                 onClick={copy}
               />
             ) : status === 'copied' ? (
-              <CheckCircle className="absolute right-4 text-green-300 top-4" />
+              <CheckCircle className="absolute right-4 text-accent-green top-4" />
             ) : (
-              <XCircle className="absolute right-4 text-red-300 top-4" />
+              <XCircle className="absolute right-4 text-accent-red top-4" />
             )}
             {tokens.map((line, i) => (
-              <div {...getLineProps({ line, key: i })}>
+              <div key={i} {...getLineProps({ line, key: i })}>
                 <span className="inline-block opacity-30 select-none w-8">
                   {i + 1}
                 </span>
                 {line.map((token, key) => (
-                  <span {...getTokenProps({ token, key })} />
+                  <span key={key} {...getTokenProps({ token, key })} />
                 ))}
               </div>
             ))}

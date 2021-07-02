@@ -9,7 +9,7 @@ export const Aside: React.FC = () => {
     <aside className="grid-in-aside hidden lg:flex md:flex-col md:items-center md:p-4">
       <Avatar className="h-48 mb-4 w-48" />
       <ul className="flex flex-col items-center">
-        <li className="mb-4 text-accent text-2xl lg:text-3xl">
+        <li className="font-medium mb-4 text-brand text-2xl lg:text-3xl">
           {constants.author}
         </li>
         <li className="h-10 mb-4">
@@ -17,8 +17,8 @@ export const Aside: React.FC = () => {
             <SocialIcons />
           </ul>
         </li>
-        <li className="bg-accent flex flex-col items-center justify-center p-2 rounded-lg shadow-md w-48">
-          <p className="text-accent-secondary text-center lg:text-lg">
+        <li className="bg-gray-dark flex flex-col items-center justify-center p-3 rounded-lg shadow-md text-secondary w-48">
+          <p className="italic text-center lg:text-lg">
             Cody is a {constants.age} year old American software developer,
             Jayhawk, and US Navy veteran originally hailing from the boondocks
             of Kansas and now currently living with his wife and step-doggo in{' '}
