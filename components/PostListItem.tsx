@@ -35,8 +35,8 @@ export const PostListItem: React.FC<Props> = ({ dateFormat, frontMatter }) => {
         <p className="font-medium italic">{frontMatter.description}</p>
         <ul className="flex space-x-2">
           {frontMatter.tags.map(tag => (
-            <Tag key={tag.toLowerCase()} tag={tag.toLowerCase()}>
-              {tag.toLowerCase()}
+            <Tag key={tag} tag={tag}>
+              {tag}
             </Tag>
           ))}
         </ul>
