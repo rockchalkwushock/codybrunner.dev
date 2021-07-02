@@ -1,6 +1,7 @@
 import * as React from 'react'
+import NextLink from 'next/link'
 
-interface Props {
+interface Props extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   tag: string
 }
 
@@ -75,16 +76,31 @@ const colorMap: Record<string, Styles> = {
   },
 }
 
-export const Tag: React.FC<Props> = ({ tag }) => {
-  const colors = colorMap[tag] || {
-    bg: 'bg-gray-light',
-    border: 'border-gray-light',
+export const Tag = React.forwardRef<HTMLAnchorElement, Props>(
+  ({ children, className, onClick, tag, ...rest }, ref) => {
+    const colors = colorMap[tag] || {
+      bg: 'bg-gray-light',
+      border: 'border-gray-light',
+    }
+    return (
+      <NextLink
+        // Because posts are catch-all routes we need
+        // "tag" to be an array NOT a string.
+        href={{ pathname: '/tags/[...tag]', query: { tag } }}
+        passHref
+        // We set this to false so we don't get the wonky behavior of NextLink scrolling
+        // us to the top of the page and then framer-motion initiating the page transition.
+        scroll={false}
+      >
+        <a
+          {...rest}
+          className={`${colors.bg} ${colors.border} border flex items-center justify-center px-2 py-0.5 rounded-full shadow-md text-white text-xs hover:bg-black hover:border-black hover:shadow-none ${className}`}
+          onClick={onClick}
+          ref={ref}
+        >
+          {children}
+        </a>
+      </NextLink>
+    )
   }
-  return (
-    <div
-      className={`${colors.bg} ${colors.border} border flex items-center justify-center px-2 py-0.5 rounded-full shadow-md text-white text-xs`}
-    >
-      {tag}
-    </div>
-  )
-}
+)

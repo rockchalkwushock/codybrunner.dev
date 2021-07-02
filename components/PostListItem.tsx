@@ -24,11 +24,6 @@ export const PostListItem: React.FC<Props> = ({ dateFormat, frontMatter }) => {
             <h2 className="font-medium text-lg underline">
               {frontMatter.title}
             </h2>
-            {/* <ul className="hidden xl:flex xl:space-x-2">
-              {frontMatter.tags.map(tag => (
-                <Tag key={tag.toLowerCase()} tag={tag.toLowerCase()} />
-              ))}
-            </ul> */}
           </div>
           <p className="font-medium">
             {formatDateTime(
@@ -40,7 +35,9 @@ export const PostListItem: React.FC<Props> = ({ dateFormat, frontMatter }) => {
         <p className="font-medium italic">{frontMatter.description}</p>
         <ul className="flex space-x-2">
           {frontMatter.tags.map(tag => (
-            <Tag key={tag.toLowerCase()} tag={tag.toLowerCase()} />
+            <Tag key={tag.toLowerCase()} tag={tag.toLowerCase()}>
+              {tag.toLowerCase()}
+            </Tag>
           ))}
         </ul>
       </li>

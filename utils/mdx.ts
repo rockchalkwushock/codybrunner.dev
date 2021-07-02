@@ -143,6 +143,32 @@ export async function getAllPostsFrontMatter(): Promise<Array<Post>> {
   }
 }
 
+/**
+ * @name getPostsByTag
+ * @param posts {Array<Post>}
+ * @param tag {String}
+ * @returns {Array<Post>}
+ * @description Takes array of posts and a tag for returning an array
+ * of posts that are related to the tag input.
+ */
+export function getPostsByTag(posts: Array<Post>, tag: string): Array<Post> {
+  return posts.reduce((acc, post) => {
+    if (post.frontMatter.tags.includes(tag)) {
+      acc.push(post)
+    }
+    return acc
+  }, [] as Array<Post>)
+}
+
+/**
+ * @name getRelatedPosts
+ * @param currentPost {Post}
+ * @param posts {Array<Post>}
+ * @param quantity {number}
+ * @returns {Array<Post>}
+ * @description Fetches posts that are related to the current post via
+ * the tags of the current post.
+ */
 export function getRelatedPosts(
   currentPost: Post,
   posts: Array<Post>,
