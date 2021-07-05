@@ -124,6 +124,31 @@ body {
     @apply bg-brand;
   }
 
+  table {
+    thead {
+      tr {
+        @apply bg-accent-magenta;
+        th {
+          @apply py-2;
+
+          &:first-child {
+            @apply pl-2;
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        @apply bg-accent-green;
+        td {
+          &:first-child {
+            @apply pl-2;
+          }
+        }
+      }
+    }
+  }
+
   .contains-task-list {
     @apply list-none;
     .task-list-item {
