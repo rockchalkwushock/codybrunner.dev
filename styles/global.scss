@@ -50,7 +50,7 @@ body {
   }
 
   blockquote {
-    @apply bg-gray-light border border-transparent font-medium italic rounded-md shadow-lg text-accent-yellow;
+    @apply bg-gray-light border border-transparent font-medium italic px-4 py-2 rounded-md shadow-lg text-accent-yellow;
     > p {
       @apply my-2;
       a {
