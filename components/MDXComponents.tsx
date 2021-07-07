@@ -7,6 +7,12 @@ function splitArray<T>(arr: Array<T>) {
   return [firstHalf, secondHalf]
 }
 
+export const Center: React.FC = ({ children }) => {
+  return (
+    <div className="flex flex-col items-center justify-center">{children}</div>
+  )
+}
+
 export const Giphy: React.FC<{ giphyId: string }> = ({ giphyId }) => {
   return (
     <div className="h-32 mb-6 relative w-full md:h-44">
