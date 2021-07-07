@@ -17,7 +17,7 @@ tags:
 title: 'Ice Bear: Telegram Client'
 ---
 
-import { Signature } from '../components/MDXComponents.tsx'
+import { Center, Giphy, Signature } from '../components/MDXComponents.tsx'
 
 > Unfortunately I got pretty busy with job interviews and married life stuff so I haven't had much time in the last few weeks to work on IceBear. I have written the functionality for the Telegram client and the polling feature. I am trying to get this post and one more out the door before my wife and I travel and then move to another home...so here goes nothing! 😫😰
 
@@ -416,7 +416,10 @@ And not only do I get the output in iex that the request was a success I just he
 
 ![Ice Bear sends his first message](/images/2021/ice-bear/ice-bear-first-message.png)
 
-🎉🎉 **ICE BEAR LIVES!!!** 🎉🎉
+<Center>
+  🎉🎉 **ICE BEAR LIVES!!!** 🎉🎉
+  <Giphy giphyId="fYqzzDxirohL3ztWco" />
+</Center>
 
 That pretty much wraps up the desired functionality for the Telegram client at the moment. I still have a bit of a problem though. How does IceBear go about polling the Telegram Bot API for messages from me and my wife? Obviously I don't want to have to manually call `get_updates/1` to see if something has changed. This is where I will lean on the OTP features of Elixir and the BEAM. In the next post I will write the code that will poll the Telegram Bot API so IceBear knows what is going on. I will get into working with two new native modules to Elixir: `GenServer` and `Supervisor`. Stay tuned to see how IceBear is coming along!
 
