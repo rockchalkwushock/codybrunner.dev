@@ -1,0 +1,565 @@
+---
+archived: false
+createdAt: 07/13/2021
+description: 'Part 4: Using GenServer, Phoenix.PubSub, and Supervisor modules to add a polling feature to Ice Bear for listening to the Telegram Bot API for messages from my wife and myself.'
+keywords:
+  - elixir
+  - phoenix
+  - phoenix pubsub
+  - phoenix liveview
+  - polling
+  - telegram
+  - telegram bot
+published: true
+tags:
+  - elixir
+  - live-view
+  - phoenix
+title: 'Ice Bear: Receiving Updates from Telegram'
+---
+
+import { Signature } from '../components/MDXComponents.tsx'
+
+Now that I have a HTTP client put together for working with the Telegram Bot API I can actually get to building out the functionality of Ice Bear. I know that I can make authenticated requests as Ice Bear to Telegram, but at the moment there is not way for Ice Bear to continuously check if my wife or myself have pinged him to perform some action. So the question is how do I go about implementing a polling feature in Elixir to allow Ice Bear to continuously be querying Telegram for new messages?
+
+It turns out this is a perfect use case for Elixir's internal module called [GenServer](https://hexdocs.pm/elixir/GenServer.html#content). I'll be making use of it as well as the [Phoenix.PubSub](https://hexdocs.pm/phoenix_pubsub/Phoenix.PubSub.html) and [Supervisor](https://hexdocs.pm/elixir/Supervisor.html#content) modules to achieve what I need to in this post.
+
+## Getting Started with GenServer & Supervisor
+
+Not having much direct experience with either of these modules I had to do a lot of reading through the excellent docs. Below are some basic notes I took on both modules.
+
+### GenServer
+
+A GenServer is a process that can be used to manage state and execute code asynchronously. A GenServer can be used to create a cache, buffer, rate limiter, run recurring tasks, a system alert/notification system etc.
+
+A GenServer consists of a few things:
+
+- Internal state that can be represented as any Elixir data structure.
+- A mailbox to process incoming messages using First-In, First-Out (FIFO).
+- A callback module for executing code based on the message received.
+
+When a GenServer starts up it will instantiate with the internal state that I set or the system sets and then will begin listening for a _message_. It is my job to figure out how to handle those different messages.
+
+### Supervisor
+
+Supervisors are specialized processes with one purpose: monitoring other processes. In having Supervisors in my application I can introduce fault tolerance by automatically restarting child processes when they fail.
+
+Supervisors have different strategies that can be implemented:
+
+- `:one_for_one` - only restart the failed child process.
+- `:one_for_all` - restart all child processes in the event of a failure.
+- `:rest_for_one` - restart the failed process and any process started after it.
+
+In my case I think that if anything with Ice Bear fails I should just have all the processes restarted so I will opt for using the `:one_for_all` strategy.
+
+## Bootstrapping the three bot modules
+
+```shell
+touch lib/ice_bear/telegram/{bot,bot_polar,bot_supervisor}.ex
+```
+
+```elixir:lib/ice_bear/telegram/bot.ex
+defmodule IceBear.Telegram.Bot do
+  @moduledoc """
+  Implementation details of Ice Bear.
+  """
+  use GenServer
+  require Logger
+
+  ######################
+  # Client API
+  ######################
+
+  @doc"""
+  Starts Ice Bear Telegram Bot.
+  """
+  def start_link(opts) do
+    {:ok, pid} = GenServer.start_link(__MODULE__, opts, opts)
+    Logger.debug
+  end
+
+  ######################
+  # GenServer Callbacks
+  ######################
+
+  @impl true
+  def init(_opts) do
+    Logger.debug("----> IceBear.Telegram.Bot.init/1")
+    {:ok, %{}}
+  end
+end
+```
+
+```elixir:lib/ice_bear/telegram/bot_polar.ex
+defmodule IceBear.Telegram.BotPolar do
+  @moduledoc """
+  Polling service for Ice Bear to listen and receive updates from Telegram.
+  """
+  use GenServer
+  require Logger
+
+  ######################
+  # Client API
+  ######################
+
+  @doc"""
+  Starts Ice Bear Telegram BotPolar.
+  """
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, opts, opts)
+  end
+
+  ######################
+  # GenServer Callbacks
+  ######################
+
+  @impl true
+  def init(_opts) do
+    Logger.debug("----> IceBear.Telegram.BotPolar.init/1")
+    {:ok, %{}}
+  end
+end
+```
+
+```elixir:lib/ice_bear/telegram/bot_supervisor.ex
+defmodule IceBear.Telegram.BotSupervisor do
+  @moduledoc """
+  Supervisor for managing the Bot and BotPolar GenServers.
+  """
+  use Supervisor
+  require Logger
+
+  ######################
+  # Client API
+  ######################
+
+  def start_link(key) do
+    Supervisor.start_link(__MODULE__, key)
+  end
+
+  ######################
+  # Supervisor Callbacks
+  ######################
+
+  @impl true
+  def init(key) do
+    Logger.debug("----> IceBear.Telegram.BotSupervisor.init/1")
+
+    children = [
+      {IceBear.Telegram.Bot, key},
+      {IceBear.Telegram.BotPolar, key}
+    ]
+
+    Supervisor.init(children, strategy: :one_for_all)
+  end
+end
+```
+
+I will need to update the configuration in `application.ex` so that on starting the application Phoenix fires up my BotSupervisor:
+
+```diff:lib/application.ex
+defmodule IceBear.Application do
+  # See https://hexdocs.pm/elixir/Application.html
+  # for more information on OTP Applications
+  @moduledoc false
+
+  use Application
+
+  def start(_type, _args) do
+    children = [
+      # Start the Ecto repository
+      IceBear.Repo,
+      # Start the Telemetry supervisor
+      IceBearWeb.Telemetry,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: IceBear.PubSub},
+      # Start the Endpoint (http/https)
+      IceBearWeb.Endpoint,
+      # Start Finch Connection Pool.
+-     IceBear.Telegram.Client.child_spec()
++     IceBear.Telegram.Client.child_spec(),
++     # Start the BotSupervisor that will start processes
++     # for the Bot & BotPolar.
++     IceBear.Telegram.BotSupervisor
+    ]
+
+    # See https://hexdocs.pm/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: IceBear.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+
+  # Tell Phoenix to update the endpoint configuration
+  # whenever the application is updated.
+  def config_change(changed, _new, removed) do
+    IceBearWeb.Endpoint.config_change(changed, removed)
+    :ok
+  end
+end
+```
+
+Now when running `iex -S mix` I should get an output as below showing that my Supervisor is initializing and in turn initializing both GenServers:
+
+```shell
+[debug] ----> Finch Connection Pool is being established.
+[debug] ----> Finch Connection Pool established: {Finch, [name: IceBear.Telegram.Client, pools: %{"https://api.telegram.org" => [size: 2]}]}
+[debug] ----> IceBear.Telegram.BotSupervisor.init/1
+[debug] ----> IceBear.Telegram.Bot.init/1
+[debug] ----> IceBear.Telegram.BotPolar.init/1
+```
+
+## Initial Pass on `BotPolar` module
+
+With what I know about how a GenServer works now I can begin implementing the BotPolar and the functionality Ice Bear will need to know my wife or I have messaged him. Extending the template above I will add `next_loop/0` and begin writing an implementation of GenServer's `handle_info/2` callback.
+
+```elixir:lib/ice_bear/telegram/bot_polar.ex
+defmodule IceBear.Telegram.BotPolar do
+  @moduledoc """
+  Polling service for Ice Bear to listen and receive updates from Telegram.
+  """
+  use GenServer
+  require Logger
+
+  import IceBear.Telegram.Client, except: [send_message: 2]
+
+  ######################
+  # Client API
+  ######################
+
+  @doc"""
+  Starts Ice Bear Telegram BotPolar.
+  """
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, opts, opts)
+  end
+
+  ######################
+  # GenServer Callbacks
+  ######################
+
+  @impl true
+  def init(_opts) do
+    Logger.debug("----> IceBear.Telegram.BotPolar.init/1")
+    {:ok, %{"id" => id, "username" => username}} = get_me()
+
+    state = %{
+      id: id,
+      last_seen: -2,
+      username: username
+    }
+
+    next_loop()
+    {:ok, state}
+  end
+
+  @impl true
+  def handle_info(:start, %{last_seen: _last_seen} = state) do
+    Logger.debug("----> IceBear.Telegram.BotPolar.handle_info/2")
+    next_loop()
+    {:noreply, state}
+  end
+
+  defp next_loop do
+    Process.send_after(self(), :start, 0)
+  end
+end
+```
+
+If I go to the terminal and run `iex -S mix` now what I will see happen is the initial debug statements I have seen in the past but then I will see the `handle_info/2` debug message on repeat. This is because when the GenServer starts (i.e. `:start`) at the moment I am just logging running the next process loop and returning the current state. So I am kind of in an infinite loop here which is no bueno. I need to extend the logic inside of `handle_info/2` to avoid this and get after the desired functionality which is to fetch updates from the Telegram Bot API on every cycle.
+
+```elixir:lib/ice_bear/telegram/bot_polar.ex
+defmodule IceBear.Telegram.BotPolar do
+  # ...
+
+  @impl true
+  def handle_info(:start, %{last_seen: last_seen} = state) do
+    Logger.debug("----> IceBear.Telegram.BotPolar.handle_info/2")
+
+    state =
+      case get_updates(last_seen) do
+        {:ok, []} ->
+          state
+
+        {:ok, updates} ->
+          last_seen =
+            Enum.map(updates, fn update ->
+              update["update_id"]
+            end)
+            |> Enum.max(fn -> last_seen end)
+
+          %{state | last_seen: last_seen}
+
+        other ->
+          Logger.error("Unexpected response getting updates.", response: other)
+          :timer.sleep(2000)
+          state
+      end
+
+    next_loop()
+    {:noreply, state}
+  end
+
+  # ...
+end
+```
+
+Running `iex` again I can see I am out of the infinite loop because my `case` control structure is pattern matching the return value of the `get_updates/1` function that I created as part of my Telegram client. When `get_updates/1` returns and empty list I just return the current state. At the moment you can see if there are updates I am just returning them, I will handle that shortly. Now if I go to Telegram and send Ice Bear a message I will see the following logs in the `iex`:
+
+```shell
+[debug] ----> IceBear.Telegram.BotPolar.handle_info/2
+[debug] ----> IceBear.Telegram.Client.get_updates/1
+[debug] ----> IceBear.Telegram.BotPolar.handle_info/2
+[debug] ----> IceBear.Telegram.Client.get_updates/1
+[debug] ----> IceBear.Telegram.BotPolar.handle_info/2
+[debug] ----> IceBear.Telegram.Client.get_updates/1
+[debug] ----> IceBear.Telegram.BotPolar.handle_info/2
+[debug] ----> IceBear.Telegram.Client.get_updates/1
+[debug] ----> IceBear.Telegram.BotPolar.handle_info/2
+[debug] ----> IceBear.Telegram.Client.get_updates/1
+[debug] ----> IceBear.Telegram.BotPolar.handle_info/2
+[debug] ----> IceBear.Telegram.Client.get_updates/1
+```
+
+## Initial Pass on `Bot` module
+
+Now that I have an initial pass at the BotPolar I can pivot back over to the Bot module and get it stubbed out. The first thing I will do is just as with BotPolar I will set the initial state of the GenServer to be information about Ice Bear from the `get_me/0` HTTP request to Telegram. I will also add a skeleton of `handle_info/2` with some logs to see what is going on in this callback.
+
+```elixir:lib/ice_bear/telegram/bot.ex
+defmodule IceBear.Telegram.Bot do
+  @moduledoc """
+  Implementation details of Ice Bear.
+  """
+  use GenServer
+  require Logger
+
+  alias IceBear.Telegram.Client, as: Telegram
+
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, opts, opts)
+  end
+
+  @impl true
+  def init(_opts) do
+    Logger.debug("----> IceBear.Telegram.Bot.init/1")
+    {:ok, %{"id" => id, "username" => username}} = Telegram.get_me()
+
+    state = %{
+      id: id,
+      username: username
+    }
+
+    {:ok, state}
+  end
+
+  @impl true
+  def handle_info(msg, state) do
+    Logger.debug("----> IceBear.Telegram.Bot.handle_info/2")
+    Logger.info(inspect(msg))
+    {:noreply, state}
+  end
+end
+```
+
+## Adding messaging between `Bot` and `BotPolar`
+
+I recompile the project using `recompile()` in `iex` but sending messages to Ice Bear results in no different behavior and I never see the log statements in `handle_info/2`, but why is that?
+
+In the Supervisor tree we have two GenSevers being started with two pieces of state that are isolated within their corresponding process. How then do I tell Bot that BotPolar received an update if these are two isolated processes running on the BEAM? This is where I can make use of the native `PubSub` module in Phoenix. What I will do is update BotPolar to broadcast a message whenever an update is received from Telegram and on the flip side I will tell Bot to subscribe to that specific message.
+
+```elixir:lib/ice_bear/telegram/bot_polar.ex
+defmodule IceBear.Telegram.BotPolar do
+  alias Phoenix.PubSub
+  # ...
+
+  @impl true
+  def handle_info(:start, %{last_seen: last_seen} = state) do
+    Logger.debug("----> IceBear.Telegram.BotPolar.handle_info/2")
+
+    state =
+      case get_updates(last_seen) do
+        {:ok, []} ->
+          state
+
+        {:ok, updates} ->
+          last_seen =
+            Enum.map(updates, fn update ->
+              # Broadcast any update from Telegram so that any
+              # module subscribed to "ice_bear:<id>" can respond
+              # in whatever predetermined fashion.
+              PubSub.broadcast!(
+                IceBear.PubSub,
+                "ice_bear:#{state.id}",
+                {:update, update}
+              )
+
+              update["update_id"]
+            end)
+            |> Enum.max(fn -> last_seen end)
+
+          %{state | last_seen: last_seen}
+
+        other ->
+          Logger.error("Unexpected response getting updates.", response: other)
+          :timer.sleep(2000)
+          state
+      end
+
+    next_loop()
+    {:noreply, state}
+  end
+
+  # ...
+end
+```
+
+```elixir:lib/ice_bear/telegram/bot.ex
+defmodule IceBear.Telegram.Bot do
+  alias Phoenix.PubSub
+
+  # ...
+
+  @impl true
+  def init(_opts) do
+    Logger.debug("----> IceBear.Telegram.Bot.init/1")
+    {:ok, %{"id" => id, "username" => username}} = Telegram.get_me()
+
+    # Have Ice Bear subscribe to the message "ice_bear:<id>"
+    PubSub.subscribe(IceBear.PubSub, "ice_bear:#{id}")
+
+    state = %{
+      id: id,
+      username: username
+    }
+
+    {:ok, state}
+  end
+
+  # ...
+end
+```
+
+With the addition of the PubSub code now whenever `get_updates/1` responds with updates BotPolar will broadcast that update to the system and any module that is subscribed to the specific message (in my case `ice_bear:<id>`) will execute code related to the broadcasted message.
+
+Sending Ice Bear a message in Telegram now results in `handle_info/2` in Bot to execute and I can see the data returned by Telegram via the `inspect(msg)` call.
+
+```shell
+[debug] ----> IceBear.Telegram.Bot.handle_info/2
+[info] {:update, %{"message" => %{"chat" => %{"first_name" => "Cody", "id" => 248725869, "last_name" => "Brunner", "type" => "private", "username" => "rockchalkwushock"}, "date" => 1626105365, "from" => %{"first_name" => "Cody", "id" => 248725869, "is_bot" => false, "language_code" => "en", "last_name" => "Brunner", "username" => "rockchalkwushock"}, "message_id" => 67, "text" => "hello"}, "update_id" => 160025552}}
+```
+
+I can now stub out some function declarations that I can use later to pattern match on commands the user sends to Ice Bear:
+
+```elixir:lib/ice_bear/telegram/bot.ex
+defmodule IceBear.Telegram.Bot do
+  # ...
+
+  @impl true
+  def handle_info({:update, update}, state) do
+    Logger.debug("----> IceBear.Telegram.Bot.handle_info/2")
+
+    update
+      |> parse_response()
+      |> handle_message(state)
+
+    {:noreply, state}
+  end
+
+  # I can have as many of these function declarations as I need to achieve the desired
+  # functionality of Ice Bear. All I need to do is use the "when" guard clause to pattern
+  # match the command and execute the appropriate code path.
+  def handle_message({_id, command}, _state) when command === "/create" do
+    Logger.info("----> IceBear.Telegram.Bot.handle_message/2 [COMMAND: CREATE]")
+  end
+
+  # Catch all for any unknown command sent by a user.
+  def handle_message({id, text}, _state) do
+    Logger.info("----> IceBear.Telegram.Bot.handle_message/2")
+    Logger.info("Text: #{text}")
+    Telegram.send_message(id, "Huh?")
+  end
+
+  # Parse the response down to exactly what I need in handle_message/2.
+  defp parse_response(response) do
+    Logger.info("Response: #{inspect(response)}")
+
+    id = response["message"]["chat"]["id"]
+    text = response["message"]["text"]
+
+    {id, text}
+  end
+end
+
+```
+
+```shell
+[info] Response: %{"message" => %{"chat" => %{"first_name" => "Cody", "id" => 248725869, "last_name" => "Brunner", "type" => "private", "username" => "rockchalkwushock"}, "date" => 1626106455, "from" => %{"first_name" => "Cody", "id" => 248725869, "is_bot" => false, "language_code" => "en", "last_name" => "Brunner", "username" => "rockchalkwushock"}, "message_id" => 69, "text" => "hello"}, "update_id" => 160025554}
+[info] ----> IceBear.Telegram.Bot.handle_message/2
+[info] Text: hello
+```
+
+And sending Ice Bear another message shows that my catch all is working as I would expect it too:
+
+![Ice Bear says "huh?"](/images/2021/ice-bear/huh.png)
+
+## Leaving Scaffolding for the commands
+
+I created a Commands module that will house all the commands that Ice Bear will be able to interpret and act on. This module will be where the contexts that will be created later will be called from an example being something like `Reminders.get_reminder/1`. In the Bot module I use the guard clauses to pattern match the user's message against the expected commands and in doing so I can scope how the `command/1` function is called.
+
+```elixir:lib/ice_bear/telegram/commands.ex
+defmodule IceBear.Telegram.Commands do
+  require Logger
+
+  def command([:create, opts]),
+    do: Logger.info("----> IceBear.Telegram.Commands.command([:create, #{inspect(opts)}])")
+
+  def command([:delete, opts]),
+    do: Logger.info("----> IceBear.Telegram.Commands.command([:delete, #{inspect(opts)}])")
+
+  def command([:read, opts]),
+    do: Logger.info("----> IceBear.Telegram.Commands.command([:read, #{inspect(opts)}])")
+
+  def command([:update, opts]),
+    do: Logger.info("----> IceBear.Telegram.Commands.command([:update, #{inspect(opts)}])")
+end
+```
+
+```elixir:lib/ice_bear/telegram/bot.ex
+defmodule IceBear.Telegram.Bot do
+  # ...
+
+  import IceBear.Telegram.Commands, only: [command: 1]
+
+  # ...
+
+  def handle_message({_id, command}, _state) when command === "/create",
+    do: command([:create, %{}])
+
+  def handle_message({_id, command}, _state) when command === "/delete",
+    do: command([:delete, %{}])
+
+  def handle_message({_id, command}, _state) when command === "/read",
+    do: command([:read, %{}])
+
+  def handle_message({_id, command}, _state) when command === "/update",
+    do: command([:update, %{}])
+
+  def handle_message({id, text}, _state),
+    do: Telegram.send_message(id, "Huh? #{text} is not an option.")
+
+  # ...
+end
+```
+
+## Wrap Up
+
+Ice Bear is now able to query the Telegram Bot API for messages from my wife and myself through BotPolar. BotPolar and the Bot module can communicate about those messages that were received via PubSub. Also should there ever be an instance where Bot or BotPolar fail the BotSupervisor will restart both child processes to keep Ice Bear up and running.
+
+In the next post I will begin the core functionality of Ice Bear with the CRUD operations surrounding reminders.
+
+[Pull Request #8: Polling Telegram with Ice Bear](https://github.com/rockchalkwushock/ice-bear/pull/8)
+
+<Signature>~ Cody 🚀</Signature>
+
+- [Introduction](https://codybrunner.dev/blog/2021/ice-bear/introduction)
+- [Setting Up Ice Bear](https://codybrunner.dev/blog/2021/ice-bear/setting-up-ice-bear)
+- [Telegram Client](https://codybrunner.dev/blog/2021/ice-bear/telegram-client)
