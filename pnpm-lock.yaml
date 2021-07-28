@@ -37,7 +37,7 @@ specifiers:
   postcss: ~8.3.6
   postcss-import: ~14.0.2
   postcss-preset-env: ~6.7.0
-  preact: ~10.5.13
+  preact: ~10.5.14
   prettier: ~2.3.2
   react: ~17.0.2
   react-dom: ~17.0.2
@@ -67,7 +67,7 @@ dependencies:
   mdx-embed: 0.0.19_73e8d0148a4c5c71ceb6a02bbce55c80
   next: 11.0.1_9157cedf97d6cc5e3e175e8ff287c0e6
   next-transpile-modules: 8.0.0
-  preact: 10.5.13
+  preact: 10.5.14
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-feather: 2.0.9_react@17.0.2
@@ -8611,10 +8611,10 @@ packages:
       source-map-js: 0.6.2
     dev: true
 
-  /preact/10.5.13:
+  /preact/10.5.14:
     resolution:
       {
-        integrity: sha512-q/vlKIGNwzTLu+jCcvywgGrt+H/1P/oIRSD6mV4ln3hmlC+Aa34C7yfPI4+5bzW8pONyVXYS7SvXosy2dKKtWQ==,
+        integrity: sha512-KojoltCrshZ099ksUZ2OQKfbH66uquFoxHSbnwKbTJHeQNvx42EmC7wQVWNuDt6vC5s3nudRHFtKbpY4ijKlaQ==,
       }
     dev: false
 
