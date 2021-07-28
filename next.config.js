@@ -55,8 +55,8 @@ const CSP = `
   frame-src appt.link giphy.com platform.twitter.com *.youtube.com;
   img-src * blob: data:;
   media-src 'none';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' api.amplitude.com platform.twitter.com *.youtube.com;
-  style-src 'self' 'unsafe-inline' *.googleapis.com;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' api.amplitude.com https://cdnjs.cloudflare.com platform.twitter.com *.youtube.com;
+  style-src 'self' 'unsafe-inline' *.googleapis.com https://cdnjs.cloudflare.com;
 `
 
 const securityHeaders = [
