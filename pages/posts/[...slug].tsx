@@ -10,6 +10,7 @@ import { Avatar } from '@components/Avatar'
 import { getGhostPost, getGhostPosts } from '@lib/ghost-cms'
 import { constants } from '@utils/constants'
 import { formatDateTime } from '@utils/dateTime'
+import { getLanguageStrings } from '@utils/helpers'
 
 interface Props
   extends Pick<
@@ -36,15 +37,16 @@ interface Props
   > {}
 
 const Article: React.FC<Props> = props => {
+  const [languages, setLanguages] = React.useState<Array<string>>([])
   // Process the reading time of the post.
   const { text: timeToRead } = readingTime(props.reading_time!.toString())
+
+  React.useEffect(() => {
+    setLanguages(getLanguageStrings(props.html!))
+  }, [props.html])
+
   return (
     <AnimatedPage>
-      {/*
-      Here I need to load prism-js for styling code blocks.
-      In the future I think the post should have some meta-data that
-      tells me what languages are being used so I can conditionally/dynamically
-      load the correct scripts for each post. */}
       <NextHead>
         <script
           async
@@ -53,27 +55,18 @@ const Article: React.FC<Props> = props => {
           referrerPolicy="no-referrer"
           src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"
         />
-        <script
-          async
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-          src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-bash.min.js"
-          type="text/javascript"
-        />
-        <script
-          async
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-          src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-markup.min.js"
-          type="text/javascript"
-        />
-        <script
-          async
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-          src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-yaml.min.js"
-          type="text/javascript"
-        />
+        {/* Dynamically load the found "language-*" based on the current post. */}
+        {languages.length > 0 &&
+          languages.map(lang => (
+            <script
+              async
+              crossOrigin="anonymous"
+              key={lang}
+              referrerPolicy="no-referrer"
+              src={`https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-${lang}.min.js`}
+              type="text/javascript"
+            />
+          ))}
       </NextHead>
       <header className="flex flex-col space-y-4 w-full">
         <h1 className="font-custom-header leading-tight text-brand text-5xl text-center md:text-left">

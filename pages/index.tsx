@@ -33,7 +33,6 @@ const Home: React.FC<Props> = ({ archive, ghostPosts, posts }) => {
       <ul className="flex flex-col mb-8 overflow-y-scroll p-2 space-y-6 lg:space-y-4">
         {ghostPosts.map(post => (
           <li key={post.id}>
-            {console.log(post)}
             <NextLink
               href={{
                 pathname: '/posts/[...slug]',
