@@ -36,3 +36,20 @@ export function getFiles(path: string, regex: RegExp): Array<string> {
 
   return scan(join(path), files)
 }
+
+/**
+ * @name getLanguageStrings
+ * @param html {string}
+ * @returns {Array<string>}
+ * @description Finds all "language-*" class names in HTML & returns an array
+ * of the language names for dynamically loading the correct PrismJS language
+ * scripts for the post being loaded.
+ */
+export function getLanguageStrings(html: string) {
+  // 1. Scan the HTML for the corresponding regex.
+  // 2. Dedupe the RegexArray.
+  // 3. Remove the "language-" from the string.
+  return [...new Set(html.match(/language-\w+/g))].map(str =>
+    str.replace('language-', '')
+  )
+}
