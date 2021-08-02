@@ -81,7 +81,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps<Props, { slug: string }> =
+export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
   async ctx => {
     try {
       const post = await getPostBySlug(ctx.params!.slug)
