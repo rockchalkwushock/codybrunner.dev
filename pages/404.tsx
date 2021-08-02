@@ -2,10 +2,8 @@ import * as React from 'react'
 import NextLink from 'next/link'
 
 import { AnimatedPage } from '@components/AnimatedPage'
-import { useAmplitude } from '@hooks/useAmplitude'
 
 const Custom404: React.FC = () => {
-  const { setEvent } = useAmplitude(true)
   return (
     <AnimatedPage
       pageMetaData={{
@@ -27,10 +25,7 @@ const Custom404: React.FC = () => {
         </ol>
         <div className="flex justify-evenly w-full">
           <NextLink href="/">
-            <button
-              className="bg-accent-blue px-10 py-2 md:px-16 md:py-3 rounded-lg shadow-md"
-              onClick={() => setEvent('User navigated home from 404.')}
-            >
+            <button className="bg-accent-blue px-10 py-2 md:px-16 md:py-3 rounded-lg shadow-md">
               💊
             </button>
           </NextLink>
@@ -38,7 +33,6 @@ const Custom404: React.FC = () => {
             aria-label="Go trip acid"
             className="bg-accent-red px-10 py-2 md:px-16 md:py-3 rounded-lg shadow-md"
             href="https://www.youtube.com/watch?v=3KObylIFm-c"
-            onClick={() => setEvent('User chose to trip acid.')}
             rel="noopener noreferrer"
             target="_blank"
           >

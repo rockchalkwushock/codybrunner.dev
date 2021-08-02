@@ -1,14 +1,6 @@
-// This is currently needed because 'rehype-code-titles' is a pure-ESM package
-// and NextJS cannot resolve the import properly.
-// https://github.com/vercel/next.js/issues/9607
-const withTM = require('next-transpile-modules')(['rehype-code-titles'])
-
-module.exports = withTM({
-  env: {
-    AMPLITUDE_API_KEY: process.env.AMPLITUDE_API_KEY,
-  },
+module.exports = {
   eslint: {
-    dirs: ['components', 'hooks', 'layouts', 'lib', 'pages', 'utils'],
+    dirs: ['components', 'hooks', 'lib', 'pages', 'utils'],
   },
   reactStrictMode: true,
   // https://github.com/leerob/leerob.io/blob/main/next.config.js
@@ -21,17 +13,6 @@ module.exports = withTM({
     ]
   },
   webpack: (config, { dev, isServer }) => {
-    if (!isServer) {
-      // https://github.com/vercel/next.js/issues/7755
-      config.resolve = {
-        ...config.resolve,
-        fallback: {
-          ...config.resolve.fallback,
-          fs: false,
-        },
-      }
-    }
-
     // Replace React with Preact only in client production build
     if (!dev && !isServer) {
       Object.assign(config.resolve.alias, {
@@ -43,11 +24,11 @@ module.exports = withTM({
 
     return config
   },
-})
+}
 
 // https://securityheaders.com
 const CSP = `
-  child-src appt.link api.amplitude.com;
+  child-src appt.link;
   connect-src *;
   default-src 'self';
   font-src 'self' *.gstatic.com;
@@ -55,7 +36,7 @@ const CSP = `
   frame-src appt.link giphy.com platform.twitter.com *.youtube.com;
   img-src * blob: data:;
   media-src 'none';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' api.amplitude.com https://cdnjs.cloudflare.com platform.twitter.com *.youtube.com;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdnjs.cloudflare.com platform.twitter.com *.youtube.com;
   style-src 'self' 'unsafe-inline' *.googleapis.com https://cdnjs.cloudflare.com;
 `
 
