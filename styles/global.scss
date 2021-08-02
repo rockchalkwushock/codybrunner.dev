@@ -11,12 +11,6 @@ body {
   .divider {
     @apply border-brand my-8;
   }
-  .draft-banner {
-    @apply bg-accent-red border-2 flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
-  }
-  .pagination-button {
-    @apply bg-brand border border-transparent px-8 py-2 rounded-lg shadow-md text-gray-dark text-xl hover:bg-accent-purple hover:text-accent-yellow;
-  }
   .social-button {
     @apply bg-transparent duration-100 ease-in-out rounded-full text-brand transition-all hover:p-2 hover:text-white;
     a > svg {
@@ -32,20 +26,6 @@ body {
   }
 }
 
-// Override prism-js defaults.
-code[class*='language-'],
-pre[class*='language-'] {
-  text-shadow: unset;
-}
-
-.language-css .token.string,
-.style .token.string,
-.token.entity,
-.token.operator,
-.token.url {
-  background: unset;
-}
-
 figure.kg-card.kg-code-card {
   @apply flex flex-col-reverse;
   figcaption {
@@ -53,7 +33,7 @@ figure.kg-card.kg-code-card {
   }
 }
 
-figure.kg-card.kg-code-card > div.code-toolbar > pre {
+figure.kg-card.kg-code-card > pre {
   @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none;
 }
 
@@ -62,8 +42,6 @@ figure.kg-card.kg-embed-card {
 
   iframe {
     @apply w-full;
-    // Need a fixed value here, I should check to see how this works
-    // with the other embed elements (i.e. Giphy, Twitter, etc)
     height: 25rem;
   }
 }
@@ -198,25 +176,6 @@ figure.kg-card.kg-embed-card {
       @apply pl-0;
     }
   }
-
-  // Fix style issue with <Tweet /> from mdx-embed.
-  // .mdx-embed {
-  //   .twitter-tweet-mdx-embed {
-  //     .twitter-tweet {
-  //       iframe {
-  //         @apply bg-transparent rounded-xl;
-  //       }
-  //     }
-  //   }
-  // }
-
-  // .rehype-code-title:defined {
-  //   @apply border-b border-brand leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg;
-  // }
-
-  // .rehype-code-title + pre {
-  //   @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none;
-  // }
 }
 
 /**
