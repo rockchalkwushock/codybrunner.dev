@@ -17,13 +17,12 @@
     "pnpm": ">=6"
   },
   "scripts": {
-    "build": "next build",
+    "build": "next build && next-sitemap",
     "commit": "git cz",
     "dev": "next -p 4000",
     "format": "prettier --write",
     "lint": "next lint",
     "new": "plop",
-    "postbuild": "next-sitemap",
     "prepare": "husky install",
     "start": "next start -p 4000",
     "type-check": "tsc"
