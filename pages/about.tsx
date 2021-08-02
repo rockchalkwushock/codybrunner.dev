@@ -6,23 +6,73 @@ import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { Avatar } from '@components/Avatar'
 import { Post } from '@interfaces/blog'
 import { getPage } from '@lib/ghost-cms'
+import { formatDateTime } from '@utils/dateTime'
 
-type Page = Omit<Post, 'tags'>
+interface Props extends Omit<Post, 'tags'> {}
 
-interface Props extends Page {}
+const technologies = [
+  'apollographql',
+  'bootstrap',
+  'chakra-ui',
+  'css3',
+  'django',
+  'elixir',
+  'fly.io',
+  'gatsbyjs',
+  'ghost-cms',
+  'graphql',
+  'heroku',
+  'html5',
+  'javascript',
+  'mongodb',
+  'netlify',
+  'nextjs',
+  'nodejs',
+  'phoenix',
+  'postgresql',
+  'python',
+  'reactjs',
+  'react-query',
+  'redux',
+  'styled-components',
+  'tailwindcss',
+  'typescript',
+  'vercel',
+  'x-state',
+]
+
+const customTags = [
+  'Colombia',
+  'expatriate',
+  'front end engineer',
+  'full stack engineer',
+  'software engineer',
+  'United State of America',
+  'web developer',
+  ...technologies,
+]
 
 const About: React.FC<Props> = ({
   author,
+  excerpt,
+  image,
   publishedAt,
   readingTime,
   source,
   title,
   updatedAt,
+  words,
 }) => {
   const pageMetaData: PageMetaData = {
-    description: 'About page',
+    author: author.name,
+    description: excerpt,
+    image: image!,
+    publishedAt,
+    tags: customTags,
     title: `codybrunner.dev | ${title}`,
     type: 'article',
+    updatedAt,
+    wordCount: words,
   }
 
   return (
@@ -36,11 +86,16 @@ const About: React.FC<Props> = ({
             <Avatar className="h-9 mr-2 w-9 lg:hidden" />
 
             <div className="flex flex-col">
-              <p>{`${author.name} / ${publishedAt}`}</p>
+              <p>{`${author.name} / ${formatDateTime(
+                publishedAt,
+                'full-date-localized'
+              )}`}</p>
               {/* Check if the dates are the same and if they are don't render.
               Do this because Ghost CMS populates updated_at at create time. */}
               {isEqual(new Date(publishedAt), new Date(updatedAt)) && (
-                <span>Updated: {updatedAt}</span>
+                <span>
+                  Updated: {formatDateTime(updatedAt, 'full-date-localized')}
+                </span>
               )}
             </div>
           </div>
@@ -52,7 +107,7 @@ const About: React.FC<Props> = ({
       <hr className="divider" />
       <article
         className="max-w-none prose prose-xl tracking-wide"
-        dangerouslySetInnerHTML={{ __html: source! }}
+        dangerouslySetInnerHTML={{ __html: source }}
       />
     </AnimatedPage>
   )

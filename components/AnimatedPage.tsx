@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { motion, Variants } from 'framer-motion'
 
 import { constants } from '@utils/constants'
-import { toISO8601 } from '@utils/dateTime'
 
 const variants: Variants = {
   animate: {
@@ -32,15 +31,16 @@ const content: Variants = {
 }
 
 export interface PageMetaData {
+  author?: string
   createdAt?: string
   description: string
   image?: string
-  keywords?: Array<string>
   publishedAt?: string
   tags?: Array<string>
   title: string
   type: 'article' | 'website'
   updatedAt?: string
+  wordCount?: number
 }
 interface Props
   extends React.DetailedHTMLProps<
@@ -55,20 +55,11 @@ export const AnimatedPage: React.FC<Props> = ({
   className,
   pageMetaData,
 }) => {
-  let pageKeywords: Array<string> | null = null
   const { asPath } = useRouter()
 
-  if (pageMetaData) {
-    pageKeywords = pageMetaData.keywords
-      ? // Use new Set(args) to dedupe the keywords.
-        [...new Set([...constants.keywords, ...pageMetaData!.keywords])]
-      : constants.keywords
-  }
-
   const meta = {
-    author: constants.author,
+    author: pageMetaData?.author,
     description: pageMetaData?.description || '',
-    keywords: pageKeywords,
     image: pageMetaData?.image,
     publishedAt: pageMetaData?.publishedAt,
     tags: pageMetaData?.tags,
@@ -77,6 +68,7 @@ export const AnimatedPage: React.FC<Props> = ({
     type: pageMetaData?.type,
     url: `${constants.url}${asPath}`,
     updatedAt: pageMetaData?.updatedAt,
+    wordCount: pageMetaData?.wordCount,
   }
 
   return (
@@ -87,9 +79,6 @@ export const AnimatedPage: React.FC<Props> = ({
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content={meta.author} name="author" />
         <meta content={meta.description} name="description" />
-        {pageKeywords && (
-          <meta content={pageKeywords.join(', ').trim()} name="keywords" />
-        )}
         <link rel="canonical" href={`${meta.url}${asPath}`} />
         {/* Open Graph: http://ogp.me/ */}
         <meta content={meta.description} property="og:description" />
@@ -108,20 +97,17 @@ export const AnimatedPage: React.FC<Props> = ({
           <>
             <meta content={meta.author} name="article:author" />
             {meta.publishedAt && (
-              <meta
-                content={toISO8601(meta.publishedAt)}
-                name="article:published_time"
-              />
+              <meta content={meta.publishedAt} name="article:published_time" />
             )}
             {meta.tags &&
               meta.tags.map(tag => (
                 <meta content={tag} key={tag} name="article:tag" />
               ))}
             {meta.updatedAt && (
-              <meta
-                content={toISO8601(meta.updatedAt)}
-                name="article:modified_time"
-              />
+              <meta content={meta.updatedAt} name="article:modified_time" />
+            )}
+            {meta.wordCount && (
+              <meta content={meta.wordCount.toString()} name="word_count" />
             )}
           </>
         )}

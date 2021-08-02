@@ -6,7 +6,7 @@ import prism from '@mapbox/rehype-prism'
 import slug from 'rehype-slug'
 
 import { GetPostsResponse, Post } from '@interfaces/blog'
-import { formatDateTime } from '@utils/dateTime'
+import { toISO8601 } from '@utils/dateTime'
 
 // TODO:
 // 1. I want line-numbers via PrismJS
@@ -39,24 +39,26 @@ export async function getPage(slug: string) {
   try {
     const res = await api.pages.read({ slug }, { include: ['authors'] })
     const source = await processGhostCMSPost(res.html!)
+    const { text, words } = readingTime(source as string)
     return {
       author: {
         id: res.primary_author?.id!,
         image: res.primary_author?.profile_image!,
         name: res.primary_author?.name!,
       },
-      createdAt: formatDateTime(res.created_at!, 'full-date-localized'),
+      createdAt: toISO8601(res.created_at!),
       excerpt: res.excerpt!,
       featured: res.featured,
       id: res.id,
       image: res.feature_image,
-      publishedAt: formatDateTime(res.published_at!, 'full-date-localized'),
-      readingTime: readingTime(res.reading_time!.toString()).text,
+      publishedAt: toISO8601(res.published_at!),
+      readingTime: text, // 10 min read
       slug: res.slug,
       source: source as string,
       title: res.title!,
-      updatedAt: formatDateTime(res.updated_at!, 'full-date-localized'),
+      updatedAt: toISO8601(res.updated_at!),
       url: res.url!,
+      words,
     }
   } catch (error) {
     throw new Error(error)
@@ -72,29 +74,29 @@ export async function getPosts(): Promise<GetPostsResponse> {
       order: 'published_at DESC',
     })
     const posts = res.reduce((acc, post) => {
+      const { text, words } = readingTime(post.html!)
       acc.push({
         author: {
           id: post.primary_author?.id!,
           image: post.primary_author?.profile_image!,
           name: post.primary_author?.name!,
         },
-        createdAt: formatDateTime(post.created_at!, 'full-date-localized'),
+        createdAt: toISO8601(post.created_at!),
         excerpt: post.excerpt!,
         featured: post.featured,
         id: post.id,
         image: post.feature_image,
-        publishedAt: formatDateTime(post.published_at!, 'full-date-localized'),
-        readingTime: readingTime(post.reading_time!.toString()).text,
+        publishedAt: toISO8601(post.published_at!),
+        readingTime: text, // 10 min read
         slug: post.slug,
         source: post.html!,
         tags: post.tags!.map(t => ({
-          count: { posts: t.count ? t.count.posts : 0 },
           name: t.name!,
-          url: t.url!,
         })),
         title: post.title!,
-        updatedAt: formatDateTime(post.updated_at!, 'full-date-localized'),
+        updatedAt: toISO8601(post.updated_at!),
         url: post.url!,
+        words,
       })
       return acc
     }, [] as Array<Post>)
@@ -113,19 +115,20 @@ export async function getPostBySlug(slug: string): Promise<Post> {
       { include: ['authors', 'tags'] }
     )
     const source = await processGhostCMSPost(post.html!)
+    const { text, words } = readingTime(source as string)
     return {
       author: {
         id: post.primary_author?.id!,
         image: post.primary_author?.profile_image!,
         name: post.primary_author?.name!,
       },
-      createdAt: formatDateTime(post.created_at!, 'full-date-localized'),
+      createdAt: toISO8601(post.created_at!),
       excerpt: post.excerpt!,
       featured: post.featured,
       id: post.id,
       image: post.feature_image,
-      publishedAt: formatDateTime(post.published_at!, 'full-date-localized'),
-      readingTime: readingTime(post.reading_time!.toString()).text,
+      publishedAt: toISO8601(post.published_at!),
+      readingTime: text, // 10 min read
       slug: post.slug,
       source: source as string,
       tags: post.tags!.map(t => ({
@@ -134,8 +137,9 @@ export async function getPostBySlug(slug: string): Promise<Post> {
         url: t.url!,
       })),
       title: post.title!,
-      updatedAt: formatDateTime(post.updated_at!, 'full-date-localized'),
+      updatedAt: toISO8601(post.updated_at!),
       url: post.url!,
+      words,
     }
   } catch (error) {
     throw new Error(`Ghost-CMS Error [getPostBySlug]: ${error}`)

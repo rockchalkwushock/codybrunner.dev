@@ -5,6 +5,7 @@ import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { PostLink } from '@components/PostLink'
 import { GetPostsResponse } from '@interfaces/blog'
 import { getPosts } from '@lib/ghost-cms'
+import { formatDateTime } from '@utils/dateTime'
 
 interface Props extends GetPostsResponse {}
 
@@ -23,7 +24,9 @@ const Home: React.FC<Props> = ({ posts }) => {
             <PostLink slug={post.slug}>
               <a>
                 <h2>{post.title}</h2>
-                <span>{post.publishedAt}</span>
+                <span>
+                  {formatDateTime(post.publishedAt, 'full-date-localized')}
+                </span>
               </a>
             </PostLink>
           </li>
