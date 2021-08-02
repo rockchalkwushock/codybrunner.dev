@@ -5,13 +5,17 @@ const baseUrl =
 
 module.exports = {
   changefreq: 'monthly',
-  exclude: ['/server-sitemap.xml'],
+  exclude: ['/api/*', '/server-sitemap.xml'],
   generateRobotsTxt: true,
   robotsTxtOptions: {
     additionalSitemaps: [`${baseUrl}/server-sitemap.xml`],
     policies: [
       {
         allow: '/',
+        userAgent: '*',
+      },
+      {
+        disallow: '/api',
         userAgent: '*',
       },
     ],
