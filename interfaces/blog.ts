@@ -8,9 +8,7 @@ interface Author {
 }
 
 interface Tag {
-  count: { posts: number }
   name: string
-  url: string
 }
 
 export interface Post {
@@ -28,6 +26,7 @@ export interface Post {
   title: string
   updatedAt: string
   url: string
+  words: number
 }
 
 export interface GetPostsResponse {
