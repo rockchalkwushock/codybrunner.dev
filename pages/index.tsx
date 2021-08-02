@@ -22,12 +22,10 @@ const Home: React.FC<Props> = ({ posts }) => {
         {posts.map(post => (
           <li key={post.id}>
             <PostLink slug={post.slug}>
-              <a>
-                <h2>{post.title}</h2>
-                <span>
-                  {formatDateTime(post.publishedAt, 'full-date-localized')}
-                </span>
-              </a>
+              <h2>{post.title}</h2>
+              <span>
+                {formatDateTime(post.publishedAt, 'full-date-localized')}
+              </span>
             </PostLink>
           </li>
         ))}
