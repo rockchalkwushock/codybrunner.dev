@@ -1,35 +1,32 @@
 import * as React from 'react'
 import { GetStaticProps } from 'next'
+import { PostOrPage } from '@tryghost/content-api'
 
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
-import { Post } from '@interfaces/blog'
-import { MDXLayout } from '@layouts/MDXLayout'
-import { getMDXBySlug, prepareMDX } from '@lib/mdx'
+import { getPage } from '@lib/ghost-cms'
 
-interface Props extends Post {}
+interface Props {
+  page: PostOrPage
+}
 
-const About: React.FC<Props> = ({ frontMatter, source }) => {
+const About: React.FC<Props> = ({ page }) => {
   const pageMetaData: PageMetaData = {
-    createdAt: frontMatter.createdAt,
-    description: frontMatter.description,
-    keywords: frontMatter.keywords,
-    tags: frontMatter.tags,
+    description: 'About page',
     title: 'codybrunner.dev | About',
     type: 'article',
-    updatedAt: frontMatter.updatedAt,
   }
+  console.log(page)
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <MDXLayout frontMatter={frontMatter} source={source} />
+      <h1>About Page</h1>
     </AnimatedPage>
   )
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
-    const source = await getMDXBySlug('about', 'about')
-    const post = await prepareMDX(source)
-    return { props: { ...post } }
+    const page = await getPage('about')
+    return { props: { page } }
   } catch (error) {
     throw new Error(error)
   }

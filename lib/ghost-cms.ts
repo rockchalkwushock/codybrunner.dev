@@ -1,7 +1,31 @@
 import GhostCMS from '@tryghost/content-api'
+import readingTime from 'reading-time'
+import rehype from 'rehype'
+import link from 'rehype-autolink-headings'
+import prism from '@mapbox/rehype-prism'
+import slug from 'rehype-slug'
 
-// 1. Mark the Ghost website as private to prevent duplicate indexing
-// and from people directly accessing my content.
+import { GetPostsResponse, Post } from '@interfaces/blog'
+import { formatDateTime } from '@utils/dateTime'
+
+// TODO:
+// 1. I want line-numbers via PrismJS
+// 2. I want the copy feature via PrismJS
+// 3. I want to add target="_blank", rel="nofollow noopener noreferrer" to all external links.
+const processGhostCMSPost = async (content: string) => {
+  const file = await rehype()
+    .data('settings', { fragment: true })
+    .use(slug)
+    .use(link)
+    // @ts-ignore
+    .use(prism)
+    .process(content)
+  return file.contents
+}
+
+/**
+ * SERVER-SIDE QUERIES
+ */
 
 // Instantiate the GhostCMS with my credentials.
 const api = new GhostCMS({
@@ -10,32 +34,91 @@ const api = new GhostCMS({
   version: 'v3',
 })
 
-// Fetches all posts.
-export async function getGhostPosts() {
+// Fetch page
+export async function getPage(slug: string) {
   try {
-    const posts = await api.posts.browse({
-      // They have problems with their typings here.
-      // @ts-ignore
-      options: {
-        include: 'authors,tags',
-        limit: 'all',
-        order: 'published_at DESC',
-      },
-    })
-    return posts
+    const res = await api.pages.read({ slug })
+    return res
   } catch (error) {
-    throw new Error(`Ghost-CMS Error [getGhostPosts]: ${error}`)
+    throw new Error(error)
+  }
+}
+
+// Fetches all posts.
+export async function getPosts(): Promise<GetPostsResponse> {
+  try {
+    const res = await api.posts.browse({
+      include: ['authors', 'tags'],
+      limit: 'all',
+      order: 'published_at DESC',
+    })
+    const posts = res.reduce((acc, post) => {
+      acc.push({
+        author: {
+          id: post.primary_author?.id!,
+          image: post.primary_author?.profile_image!,
+          name: post.primary_author?.name!,
+        },
+        createdAt: formatDateTime(post.created_at!, 'full-date-localized'),
+        excerpt: post.excerpt!,
+        featured: post.featured,
+        id: post.id,
+        image: post.feature_image,
+        publishedAt: formatDateTime(post.published_at!, 'full-date-localized'),
+        readingTime: readingTime(post.reading_time!.toString()).text,
+        slug: post.slug,
+        source: post.html!,
+        tags: post.tags!.map(t => ({
+          count: { posts: t.count ? t.count.posts : 0 },
+          name: t.name!,
+          url: t.url!,
+        })),
+        title: post.title!,
+        updatedAt: formatDateTime(post.updated_at!, 'full-date-localized'),
+        url: post.url!,
+      })
+      return acc
+    }, [] as Array<Post>)
+
+    return { pagination: res.meta.pagination, posts }
+  } catch (error) {
+    throw new Error(`Ghost-CMS Error [getPosts]: ${error}`)
   }
 }
 
 // Fetches a single post based on slug.
-export async function getGhostPost(slug: string) {
+export async function getPostBySlug(slug: string): Promise<Post> {
   try {
-    const post = await api.posts.read({
-      slug,
-    })
-    return post
+    const post = await api.posts.read(
+      { slug },
+      { include: ['authors', 'tags'] }
+    )
+    const source = await processGhostCMSPost(post.html!)
+    return {
+      author: {
+        id: post.primary_author?.id!,
+        image: post.primary_author?.profile_image!,
+        name: post.primary_author?.name!,
+      },
+      createdAt: formatDateTime(post.created_at!, 'full-date-localized'),
+      excerpt: post.excerpt!,
+      featured: post.featured,
+      id: post.id,
+      image: post.feature_image,
+      publishedAt: formatDateTime(post.published_at!, 'full-date-localized'),
+      readingTime: readingTime(post.reading_time!.toString()).text,
+      slug: post.slug,
+      source: source as string,
+      tags: post.tags!.map(t => ({
+        count: { posts: t.count ? t.count.posts : 0 },
+        name: t.name!,
+        url: t.url!,
+      })),
+      title: post.title!,
+      updatedAt: formatDateTime(post.updated_at!, 'full-date-localized'),
+      url: post.url!,
+    }
   } catch (error) {
-    throw new Error(`Ghost-CMS Error [getGhostPost]: ${error}`)
+    throw new Error(`Ghost-CMS Error [getPostBySlug]: ${error}`)
   }
 }
