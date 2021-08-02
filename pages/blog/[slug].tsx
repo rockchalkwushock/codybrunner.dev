@@ -1,0 +1,70 @@
+import * as React from 'react'
+import { GetStaticPaths, GetStaticProps } from 'next'
+import { isEqual } from 'date-fns'
+
+import { AnimatedPage } from '@components/AnimatedPage'
+import { Avatar } from '@components/Avatar'
+import { Post } from '@interfaces/blog'
+import { getPosts, getPostBySlug } from '@lib/ghost-cms'
+import { constants } from '@utils/constants'
+
+interface Props extends Post {}
+
+const Article: React.FC<Props> = props => {
+  return (
+    <AnimatedPage>
+      <header className="flex flex-col space-y-4 w-full">
+        <h1 className="font-custom-header leading-tight text-brand text-5xl text-center md:text-left">
+          {props.title}
+        </h1>
+        <div className="flex flex-col items-center w-full md:flex-row md:justify-between">
+          <div className="flex items-center">
+            <Avatar className="h-9 mr-2 w-9 lg:hidden" />
+
+            <div className="flex flex-col">
+              <p>{`${constants.author} / ${props.publishedAt}`}</p>
+              {/* Check if the dates are the same and if they are don't render.
+              Do this because Ghost CMS populates updated_at at create time. */}
+              {isEqual(
+                new Date(props.publishedAt),
+                new Date(props.updatedAt)
+              ) && <span>Updated: {props.updatedAt}</span>}
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <p className="lg:pr-4">{props.readingTime}</p>
+          </div>
+        </div>
+      </header>
+      <hr className="divider" />
+      <article
+        className="max-w-none prose prose-xl tracking-wide"
+        dangerouslySetInnerHTML={{ __html: props.source }}
+      />
+      <hr className="divider" />
+    </AnimatedPage>
+  )
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const { posts } = await getPosts()
+
+  return {
+    fallback: false,
+    paths: posts.map(({ slug }) => `/blog/${slug}`),
+  }
+}
+
+export const getStaticProps: GetStaticProps<Props, { slug: string }> =
+  async ctx => {
+    try {
+      const post = await getPostBySlug(ctx.params!.slug)
+      return {
+        props: post,
+      }
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+export default Article

@@ -53,7 +53,7 @@ figure.kg-card.kg-code-card {
   }
 }
 
-figure.kg-card.kg-code-card > pre {
+figure.kg-card.kg-code-card > div.code-toolbar > pre {
   @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none;
 }
 
@@ -200,23 +200,23 @@ figure.kg-card.kg-embed-card {
   }
 
   // Fix style issue with <Tweet /> from mdx-embed.
-  .mdx-embed {
-    .twitter-tweet-mdx-embed {
-      .twitter-tweet {
-        iframe {
-          @apply bg-transparent rounded-xl;
-        }
-      }
-    }
-  }
+  // .mdx-embed {
+  //   .twitter-tweet-mdx-embed {
+  //     .twitter-tweet {
+  //       iframe {
+  //         @apply bg-transparent rounded-xl;
+  //       }
+  //     }
+  //   }
+  // }
 
-  .rehype-code-title:defined {
-    @apply border-b border-brand leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg;
-  }
+  // .rehype-code-title:defined {
+  //   @apply border-b border-brand leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg;
+  // }
 
-  .rehype-code-title + pre {
-    @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none;
-  }
+  // .rehype-code-title + pre {
+  //   @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none;
+  // }
 }
 
 /**
