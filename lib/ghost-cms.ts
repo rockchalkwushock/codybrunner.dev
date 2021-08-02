@@ -37,8 +37,27 @@ const api = new GhostCMS({
 // Fetch page
 export async function getPage(slug: string) {
   try {
-    const res = await api.pages.read({ slug })
-    return res
+    const res = await api.pages.read({ slug }, { include: ['authors'] })
+    const source = await processGhostCMSPost(res.html!)
+    return {
+      author: {
+        id: res.primary_author?.id!,
+        image: res.primary_author?.profile_image!,
+        name: res.primary_author?.name!,
+      },
+      createdAt: formatDateTime(res.created_at!, 'full-date-localized'),
+      excerpt: res.excerpt!,
+      featured: res.featured,
+      id: res.id,
+      image: res.feature_image,
+      publishedAt: formatDateTime(res.published_at!, 'full-date-localized'),
+      readingTime: readingTime(res.reading_time!.toString()).text,
+      slug: res.slug,
+      source: source as string,
+      title: res.title!,
+      updatedAt: formatDateTime(res.updated_at!, 'full-date-localized'),
+      url: res.url!,
+    }
   } catch (error) {
     throw new Error(error)
   }
