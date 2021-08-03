@@ -5,7 +5,7 @@ import link from 'rehype-autolink-headings'
 import prism from '@mapbox/rehype-prism'
 import slug from 'rehype-slug'
 
-import { GetPostsResponse, Post } from '@interfaces/blog'
+import { Post } from '@interfaces/blog'
 import { formatDateTime, toISO8601 } from '@utils/dateTime'
 
 export const formatSlug = (slug: string, publishedAt: string) => {
@@ -90,7 +90,7 @@ export async function getPage(slug: string) {
 }
 
 // Fetches all posts.
-export async function getPosts(): Promise<GetPostsResponse> {
+export async function getPosts() {
   try {
     const res = await api.posts.browse({
       include: ['authors', 'tags'],
@@ -125,7 +125,7 @@ export async function getPosts(): Promise<GetPostsResponse> {
       return acc
     }, [] as Array<Post>)
 
-    return { pagination: res.meta.pagination, posts }
+    return posts
   } catch (error) {
     throw new Error(`Ghost-CMS Error [getPosts]: ${error}`)
   }
