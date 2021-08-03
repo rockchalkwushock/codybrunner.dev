@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
     const { res } = ctx
 
     const aboutPage = await getPage('about')
-    const { posts } = await getPosts()
+    const posts = await getPosts()
 
     // @ts-ignore
     const feed = buildFeed([...posts, aboutPage])
