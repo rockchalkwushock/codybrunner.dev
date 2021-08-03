@@ -24,6 +24,7 @@ specifiers:
   eslint: ~7.31.0
   eslint-config-next: ~11.0.1
   eslint-config-prettier: ~8.3.0
+  feed: ~4.2.2
   framer-motion: ~4.1.17
   husky: ~7.0.1
   lint-staged: ~11.1.1
@@ -56,6 +57,7 @@ dependencies:
   '@tryghost/helpers': 1.1.49
   '@tryghost/string': 0.1.19
   date-fns: 2.23.0
+  feed: 4.2.2
   framer-motion: 4.1.17_react-dom@17.0.2+react@17.0.2
   next: 11.0.1_9157cedf97d6cc5e3e175e8ff287c0e6
   preact: 10.5.14
@@ -3439,6 +3441,16 @@ packages:
     dependencies:
       reusify: 1.0.4
     dev: true
+
+  /feed/4.2.2:
+    resolution:
+      {
+        integrity: sha512-u5/sxGfiMfZNtJ3OvQpXcvotFpYkL0n9u9mM2vkui2nGo8b4wvDkJ8gAkYqbA8QpGyFCv3RK0Z+Iv+9veCS9bQ==,
+      }
+    engines: { node: '>=0.4.0' }
+    dependencies:
+      xml-js: 1.6.11
+    dev: false
 
   /figures/2.0.0:
     resolution: { integrity: sha1-OrGi0qYsi/tDGgyUy3l6L84nyWI= }
@@ -7740,6 +7752,13 @@ packages:
       chokidar: 3.5.2
     dev: false
 
+  /sax/1.2.4:
+    resolution:
+      {
+        integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==,
+      }
+    dev: false
+
   /scheduler/0.20.2:
     resolution:
       {
@@ -9218,6 +9237,16 @@ packages:
 
   /wrappy/1.0.2:
     resolution: { integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8= }
+
+  /xml-js/1.6.11:
+    resolution:
+      {
+        integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==,
+      }
+    hasBin: true
+    dependencies:
+      sax: 1.2.4
+    dev: false
 
   /xtend/4.0.2:
     resolution:

@@ -36,6 +36,8 @@ class MyDocument extends Document {
           />
           <link href="/favicons/site.webmanifest" rel="manifest" />
           <link href="/favicons/favicon.ico" rel="shortcut icon" />
+          {/* RSS */}
+          <link href="/rss.xml" rel="alternate" type="application/rss+xml" />
         </Head>
         <body className="bg-gray-dark max-w-5xl mx-auto text-primary md:bg-gradient-to-tl md:from-gray-dark md:via-gray-medium md:to-accent-blue">
           <Main />
