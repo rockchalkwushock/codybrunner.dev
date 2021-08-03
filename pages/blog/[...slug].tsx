@@ -126,7 +126,7 @@ export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
         ctx.params!.slug,
         post.tags.map(t => t.name)
       )
-      console.log({ relatedPosts })
+
       return {
         props: { ...post, relatedPosts },
       }
