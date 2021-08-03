@@ -178,3 +178,60 @@ export async function getPostBySlug(slug: Array<string>): Promise<Post> {
     throw new Error(`Ghost-CMS Error [getPostBySlug]: ${error}`)
   }
 }
+
+export async function getRelatedPosts(
+  slug: Array<string>,
+  tags: Array<string>
+) {
+  // Slugs on client are formatted as:
+  // 1. /year/series-name/post-slug
+  // 2. /year/post-slug
+  // Ghost-CMS will not recognize this format so I must format the slug back to
+  // its original format:
+  // 1. series-name-post-slug
+  // 2. post-slug
+  const reformattedSlug = slug.length === 3 ? `${slug[1]}-${slug[2]}` : slug[1]
+
+  try {
+    const res = await api.posts.browse({
+      // Find posts with the following tags, but not the current post
+      filter: `tags:[${tags.join(', ')}] + slug:-${reformattedSlug}`,
+      include: ['authors', 'tags'],
+      // Only return 3 posts.
+      limit: '3',
+      order: 'published_at DESC',
+    })
+
+    const posts = res.reduce((acc, post) => {
+      const { text, words } = readingTime(post.html!)
+      acc.push({
+        author: {
+          id: post.primary_author?.id!,
+          image: post.primary_author?.profile_image!,
+          name: post.primary_author?.name!,
+        },
+        createdAt: toISO8601(post.created_at!),
+        excerpt: post.excerpt!,
+        featured: post.featured,
+        id: post.id,
+        image: post.feature_image,
+        publishedAt: toISO8601(post.published_at!),
+        readingTime: text, // 10 min read
+        slug: formatSlug(post.slug, post.published_at!),
+        source: post.html!,
+        tags: post.tags!.map(t => ({
+          name: t.name!,
+        })),
+        title: post.title!,
+        updatedAt: toISO8601(post.updated_at!),
+        url: post.url!,
+        words,
+      })
+      return acc
+    }, [] as Array<Post>)
+
+    return posts
+  } catch (error) {
+    throw new Error(`Ghost-CMS Error [getRelatedPosts]: ${error}`)
+  }
+}
