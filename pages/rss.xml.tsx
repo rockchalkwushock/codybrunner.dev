@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next'
 import { Feed } from 'feed'
 
 import { Post } from '@interfaces/blog'
-import { getPosts } from '@lib/ghost-cms'
+import { getPage, getPosts } from '@lib/ghost-cms'
 
 function buildFeed(items: Array<Post>) {
   const feed = new Feed({
@@ -38,9 +38,11 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   if (ctx && ctx.res) {
     const { res } = ctx
 
+    const aboutPage = await getPage('about')
     const { posts } = await getPosts()
 
-    const feed = buildFeed([...posts])
+    // @ts-ignore
+    const feed = buildFeed([...posts, aboutPage])
     res.setHeader('Content-Type', 'text/xml')
     res.write(feed.rss2())
     res.end()
