@@ -110,7 +110,7 @@ const Article: React.FC<Props> = ({
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const { posts } = await getPosts()
+  const posts = await getPosts()
 
   return {
     fallback: false,

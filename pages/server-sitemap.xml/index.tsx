@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   const aboutPage = await getPage('about')
 
-  const posts = (await getPosts()).posts.map<ISitemapField>(
+  const posts = (await getPosts()).map<ISitemapField>(
     ({ slug, updatedAt }) => ({
       lastmod: new Date(updatedAt).toISOString(),
       loc: `${baseUrl}/${slug}`,
