@@ -238,7 +238,6 @@ export async function getRelatedPosts(
 }
 
 export async function getPostsByTags(tag: string) {
-  console.log({ tag })
   try {
     const res = await api.posts.browse({
       filter: `tags:${tag}`,
