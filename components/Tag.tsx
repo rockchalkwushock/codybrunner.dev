@@ -94,7 +94,7 @@ export const Tag = React.forwardRef<HTMLAnchorElement, Props>(
       >
         <a
           {...rest}
-          className={`${colors.bg} ${colors.border} border flex items-center justify-center px-2 py-0.5 rounded-full shadow-md text-white text-xs hover:bg-black hover:border-black hover:shadow-none ${className}`}
+          className={`${colors.bg} ${colors.border} border flex items-center justify-center px-2 py-0.5 rounded-full shadow-md text-white text-xs lg:text-sm hover:bg-black hover:border-black hover:shadow-none ${className}`}
           onClick={onClick}
           ref={ref}
         >
