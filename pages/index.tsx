@@ -13,8 +13,7 @@ interface Props {
 
 const Home: React.FC<Props> = ({ featured, posts }) => {
   const pageMetaData: PageMetaData = {
-    description: 'My stretch of pipe in the world wide inter-tubes.',
-    title: 'codybrunner.dev | Home',
+    title: 'Home',
     type: 'website',
   }
   return (

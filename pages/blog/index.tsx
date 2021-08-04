@@ -15,7 +15,7 @@ const BlogIndex: React.FC<Props> = ({ posts }) => {
   const pageMetaData: PageMetaData = {
     description:
       'My musings about the everyday challenges of life and things I have learned in software development.',
-    title: 'codybrunner.dev | Blog',
+    title: 'Blog',
     type: 'website',
   }
   return (

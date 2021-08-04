@@ -1,12 +1,11 @@
 import * as React from 'react'
 import { GetStaticProps } from 'next'
-import { isEqual } from 'date-fns'
 
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
-import { Avatar } from '@components/Avatar'
+import { PostLayout } from '@layouts/PostLayout'
 import { Post } from '@interfaces/blog'
 import { getPage } from '@lib/ghost-cms'
-import { formatDateTime } from '@utils/dateTime'
+import { constants } from '@utils/constants'
 
 interface Props extends Omit<Post, 'tags'> {}
 
@@ -42,73 +41,31 @@ const technologies = [
 ]
 
 const customTags = [
+  constants.author,
   'Colombia',
   'expatriate',
-  'front end engineer',
-  'full stack engineer',
-  'software engineer',
-  'United State of America',
-  'web developer',
+  'Frontend Developer',
+  'Fullstack Developer',
+  'Software Developer',
+  'Web Developer',
   ...technologies,
 ]
 
-const About: React.FC<Props> = ({
-  author,
-  excerpt,
-  image,
-  publishedAt,
-  readingTime,
-  source,
-  title,
-  updatedAt,
-  words,
-}) => {
+const About: React.FC<Props> = ({ ...post }) => {
   const pageMetaData: PageMetaData = {
-    author: author.name,
-    description: excerpt,
-    image: image!,
-    publishedAt,
+    description: post.excerpt,
+    image: post.image!,
+    publishedAt: post.publishedAt,
     tags: customTags,
-    title: `codybrunner.dev | ${title}`,
+    title: post.title,
     type: 'article',
-    updatedAt,
-    wordCount: words,
+    updatedAt: post.updatedAt,
+    wordCount: post.words,
   }
 
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <header className="flex flex-col space-y-4 w-full">
-        <h1 className="font-custom-header leading-tight text-brand text-5xl text-center md:text-left">
-          {title}
-        </h1>
-        <div className="flex flex-col items-center w-full md:flex-row md:justify-between">
-          <div className="flex items-center">
-            <Avatar className="h-9 mr-2 w-9 lg:hidden" />
-
-            <div className="flex flex-col">
-              <p>{`${author.name} / ${formatDateTime(
-                publishedAt,
-                'full-date-localized'
-              )}`}</p>
-              {/* Check if the dates are the same and if they are don't render.
-              Do this because Ghost CMS populates updated_at at create time. */}
-              {isEqual(new Date(publishedAt), new Date(updatedAt)) && (
-                <span>
-                  Updated: {formatDateTime(updatedAt, 'full-date-localized')}
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <p className="lg:pr-4">{readingTime}</p>
-          </div>
-        </div>
-      </header>
-      <hr className="divider" />
-      <article
-        className="max-w-none prose prose-xl tracking-wide"
-        dangerouslySetInnerHTML={{ __html: source }}
-      />
+      <PostLayout {...post} />
     </AnimatedPage>
   )
 }

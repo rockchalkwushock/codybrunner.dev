@@ -31,9 +31,8 @@ const content: Variants = {
 }
 
 export interface PageMetaData {
-  author?: string
   createdAt?: string
-  description: string
+  description?: string
   image?: string
   publishedAt?: string
   tags?: Array<string>
@@ -58,12 +57,12 @@ export const AnimatedPage: React.FC<Props> = ({
   const { asPath } = useRouter()
 
   const meta = {
-    author: pageMetaData?.author,
-    description: pageMetaData?.description || '',
+    author: constants.author,
+    description: pageMetaData?.description || constants.description,
     image: pageMetaData?.image,
     publishedAt: pageMetaData?.publishedAt,
     tags: pageMetaData?.tags,
-    title: pageMetaData?.title || '',
+    title: `codybrunner.dev | ${pageMetaData?.title}`,
     twitter: constants.twitter,
     type: pageMetaData?.type,
     url: `${constants.url}${asPath}`,

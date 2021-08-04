@@ -1,117 +1,29 @@
 import * as React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { isEqual } from 'date-fns'
 
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
-import { Avatar } from '@components/Avatar'
-import { PostLink } from '@components/PostLink'
-import { PostShare } from '@components/PostShare'
-import { Tag } from '@components/Tag'
 import { Post } from '@interfaces/blog'
+import { PostLayout } from '@layouts/PostLayout'
 import { getPosts, getPostBySlug, getRelatedPosts } from '@lib/ghost-cms'
-import { formatDateTime } from '@utils/dateTime'
 
 interface Props extends Post {
   relatedPosts: Array<Post>
 }
 
-const Article: React.FC<Props> = ({
-  author,
-  excerpt,
-  image,
-  publishedAt,
-  readingTime,
-  relatedPosts,
-  source,
-  tags,
-  title,
-  updatedAt,
-  words,
-}) => {
+const Article: React.FC<Props> = ({ relatedPosts, ...post }) => {
   const pageMetaData: PageMetaData = {
-    author: author.name,
-    description: excerpt,
-    image: image!,
-    publishedAt,
-    tags: tags.map(({ name }) => name),
-    title: `codybrunner.dev | ${title}`,
+    description: post.excerpt,
+    image: post.image!,
+    publishedAt: post.publishedAt,
+    tags: post.tags!.map(({ name }) => name),
+    title: post.title,
     type: 'article',
-    updatedAt,
-    wordCount: words,
+    updatedAt: post.updatedAt,
+    wordCount: post.words,
   }
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <header className="flex flex-col space-y-4 w-full">
-        <h1 className="font-custom-header leading-tight text-brand text-5xl text-center md:text-left">
-          {title}
-        </h1>
-        <div className="flex flex-col items-center w-full md:flex-row md:justify-between">
-          <div className="flex items-center">
-            <Avatar className="h-9 mr-2 w-9 lg:hidden" />
-
-            <div className="flex flex-col">
-              <p>{`${author.name} / ${formatDateTime(
-                publishedAt,
-                'full-date-localized'
-              )}`}</p>
-              {/* Check if the dates are the same and if they are don't render.
-              Do this because Ghost CMS populates updated_at at create time. */}
-              {isEqual(new Date(publishedAt), new Date(updatedAt)) && (
-                <span>
-                  Updated: {formatDateTime(updatedAt, 'full-date-localized')}
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <p className="lg:pr-4">{readingTime}</p>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center md:flex-row md:space-x-2">
-          <ul className="flex space-x-2">
-            {tags.map(tag => (
-              <Tag key={tag.name} tag={tag.name}>
-                {tag.name}
-              </Tag>
-            ))}
-          </ul>
-        </div>
-      </header>
-      <hr className="divider" />
-      <article
-        className="max-w-none prose prose-xl tracking-wide"
-        dangerouslySetInnerHTML={{ __html: source }}
-      />
-      <hr className="divider" />
-      <PostShare excerpt={excerpt} tags={tags} title={title} />
-      <hr className="divider" />
-      {!!relatedPosts && !!relatedPosts.length && (
-        <>
-          <section>
-            <h1 className="text-center mb-4 text-4xl md:text-left">
-              Related Posts
-            </h1>
-            <ul className="flex flex-col items-center justify-center space-y-4 md:items-start">
-              {relatedPosts.map(({ publishedAt, slug, title }) => (
-                <PostLink
-                  className="bg-gray-medium flex group items-center justify-between p-4 rounded-lg shadow-xl w-full md:bg-gray-dark hover:bg-accent-magenta"
-                  key={slug}
-                  slug={slug}
-                >
-                  <h2 className="font-medium text-brand text-xl underline group-hover:text-white">
-                    {title}
-                  </h2>
-                  <span className="text-lg group-hover:text-white">
-                    {formatDateTime(publishedAt, 'full-date-localized')}
-                  </span>
-                </PostLink>
-              ))}
-            </ul>
-          </section>
-          <hr className="divider" />
-        </>
-      )}
+      <PostLayout {...post} relatedPosts={relatedPosts} />
     </AnimatedPage>
   )
 }
@@ -131,7 +43,7 @@ export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
       const post = await getPostBySlug(ctx.params!.slug)
       const relatedPosts = await getRelatedPosts(
         ctx.params!.slug,
-        post.tags.map(t => t.name)
+        post.tags!.map(t => t.name)
       )
 
       return {

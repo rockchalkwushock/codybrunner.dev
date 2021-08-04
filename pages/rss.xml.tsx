@@ -3,29 +3,32 @@ import { Feed } from 'feed'
 
 import { Post } from '@interfaces/blog'
 import { getPage, getPosts } from '@lib/ghost-cms'
+import { constants } from '@utils/constants'
 
-function buildFeed(items: Array<Post>) {
+function buildFeed(items: Array<Omit<Post, 'tags'>>) {
+  // Instantiate the default feed values.
   const feed = new Feed({
     author: {
-      name: 'Cody A Brunner',
-      link: 'https://codybrunner.dev',
+      name: constants.author,
+      link: constants.url,
     },
-    description: 'My stretch of pipe in the world wide inter-tubes.',
-    copyright: `All content © ${new Date().getFullYear()}`,
-    id: 'https://codybrunner.dev',
-    link: 'https://codybrunner.dev',
+    description: constants.description,
+    copyright: constants.copyright,
+    id: constants.url,
+    link: constants.url,
     title: 'codybrunner.dev',
     updated: new Date(),
   })
 
+  // Create an entry in the feed for every page/post.
   items.forEach(item => {
     feed.addItem({
       date: new Date(),
       description: item.excerpt,
       link:
         item.slug === 'about'
-          ? 'https://codybrunner.dev/about'
-          : `https://codybrunner.dev/blog/${item.slug}`,
+          ? `${constants.url}/about`
+          : `${constants.url}/blog/${item.slug}`,
       published: new Date(item.publishedAt),
       title: item.title,
     })
@@ -41,7 +44,6 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
     const aboutPage = await getPage('about')
     const posts = await getPosts()
 
-    // @ts-ignore
     const feed = buildFeed([...posts, aboutPage])
     res.setHeader('Content-Type', 'text/xml')
     res.write(feed.rss2())
