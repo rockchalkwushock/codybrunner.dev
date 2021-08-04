@@ -2,11 +2,10 @@ import * as React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
 
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
-import { PostLink } from '@components/PostLink'
+import { PostCard } from '@components/PostCard'
 import { Tag } from '@components/Tag'
 import { Post } from '@interfaces/blog'
 import { getPostsByTags, getTags } from '@lib/ghost-cms'
-import { formatDateTime } from '@utils/dateTime'
 
 interface Props {
   posts: Array<Post>
@@ -22,31 +21,30 @@ const Topic: React.FC<Props> = ({ posts, tag, tags }) => {
   }
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <h1 className="font-medium mb-4 text-center text-3xl">
-        Posts tagged with:{' '}
-        <span className="font-bold text-accent-yellow">{tag}</span>
-      </h1>
-      <ul className="flex flex-col mb-8 overflow-y-scroll p-2 space-y-6 lg:space-y-4">
-        {posts.map(post => (
-          <li key={post.id}>
-            <PostLink slug={post.slug}>
-              <h2>{post.title}</h2>
-              <span>
-                {formatDateTime(post.publishedAt, 'full-date-localized')}
-              </span>
-            </PostLink>
-          </li>
-        ))}
-      </ul>
+      <div className="flex-container">
+        <h1 className="heading">
+          Posts tagged with:{' '}
+          <span className="font-bold text-accent-yellow">{tag}</span>
+        </h1>
+        <ul className="post-card-grid">
+          {posts.map(post => (
+            <PostCard key={post.id} {...post} />
+          ))}
+        </ul>
+      </div>
+
       <hr className="divider" />
-      <h2 className="font-medium mb-4 text-center text-xl">Other Tags</h2>
-      <ul className="gap-4 grid grid-cols-3 md:grid-cols-5 mb-8 overflow-y-scroll p-2">
-        {tags.map(tag => (
-          <li key={tag.slug}>
-            <Tag tag={tag.name!} />
-          </li>
-        ))}
-      </ul>
+
+      <div className="flex-container">
+        <h2 className="heading">Other Tags</h2>
+        <ul className="gap-4 grid grid-cols-3 md:grid-cols-5 overflow-y-scroll">
+          {tags.map(tag => (
+            <li key={tag.slug}>
+              <Tag tag={tag.name!} />
+            </li>
+          ))}
+        </ul>
+      </div>
     </AnimatedPage>
   )
 }

@@ -93,11 +93,18 @@ const Article: React.FC<Props> = ({
               Related Posts
             </h1>
             <ul className="flex flex-col items-center justify-center space-y-4 md:items-start">
-              {relatedPosts.map(({ slug, title }) => (
-                <PostLink key={slug} slug={slug}>
-                  <h2 className="text-brand text-lg underline hover:font-semibold hover:text-accent-yellow">
+              {relatedPosts.map(({ publishedAt, slug, title }) => (
+                <PostLink
+                  className="bg-gray-medium flex group items-center justify-between p-4 rounded-lg shadow-xl w-full md:bg-gray-dark hover:bg-accent-magenta"
+                  key={slug}
+                  slug={slug}
+                >
+                  <h2 className="font-medium text-brand text-xl underline group-hover:text-white">
                     {title}
                   </h2>
+                  <span className="text-lg group-hover:text-white">
+                    {formatDateTime(publishedAt, 'full-date-localized')}
+                  </span>
                 </PostLink>
               ))}
             </ul>
