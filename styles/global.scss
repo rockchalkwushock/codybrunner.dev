@@ -11,6 +11,15 @@ body {
   .divider {
     @apply border-brand my-8;
   }
+  .flex-container {
+    @apply flex flex-col items-center space-y-8 lg:items-start;
+  }
+  .heading {
+    @apply font-medium text-3xl underline;
+  }
+  .post-card-grid {
+    @apply gap-8 grid grid-cols-1 justify-items-center lg:justify-items-start;
+  }
   .social-button {
     @apply bg-transparent duration-100 ease-in-out rounded-full text-brand transition-all hover:p-2 hover:text-white;
     a > svg {

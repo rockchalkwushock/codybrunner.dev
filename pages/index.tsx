@@ -19,13 +19,14 @@ const Home: React.FC<Props> = ({ featured, posts }) => {
   }
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <div className="flex flex-col items-center mb-16 space-y-8 lg:items-start lg:space-y-4">
-        <h1 className="font-medium mb-4 text-3xl underline">Featured Post</h1>
+      <div className="flex-container mb-16">
+        <h1 className="heading">Featured Post</h1>
         <PostCard {...featured} />
       </div>
-      <div className="flex flex-col items-center space-y-8 lg:items-start lg:space-y-4">
-        <h1 className="font-medium mb-4 text-3xl underline">Latest Posts</h1>
-        <ul className="gap-8 grid grid-cols-1 justify-items-center lg:justify-items-start">
+
+      <div className="flex-container">
+        <h1 className="heading">Latest Posts</h1>
+        <ul className="post-card-grid">
           {posts.map(post => (
             <PostCard key={post.id} {...post} />
           ))}

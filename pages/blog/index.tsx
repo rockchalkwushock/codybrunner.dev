@@ -20,14 +20,14 @@ const BlogIndex: React.FC<Props> = ({ posts }) => {
   }
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <h1 className="font-medium mb-8 text-3xl text-center underline lg:text-left">
-        My Blog
-      </h1>
-      <ul className="gap-8 grid grid-cols-1 justify-items-center lg:justify-items-start">
-        {posts.map(post => (
-          <PostCard key={post.id} {...post} />
-        ))}
-      </ul>
+      <div className="flex-container">
+        <h1 className="heading">My Blog</h1>
+        <ul className="post-card-grid">
+          {posts.map(post => (
+            <PostCard key={post.id} {...post} />
+          ))}
+        </ul>
+      </div>
     </AnimatedPage>
   )
 }
