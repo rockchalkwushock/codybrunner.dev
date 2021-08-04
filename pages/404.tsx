@@ -8,7 +8,7 @@ const Custom404: React.FC = () => {
     <AnimatedPage
       pageMetaData={{
         description: '404 - Not Found',
-        title: 'codybrunner.dev | Not Found',
+        title: 'Not Found',
         type: 'website',
       }}
     >

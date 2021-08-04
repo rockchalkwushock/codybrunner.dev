@@ -16,7 +16,7 @@ interface Props {
 const Topic: React.FC<Props> = ({ posts, tag, tags }) => {
   const pageMetaData: PageMetaData = {
     description: `All posts on Cody Brunner's blog that are tagged with the ${tag} tag.`,
-    title: `codybrunner.dev | ${tag}`,
+    title: tag,
     type: 'website',
   }
   return (

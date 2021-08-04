@@ -2,42 +2,49 @@ import { getServerSideSitemap, ISitemapField } from 'next-sitemap'
 import { GetServerSideProps } from 'next'
 
 import { getPage, getPosts } from '@lib/ghost-cms'
+import { constants } from '@utils/constants'
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
-  const baseUrl =
-    process.env.NODE_ENV === 'production'
-      ? 'https://codybrunner.dev'
-      : 'localhost:4000'
+  const lastmod = (timestamp?: string) =>
+    timestamp ? new Date(timestamp).toISOString() : new Date().toISOString()
 
+  // Create entries for the static pages here in the NextJS App.
   const staticPages: Array<ISitemapField> = [
     {
-      lastmod: new Date().toISOString(),
-      loc: baseUrl,
+      lastmod: lastmod(),
+      loc: constants.url,
     },
     {
-      lastmod: new Date().toISOString(),
-      loc: `${baseUrl}/contact`,
+      lastmod: lastmod(),
+      loc: `${constants.url}/blog`,
     },
     {
-      lastmod: new Date().toISOString(),
-      loc: `${baseUrl}/projects`,
+      lastmod: lastmod(),
+      loc: `${constants.url}/contact`,
+    },
+    {
+      lastmod: lastmod(),
+      loc: `${constants.url}/projects`,
     },
   ]
 
+  // Query data from any pages written in GhostCMS.
   const aboutPage = await getPage('about')
 
+  // Query data from all posts written in GhostCMS.
   const posts = (await getPosts()).map<ISitemapField>(
     ({ slug, updatedAt }) => ({
-      lastmod: new Date(updatedAt).toISOString(),
-      loc: `${baseUrl}/${slug}`,
+      lastmod: lastmod(updatedAt),
+      loc: `${constants.url}/${slug}`,
     })
   )
 
+  // Merge arrays for processing.
   const fields: Array<ISitemapField> = [
     ...staticPages,
     {
-      lastmod: new Date(aboutPage.updatedAt).toISOString(),
-      loc: `${baseUrl}/${aboutPage.slug}`,
+      lastmod: lastmod(aboutPage.updatedAt),
+      loc: `${constants.url}/${aboutPage.slug}`,
     },
     ...posts,
   ]
