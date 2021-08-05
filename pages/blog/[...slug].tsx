@@ -3,76 +3,67 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { Post } from '@interfaces/blog'
-import { MDXLayout } from '@layouts/MDXLayout'
-import { appRegex, paths } from '@utils/constants'
-import { getFiles } from '@utils/helpers'
-import { getAllPostsFrontMatter, getRelatedPosts, parsePost } from '@utils/mdx'
+import { PostLayout } from '@layouts/PostLayout'
+import { browseGhostPosts, readGhostPageOrPost } from '@lib/ghost-cms'
 
 interface Props extends Post {
-  relatedPosts?: Array<Post>
+  relatedPosts: Array<Post>
 }
 
-const Article: React.FC<Props> = ({
-  frontMatter,
-  nextPost,
-  previousPost,
-  relatedPosts,
-  source,
-}) => {
+const Article: React.FC<Props> = ({ relatedPosts, ...post }) => {
   const pageMetaData: PageMetaData = {
-    createdAt: frontMatter.createdAt,
-    description: frontMatter.description,
-    keywords: frontMatter.keywords,
-    tags: frontMatter.tags,
-    title: `codybrunner.dev | ${frontMatter.title}`,
+    description: post.excerpt,
+    image: post.image!,
+    publishedAt: post.publishedAt,
+    tags: post.tags!.map(({ name }) => name),
+    title: post.title,
     type: 'article',
-    updatedAt: frontMatter.updatedAt,
+    updatedAt: post.updatedAt,
+    wordCount: post.words,
   }
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <MDXLayout
-        frontMatter={frontMatter}
-        nextPost={nextPost}
-        previousPost={previousPost}
-        relatedPosts={relatedPosts}
-        source={source}
-      />
+      <PostLayout {...post} relatedPosts={relatedPosts} />
     </AnimatedPage>
   )
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const filePaths = getFiles(paths.blog, appRegex.blogSource)
-    // Remove file extensions for page paths.
-    .map(path => path.replace(appRegex.mdx, ''))
-    // Map the path into the static paths object required by Next.js
-    // "slug" is declares as a catch-all route in the file system
-    // so it needs to be an array.
-    .map(slug => ({ params: { slug: slug.split('/') } }))
+  const posts = await browseGhostPosts({
+    include: ['authors', 'tags'],
+    limit: 'all',
+    order: 'published_at DESC',
+  })
 
   return {
     fallback: false,
-    paths: filePaths,
+    paths: posts.map(({ slug }) => `/blog/${slug}`),
   }
 }
 
 export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
   async ctx => {
     try {
-      const post = await parsePost(ctx.params!.slug.join('/'))
-      const posts = await getAllPostsFrontMatter()
+      let relatedPosts: Array<Post> = []
+      const post = await readGhostPageOrPost({
+        params: { include: ['authors', 'tags'] },
+        slug: ctx.params!.slug,
+      }).then(async post => {
+        const tags = post.tags!.map(({ name }) => name).join(', ')
+        relatedPosts = await browseGhostPosts({
+          // Find posts with the following tags, but not the current post
+          // https://gist.github.com/ErisDS/f516a859355d515aa6ad
+          filter: `tags:[${tags}] + slug:-${ctx.params!.slug.join('-')}`,
+          include: ['authors', 'tags'],
+          // Only return 3 posts.
+          limit: '3',
+          order: 'published_at DESC',
+        })
+        return post
+      })
 
       return {
-        props: {
-          ...post,
-          nextPost:
-            posts.find(p => p.nextPost === post.frontMatter.slug)?.frontMatter
-              .slug || null,
-          previousPost:
-            posts.find(p => p.previousPost === post.frontMatter.slug)
-              ?.frontMatter.slug || null,
-          relatedPosts: getRelatedPosts(post, posts),
-        },
+        props: { ...post, relatedPosts },
       }
     } catch (error) {
       throw new Error(error)

@@ -8,7 +8,6 @@ import '../styles/global.scss'
 import { Aside } from '@components/Aside'
 import { Footer } from '@components/Footer'
 import { Header } from '@components/Header'
-import { initAmplitudeJS } from '@lib/amplitude'
 
 interface Props extends AppProps {}
 
@@ -23,9 +22,6 @@ const App: React.FC<Props> = ({ Component, pageProps, router }) => {
     () => typeof window !== 'undefined' && window.scrollTo(0, 0),
     []
   )
-
-  // Initialize Amplitude Services.
-  React.useEffect(() => initAmplitudeJS())
 
   return (
     <QueryClientProvider client={queryClientRef.current}>
