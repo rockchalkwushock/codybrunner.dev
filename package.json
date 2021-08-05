@@ -119,6 +119,11 @@
       "eslint --fix"
     ]
   },
+  "nextBundleAnalysis": {
+    "budget": 358400,
+    "budgetPercentIncreaseRed": 20,
+    "showDetails": true
+  },
   "prettier": {
     "arrowParens": "avoid",
     "semi": false,
