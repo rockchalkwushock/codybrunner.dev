@@ -35,7 +35,7 @@ export const PostCard: React.FC<Props> = ({
       <div className="flex flex-col space-y-4">
         <span className="font-medium text-secondary">{excerpt}</span>
         <ul className="flex space-x-2">
-          {tags && tags.map(({ name }) => <Tag key={name} tag={name} />)}
+          {tags && tags.map(tag => <Tag key={tag.slug} {...tag} />)}
         </ul>
       </div>
     </PostLink>

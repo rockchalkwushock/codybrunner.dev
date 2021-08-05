@@ -66,7 +66,13 @@ export const processGhostPageOrPost = async (
         readingTime: text, // 10 min read
         slug: formatSlug(data.slug, data.published_at!), // "/blog/[year]/[slug]" || "/blog/[year]/[series]/[slug]"
         source: file.contents as string,
-        tags: data.tags ? data.tags.map(({ name }) => ({ name: name! })) : [],
+        tags: data.tags
+          ? data.tags.map(tag => ({
+              count: tag.count?.posts || 0,
+              name: tag.name!,
+              slug: tag.slug,
+            }))
+          : [],
         title: data.title!,
         updatedAt: toISO8601(data.updated_at!),
         url: data.url!,

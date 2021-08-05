@@ -1,10 +1,9 @@
 import * as React from 'react'
 
 import { TagLink } from './TagLink'
+import { Tag as PostTag } from '@interfaces/blog'
 
-interface Props {
-  tag: string
-}
+interface Props extends PostTag {}
 
 type Styles = {
   bg: string
@@ -77,17 +76,17 @@ const colorMap: Record<string, Styles> = {
   },
 }
 
-export const Tag: React.FC<Props> = ({ tag }) => {
-  const colors = colorMap[tag] || {
+export const Tag: React.FC<Props> = ({ name, slug }) => {
+  const colors = colorMap[slug] || {
     bg: 'bg-gray-light',
     border: 'border-gray-light',
   }
   return (
     <TagLink
       className={`${colors.bg} ${colors.border} border flex items-center justify-center px-2 py-0.5 rounded-full shadow-md text-white text-xs lg:text-sm hover:bg-black hover:border-black hover:shadow-none`}
-      tag={tag}
+      tag={slug}
     >
-      {tag}
+      {name}
     </TagLink>
   )
 }
