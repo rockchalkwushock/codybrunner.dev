@@ -1,6 +1,6 @@
 import GhostCMS, { Params } from '@tryghost/content-api'
 
-import { Post } from '@interfaces/blog'
+import { Post, Tag } from '@interfaces/blog'
 import { processGhostPageOrPost } from '@utils/helpers'
 
 /**
@@ -69,9 +69,7 @@ export const browseGhostPosts: BrowseGhostPostsFn = async params => {
   }
 }
 
-type BrowseGhostTagsFn = (
-  params?: Params
-) => Promise<Array<{ count: number; name: string; slug: string }>>
+type BrowseGhostTagsFn = (params?: Params) => Promise<Array<Tag>>
 
 export const browseGhostTags: BrowseGhostTagsFn = async params => {
   try {

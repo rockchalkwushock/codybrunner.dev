@@ -4,13 +4,13 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { PostCard } from '@components/PostCard'
 import { Tag } from '@components/Tag'
-import { Post } from '@interfaces/blog'
+import { Post, Tag as PostTag } from '@interfaces/blog'
 import { browseGhostPosts, browseGhostTags } from '@lib/ghost-cms'
 
 interface Props {
   posts: Array<Post>
   tag: string
-  tags: Array<{ count: number; name?: string; slug: string }>
+  tags: Array<PostTag>
 }
 
 const Topic: React.FC<Props> = ({ posts, tag, tags }) => {
@@ -19,6 +19,7 @@ const Topic: React.FC<Props> = ({ posts, tag, tags }) => {
     title: tag,
     type: 'website',
   }
+
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
       <div className="flex-container">
@@ -40,7 +41,7 @@ const Topic: React.FC<Props> = ({ posts, tag, tags }) => {
         <ul className="gap-4 grid grid-cols-3 md:grid-cols-5 overflow-y-scroll">
           {tags.map(tag => (
             <li key={tag.slug}>
-              <Tag tag={tag.name!} />
+              <Tag {...tag} />
             </li>
           ))}
         </ul>

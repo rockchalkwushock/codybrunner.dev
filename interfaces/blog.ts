@@ -6,8 +6,10 @@ interface Author {
   name: string
 }
 
-interface Tag {
+export interface Tag {
+  count: number
   name: string
+  slug: string
 }
 
 export interface Post {
