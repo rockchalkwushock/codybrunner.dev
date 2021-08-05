@@ -9,8 +9,6 @@ export const PostLink = React.forwardRef<HTMLAnchorElement, Props>(
   ({ children, onClick, slug, ...rest }, ref) => {
     return (
       <NextLink
-        // Because posts are catch-all routes we need
-        // "slug" to be an array NOT a string.
         href={{ pathname: '/blog/[...slug]', query: { slug: slug.split('/') } }}
         passHref
         // We set this to false so we don't get the wonky behavior of NextLink scrolling

@@ -9,7 +9,7 @@ const Contact: React.FC<Props> = () => {
   useAppointletEmbed()
   const pageMetaData: PageMetaData = {
     description: 'Ways in which to contact cody brunner',
-    title: 'codybrunner.dev | Contact',
+    title: 'Contact',
     type: 'website',
   }
   return (

@@ -1,29 +1,24 @@
-// https://github.com/iamvishnusankar/next-sitemap
+const baseUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://codybrunner.dev'
+    : 'localhost:4000'
+
 module.exports = {
-  changefreq: 'weekly',
+  changefreq: 'monthly',
+  exclude: ['/api/*', '/server-sitemap.xml'],
   generateRobotsTxt: true,
-  siteUrl:
-    process.env.NODE_ENV === 'production'
-      ? 'https://codybrunner.dev'
-      : 'http://localhost:4000',
-  transform: (config, url) => {
-    // Parse out the post-styles-template
-    if (url.includes('post-styles-template')) {
-      return
-    }
-    if (url.includes('archive')) {
-      return {
-        loc: url,
-        changefreq: 'never',
-        priority: config.priority,
-        lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
-      }
-    }
-    return {
-      loc: url,
-      changefreq: config.changefreq,
-      priority: config.priority,
-      lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
-    }
+  robotsTxtOptions: {
+    additionalSitemaps: [`${baseUrl}/server-sitemap.xml`],
+    policies: [
+      {
+        allow: '/',
+        userAgent: '*',
+      },
+      {
+        disallow: '/api',
+        userAgent: '*',
+      },
+    ],
   },
+  siteUrl: baseUrl,
 }

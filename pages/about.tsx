@@ -2,34 +2,85 @@ import * as React from 'react'
 import { GetStaticProps } from 'next'
 
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
+import { PostLayout } from '@layouts/PostLayout'
 import { Post } from '@interfaces/blog'
-import { MDXLayout } from '@layouts/MDXLayout'
-import { getMDXBySlug, prepareMDX } from '@lib/mdx'
+import { readGhostPageOrPost } from '@lib/ghost-cms'
+import { constants } from '@utils/constants'
 
-interface Props extends Post {}
+interface Props extends Omit<Post, 'tags'> {}
 
-const About: React.FC<Props> = ({ frontMatter, source }) => {
+const technologies = [
+  'apollographql',
+  'bootstrap',
+  'chakra-ui',
+  'css3',
+  'django',
+  'elixir',
+  'fly.io',
+  'gatsbyjs',
+  'ghost-cms',
+  'graphql',
+  'heroku',
+  'html5',
+  'javascript',
+  'mongodb',
+  'netlify',
+  'nextjs',
+  'nodejs',
+  'phoenix',
+  'postgresql',
+  'python',
+  'reactjs',
+  'react-query',
+  'redux',
+  'styled-components',
+  'tailwindcss',
+  'typescript',
+  'vercel',
+  'x-state',
+]
+
+const customTags = [
+  constants.author,
+  'Colombia',
+  'expatriate',
+  'Frontend Developer',
+  'Fullstack Developer',
+  'Software Developer',
+  'Web Developer',
+  ...technologies,
+]
+
+const About: React.FC<Props> = ({ ...post }) => {
   const pageMetaData: PageMetaData = {
-    createdAt: frontMatter.createdAt,
-    description: frontMatter.description,
-    keywords: frontMatter.keywords,
-    tags: frontMatter.tags,
-    title: 'codybrunner.dev | About',
+    description: post.excerpt,
+    image: post.image!,
+    publishedAt: post.publishedAt,
+    tags: customTags,
+    title: post.title,
     type: 'article',
-    updatedAt: frontMatter.updatedAt,
+    updatedAt: post.updatedAt,
+    wordCount: post.words,
   }
+
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <MDXLayout frontMatter={frontMatter} source={source} />
+      <PostLayout {...post} />
     </AnimatedPage>
   )
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
-    const source = await getMDXBySlug('about', 'about')
-    const post = await prepareMDX(source)
-    return { props: { ...post } }
+    const page = await readGhostPageOrPost({
+      params: {
+        include: ['authors'],
+      },
+      slug: ['about'],
+      isPage: true,
+    })
+
+    return { props: { ...page } }
   } catch (error) {
     throw new Error(error)
   }
