@@ -1,7 +1,7 @@
 import { getServerSideSitemap, ISitemapField } from 'next-sitemap'
 import { GetServerSideProps } from 'next'
 
-import { getPage, getPosts } from '@lib/ghost-cms'
+import { browseGhostPosts, readGhostPageOrPost } from '@lib/ghost-cms'
 import { constants } from '@utils/constants'
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
@@ -29,15 +29,25 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   ]
 
   // Query data from any pages written in GhostCMS.
-  const aboutPage = await getPage('about')
+  const aboutPage = await readGhostPageOrPost({
+    params: {
+      include: ['authors'],
+    },
+    slug: ['about'],
+    isPage: true,
+  })
 
   // Query data from all posts written in GhostCMS.
-  const posts = (await getPosts()).map<ISitemapField>(
-    ({ slug, updatedAt }) => ({
-      lastmod: lastmod(updatedAt),
-      loc: `${constants.url}/${slug}`,
+  const posts = (
+    await browseGhostPosts({
+      include: ['authors', 'tags'],
+      limit: 'all',
+      order: 'published_at DESC',
     })
-  )
+  ).map<ISitemapField>(({ slug, updatedAt }) => ({
+    lastmod: lastmod(updatedAt),
+    loc: `${constants.url}/${slug}`,
+  }))
 
   // Merge arrays for processing.
   const fields: Array<ISitemapField> = [
