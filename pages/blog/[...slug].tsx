@@ -4,7 +4,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { Post } from '@interfaces/blog'
 import { PostLayout } from '@layouts/PostLayout'
-import { getPosts, getPostBySlug, getRelatedPosts } from '@lib/ghost-cms'
+import { browseGhostPosts, readGhostPageOrPost } from '@lib/ghost-cms'
 
 interface Props extends Post {
   relatedPosts: Array<Post>
@@ -29,7 +29,11 @@ const Article: React.FC<Props> = ({ relatedPosts, ...post }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getPosts()
+  const posts = await browseGhostPosts({
+    include: ['authors', 'tags'],
+    limit: 'all',
+    order: 'published_at DESC',
+  })
 
   return {
     fallback: false,
@@ -40,11 +44,23 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
   async ctx => {
     try {
-      const post = await getPostBySlug(ctx.params!.slug)
-      const relatedPosts = await getRelatedPosts(
-        ctx.params!.slug,
-        post.tags!.map(t => t.name)
-      )
+      let relatedPosts: Array<Post> = []
+      const post = await readGhostPageOrPost({
+        params: { include: ['authors', 'tags'] },
+        slug: ctx.params!.slug,
+      }).then(async post => {
+        const tags = post.tags!.map(({ name }) => name).join(', ')
+        relatedPosts = await browseGhostPosts({
+          // Find posts with the following tags, but not the current post
+          // https://gist.github.com/ErisDS/f516a859355d515aa6ad
+          filter: `tags:[${tags}] + slug:-${ctx.params!.slug.join('-')}`,
+          include: ['authors', 'tags'],
+          // Only return 3 posts.
+          limit: '3',
+          order: 'published_at DESC',
+        })
+        return post
+      })
 
       return {
         props: { ...post, relatedPosts },

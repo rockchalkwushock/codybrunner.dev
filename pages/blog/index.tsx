@@ -5,7 +5,7 @@ import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 
 import { PostCard } from '@components/PostCard'
 import { Post } from '@interfaces/blog'
-import { getPosts } from '@lib/ghost-cms'
+import { browseGhostPosts } from '@lib/ghost-cms'
 
 interface Props {
   posts: Array<Post>
@@ -34,7 +34,11 @@ const BlogIndex: React.FC<Props> = ({ posts }) => {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
-    const posts = await getPosts()
+    const posts = await browseGhostPosts({
+      include: ['authors', 'tags'],
+      limit: 'all',
+      order: 'published_at DESC',
+    })
 
     return {
       props: {

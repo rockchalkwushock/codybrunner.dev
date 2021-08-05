@@ -5,7 +5,7 @@ import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { PostCard } from '@components/PostCard'
 import { Tag } from '@components/Tag'
 import { Post } from '@interfaces/blog'
-import { getPostsByTags, getTags } from '@lib/ghost-cms'
+import { browseGhostPosts, browseGhostTags } from '@lib/ghost-cms'
 
 interface Props {
   posts: Array<Post>
@@ -50,7 +50,11 @@ const Topic: React.FC<Props> = ({ posts, tag, tags }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const filePaths = (await getTags()).map(tag => ({
+  const filePaths = (
+    await browseGhostTags({
+      include: ['count.posts'],
+    })
+  ).map(tag => ({
     params: { tag: tag.slug },
   }))
 
@@ -62,8 +66,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<Props, { tag: string }> =
   async ctx => {
-    const posts = await getPostsByTags(ctx.params!.tag)
-    const tags = await getTags()
+    const posts = await browseGhostPosts({
+      filter: `tags:${ctx.params!.tag}`,
+      include: ['authors', 'tags'],
+      limit: 'all',
+      order: 'published_at DESC',
+    })
+    const tags = await browseGhostTags({
+      include: ['count.posts'],
+    })
     try {
       return {
         props: {
