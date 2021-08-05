@@ -4,7 +4,7 @@ import { GetStaticProps } from 'next'
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { PostLayout } from '@layouts/PostLayout'
 import { Post } from '@interfaces/blog'
-import { getPage } from '@lib/ghost-cms'
+import { readGhostPageOrPost } from '@lib/ghost-cms'
 import { constants } from '@utils/constants'
 
 interface Props extends Omit<Post, 'tags'> {}
@@ -72,7 +72,14 @@ const About: React.FC<Props> = ({ ...post }) => {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
-    const page = await getPage('about')
+    const page = await readGhostPageOrPost({
+      params: {
+        include: ['authors'],
+      },
+      slug: ['about'],
+      isPage: true,
+    })
+
     return { props: { ...page } }
   } catch (error) {
     throw new Error(error)

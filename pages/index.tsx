@@ -4,10 +4,10 @@ import { GetStaticProps } from 'next'
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { PostCard } from '@components/PostCard'
 import { Post } from '@interfaces/blog'
-import { getFeaturedPosts, getLatestPosts } from '@lib/ghost-cms'
+import { browseGhostPosts } from '@lib/ghost-cms'
 
 interface Props {
-  featured: Post
+  featured: Array<Post>
   posts: Array<Post>
 }
 
@@ -20,7 +20,11 @@ const Home: React.FC<Props> = ({ featured, posts }) => {
     <AnimatedPage pageMetaData={pageMetaData}>
       <div className="flex-container mb-16">
         <h1 className="heading">Featured Post</h1>
-        <PostCard {...featured} />
+        <ul className="post-card-grid">
+          {featured.map(post => (
+            <PostCard key={post.id} {...post} />
+          ))}
+        </ul>
       </div>
 
       <div className="flex-container">
@@ -37,8 +41,16 @@ const Home: React.FC<Props> = ({ featured, posts }) => {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
-    const featured = await getFeaturedPosts()
-    const posts = await getLatestPosts('5')
+    const featured = await browseGhostPosts({
+      filter: 'featured:true',
+      include: ['authors', 'tags'],
+      order: 'published_at DESC',
+    })
+    const posts = await browseGhostPosts({
+      include: ['authors', 'tags'],
+      limit: '5',
+      order: 'published_at DESC',
+    })
 
     return {
       props: {
