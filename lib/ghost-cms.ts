@@ -58,11 +58,14 @@ type BrowseGhostPostsFn = (params?: Params) => Promise<Array<Post>>
 export const browseGhostPosts: BrowseGhostPostsFn = async params => {
   try {
     const res = await api.posts.browse(params)
-    let posts = []
-    for (const r of res) {
-      const post = await processGhostPageOrPost(r)
-      posts.push(post)
-    }
+
+    // Parse the posts.
+    const posts = await res.reduce(async (cache, p) => {
+      const post = await processGhostPageOrPost(p)
+      cache.then(arr => arr.push(post))
+      return cache
+    }, Promise.resolve<Array<Post>>([]))
+
     return posts
   } catch (error) {
     throw new Error(`Ghost-CMS Error [browseGhostPagesOrPosts]: ${error}`)
