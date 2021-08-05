@@ -57,7 +57,7 @@ export const PostLayout: React.FC<Props> = ({
           <div className="flex flex-col items-center md:flex-row md:space-x-2">
             <ul className="flex space-x-2">
               {tags.map(tag => (
-                <Tag key={tag.name} tag={tag.name}>
+                <Tag key={tag.slug} {...tag}>
                   {tag.name}
                 </Tag>
               ))}
