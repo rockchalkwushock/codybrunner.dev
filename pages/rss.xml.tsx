@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next'
 import { Feed } from 'feed'
 
 import { Post } from '@interfaces/blog'
-import { getPage, getPosts } from '@lib/ghost-cms'
+import { browseGhostPosts, readGhostPageOrPost } from '@lib/ghost-cms'
 import { constants } from '@utils/constants'
 
 function buildFeed(items: Array<Omit<Post, 'tags'>>) {
@@ -41,8 +41,18 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   if (ctx && ctx.res) {
     const { res } = ctx
 
-    const aboutPage = await getPage('about')
-    const posts = await getPosts()
+    const aboutPage = await readGhostPageOrPost({
+      params: {
+        include: ['authors'],
+      },
+      slug: ['about'],
+      isPage: true,
+    })
+    const posts = await browseGhostPosts({
+      include: ['authors', 'tags'],
+      limit: 'all',
+      order: 'published_at DESC',
+    })
 
     const feed = buildFeed([...posts, aboutPage])
     res.setHeader('Content-Type', 'text/xml')
