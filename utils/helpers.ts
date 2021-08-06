@@ -1,9 +1,4 @@
 import { PostOrPage } from '@tryghost/content-api'
-import readingTime from 'reading-time'
-import rehype from 'rehype'
-import link from 'rehype-autolink-headings'
-import prism from '@mapbox/rehype-prism'
-import slug from 'rehype-slug'
 
 import { formatDateTime, toISO8601 } from './dateTime'
 import { Post } from '@interfaces/blog'
@@ -41,12 +36,18 @@ const formatSlug = (slug: string, publishedAt: string) => {
 export const processGhostPageOrPost = async (
   data: PostOrPage
 ): Promise<Post> => {
+  const readingTime = (await import('reading-time')).default
+  const rehype = (await import('rehype')).default
+  const rehypeLink = (await import('rehype-autolink-headings')).default
+  const rehypePrism = (await import('@mapbox/rehype-prism')).default
+  const rehypeSlug = await import('rehype-slug')
   return await rehype()
     .data('settings', { fragment: true })
-    .use(slug)
-    .use(link)
     // @ts-ignore
-    .use(prism)
+    .use(rehypeSlug)
+    .use(rehypeLink)
+    // @ts-ignore
+    .use(rehypePrism)
     .process(data.html!)
     .then(file => {
       const { text, words } = readingTime(file.contents as unknown as string)

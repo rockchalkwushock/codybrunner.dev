@@ -1,4 +1,8 @@
-module.exports = {
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
+module.exports = withBundleAnalyzer({
   eslint: {
     dirs: ['components', 'hooks', 'lib', 'pages', 'utils'],
   },
@@ -24,7 +28,7 @@ module.exports = {
 
     return config
   },
-}
+})
 
 // https://securityheaders.com
 const CSP = `
