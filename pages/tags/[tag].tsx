@@ -54,6 +54,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const filePaths = (
     await browseGhostTags({
       include: ['count.posts'],
+      limit: 'all',
     })
   ).map(tag => ({
     params: { tag: tag.slug },
@@ -75,6 +76,7 @@ export const getStaticProps: GetStaticProps<Props, { tag: string }> =
     })
     const tags = await browseGhostTags({
       include: ['count.posts'],
+      limit: 'all',
     })
     try {
       return {
