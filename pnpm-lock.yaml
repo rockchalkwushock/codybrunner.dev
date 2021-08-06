@@ -29,6 +29,7 @@ specifiers:
   husky: ~7.0.1
   lint-staged: ~11.1.1
   next: ~11.0.1
+  next-seo: ~4.26.0
   next-sitemap: ~1.6.140
   postcss: ~8.3.6
   postcss-import: ~14.0.2
@@ -59,6 +60,7 @@ dependencies:
   feed: 4.2.2
   framer-motion: 4.1.17_react-dom@17.0.2+react@17.0.2
   next: 11.0.1_9157cedf97d6cc5e3e175e8ff287c0e6
+  next-seo: 4.26.0_de3a444b12c9ebc463b1db22b5bac6fe
   preact: 10.5.14
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
@@ -4746,6 +4748,21 @@ packages:
   /natural-compare/1.4.0:
     resolution: { integrity: sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc= }
     dev: true
+
+  /next-seo/4.26.0_de3a444b12c9ebc463b1db22b5bac6fe:
+    resolution:
+      {
+        integrity: sha512-5TqywQ3XAwqdmEU1AyNZjR7WdDKFTkDD8aBtgQelPvzBUEy8i0mTjtiw+09jhiHFNik6FqS8uPKCaYcY6jRgSQ==,
+      }
+    peerDependencies:
+      next: ^8.1.1-canary.54 || >=9.0.0
+      react: '>=16.0.0'
+      react-dom: '>=16.0.0'
+    dependencies:
+      next: 11.0.1_9157cedf97d6cc5e3e175e8ff287c0e6
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
 
   /next-sitemap/1.6.140_next@11.0.1:
     resolution:

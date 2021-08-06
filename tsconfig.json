@@ -29,5 +29,12 @@
     "target": "esnext"
   },
   "exclude": ["node_modules"],
-  "include": ["**/*.ts", "**/*.tsx", "next.config.js", "next-env.d.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next.config.js",
+    "next-env.d.ts",
+    "next-seo.config.js",
+    "next-sitemap.js"
+  ]
 }

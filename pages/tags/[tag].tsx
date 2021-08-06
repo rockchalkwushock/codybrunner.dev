@@ -1,11 +1,14 @@
 import * as React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { useRouter } from 'next/router'
+import { NextSeo } from 'next-seo'
 
-import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
+import { AnimatedPage } from '@components/AnimatedPage'
 import { PostCard } from '@components/PostCard'
 import { Tag } from '@components/Tag'
 import { Post, Tag as PostTag } from '@interfaces/blog'
 import { browseGhostPosts, browseGhostTags } from '@lib/ghost-cms'
+import { constants } from '@utils/constants'
 
 interface Props {
   posts: Array<Post>
@@ -14,14 +17,19 @@ interface Props {
 }
 
 const Topic: React.FC<Props> = ({ posts, tag, tags }) => {
-  const pageMetaData: PageMetaData = {
-    description: `All posts on Cody Brunner's blog that are tagged with the ${tag} tag.`,
-    title: tag,
-    type: 'website',
-  }
+  const { asPath } = useRouter()
 
   return (
-    <AnimatedPage pageMetaData={pageMetaData}>
+    <AnimatedPage>
+      <NextSeo
+        canonical={`${constants.url}${asPath}`}
+        description={`All posts on Cody Brunner's blog that are tagged with the ${tag} tag.`}
+        openGraph={{
+          description: `All posts on Cody Brunner's blog that are tagged with the ${tag} tag.`,
+          url: `${constants.url}${asPath}`,
+        }}
+        title={tag}
+      />
       <div className="flex-container">
         <h1 className="heading">
           Posts tagged with:{' '}
