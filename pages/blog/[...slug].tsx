@@ -1,28 +1,51 @@
 import * as React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { useRouter } from 'next/router'
+import { ArticleJsonLd, NextSeo } from 'next-seo'
 
-import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
+import { AnimatedPage } from '@components/AnimatedPage'
 import { Post } from '@interfaces/blog'
 import { PostLayout } from '@layouts/PostLayout'
 import { browseGhostPosts, readGhostPageOrPost } from '@lib/ghost-cms'
+import { constants } from '@utils/constants'
 
 interface Props extends Post {
   relatedPosts: Array<Post>
 }
 
 const Article: React.FC<Props> = ({ relatedPosts, ...post }) => {
-  const pageMetaData: PageMetaData = {
-    description: post.excerpt,
-    image: post.image!,
-    publishedAt: post.publishedAt,
-    tags: post.tags!.map(({ name }) => name),
-    title: post.title,
-    type: 'article',
-    updatedAt: post.updatedAt,
-    wordCount: post.words,
-  }
+  const { asPath } = useRouter()
+
   return (
-    <AnimatedPage pageMetaData={pageMetaData}>
+    <AnimatedPage>
+      <NextSeo
+        canonical={`${constants.url}${asPath}`}
+        description={post.excerpt}
+        openGraph={{
+          article: {
+            authors: [constants.author],
+            modifiedTime: post.updatedAt,
+            publishedTime: post.publishedAt,
+            tags: post.tags!.map(({ name }) => name),
+          },
+          type: 'article',
+          url: `${constants.url}${asPath}`,
+        }}
+        title={post.title}
+      />
+      <ArticleJsonLd
+        authorName={[constants.author]}
+        datePublished={post.publishedAt}
+        dateModified={post.updatedAt}
+        description={post.excerpt}
+        // TODO
+        images={[]}
+        // TODO
+        publisherLogo=""
+        publisherName={constants.author}
+        title={post.title}
+        url={`${constants.url}${asPath}`}
+      />
       <PostLayout {...post} relatedPosts={relatedPosts} />
     </AnimatedPage>
   )
