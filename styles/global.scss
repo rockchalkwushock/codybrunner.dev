@@ -35,26 +35,6 @@ body {
   }
 }
 
-figure.kg-card.kg-code-card {
-  @apply flex flex-col-reverse;
-  figcaption {
-    @apply border-b border-brand leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg;
-  }
-}
-
-figure.kg-card.kg-code-card > pre {
-  @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none;
-}
-
-figure.kg-card.kg-embed-card {
-  @apply flex items-center justify-center;
-
-  iframe {
-    @apply w-full;
-    height: 25rem;
-  }
-}
-
 .prose {
   @apply text-primary;
   a {
@@ -184,6 +164,43 @@ figure.kg-card.kg-embed-card {
       }
       @apply pl-0;
     }
+  }
+
+  // Custom CSS for GhostCMS generated HTML
+  figure.kg-card.kg-code-card {
+    @apply flex flex-col-reverse;
+    figcaption {
+      @apply border-b border-brand leading-7 night-owl-theme px-6 py-4 rounded-tl-lg rounded-tr-lg;
+    }
+  }
+
+  figure.kg-card.kg-code-card > pre {
+    @apply mt-0 rounded-bl-lg rounded-br-lg rounded-tl-none rounded-tr-none;
+  }
+
+  figure.kg-card.kg-embed-card {
+    @apply flex items-center justify-center;
+
+    iframe {
+      @apply w-full;
+      height: 25rem;
+    }
+  }
+
+  // Classes for 'rehype-prism-plug'
+  .code-line {
+    @apply border-brand border-l-4 -mx-4 pl-4;
+  }
+
+  .highlight-line {
+    @apply border-l-4 -mx-4;
+    background-color: rgba(55, 65, 81, 0.5);
+    border-left-color: rgb(59, 130, 246);
+  }
+
+  .line-number::before {
+    @apply -ml-2 pr-4 text-gray-light;
+    content: attr(line);
   }
 }
 
