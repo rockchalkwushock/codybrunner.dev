@@ -12,10 +12,6 @@
     "url": "https://github.com/rockchalkwushock/codybrunner.dev.git"
   },
   "license": "MIT",
-  "engines": {
-    "node": ">=14",
-    "pnpm": ">=6"
-  },
   "scripts": {
     "analyze": "ANALYZE=true yarn build",
     "build": "next build && next-sitemap",
