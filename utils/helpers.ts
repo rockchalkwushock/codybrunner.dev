@@ -39,7 +39,7 @@ export const processGhostPageOrPost = async (
   const readingTime = (await import('reading-time')).default
   const rehype = (await import('rehype')).default
   const rehypeLink = (await import('rehype-autolink-headings')).default
-  const rehypePrism = (await import('@mapbox/rehype-prism')).default
+  const rehypePrism = (await import('rehype-prism-plus')).default
   const rehypeSlug = await import('rehype-slug')
   return await rehype()
     .data('settings', { fragment: true })
@@ -47,7 +47,7 @@ export const processGhostPageOrPost = async (
     .use(rehypeSlug)
     .use(rehypeLink)
     // @ts-ignore
-    .use(rehypePrism)
+    .use(rehypePrism, { showLineNumbers: true })
     .process(data.html!)
     .then(file => {
       const { text, words } = readingTime(file.contents as unknown as string)

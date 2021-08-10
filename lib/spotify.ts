@@ -1,4 +1,3 @@
-import { stringify } from 'querystring'
 import { QueryFunctionContext } from 'react-query'
 
 import {
@@ -40,6 +39,10 @@ export async function fetchNowPlaying(
  */
 
 async function getAccessToken(): Promise<AccessTokenResponse> {
+  const params = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token: process.env.SPOTIFY_REFRESH_TOKEN!,
+  })
   const response = await fetch(spotify.TOKEN, {
     method: 'POST',
     headers: {
@@ -48,10 +51,7 @@ async function getAccessToken(): Promise<AccessTokenResponse> {
       ).toString('base64')}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: stringify({
-      grant_type: 'refresh_token',
-      refresh_token: process.env.SPOTIFY_REFRESH_TOKEN,
-    }),
+    body: params.toString(),
   })
 
   return await response.json()
