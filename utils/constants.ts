@@ -40,7 +40,6 @@ export const appRegex = {
 
 export interface Project {
   description: string
-  isArchived?: boolean
   name: string
   source?: string
   url?: string
@@ -155,28 +154,24 @@ export const projects: Record<
     },
     {
       description: 'A Telegram Bot integration with the Chuck Norris Joke API.',
-      isArchived: true,
       name: 'Telegram Chuck Norris Bot',
       source: 'https://github.com/rockchalkwushock/telegram_chuck_norris_bot',
     },
     {
       description:
         'Weather application built with using ApolloGraphql and Create-React-App and the APIXU API.',
-      isArchived: true,
       name: 'React Weather',
       source: 'https://github.com/rockchalkwushock/react-weather-app',
     },
     {
       description:
         "Blindfold'em is a pomodoro timer built using NextJS & MomentJS.",
-      isArchived: true,
       name: "Blindfold'em",
       source: 'https://github.com/rockchalkwushock/blindfold-em',
     },
     {
       description:
         'Find local breweries using the Google Maps & Google Places API.',
-      isArchived: true,
       name: 'Bro2Brew',
       source: 'https://github.com/rockchalkwushock/Bro2Brew_App',
       url: 'https://rockchalkwushock.github.io/Bro2Brew_App',
@@ -218,7 +213,6 @@ export const projects: Record<
   python: [
     {
       description: 'A FitBit dashboard built using Django.',
-      isArchived: true,
       name: 'django-fit',
       source: 'https://github.com/rockchalkwushock/django-fit',
     },

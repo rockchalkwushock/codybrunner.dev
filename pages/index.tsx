@@ -2,21 +2,15 @@ import * as React from 'react'
 import { GetStaticProps } from 'next'
 
 import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
-import { ArchivedPost } from '@components/ArchivedPost'
 import { PostListItem } from '@components/PostListItem'
 import { Post } from '@interfaces/blog'
-import {
-  createArchivedPostMap,
-  filterPosts,
-  getAllPostsFrontMatter,
-} from '@utils/mdx'
+import { getAllPostsFrontMatter } from '@utils/mdx'
 
 interface Props {
-  archive: Record<string, Array<Post>>
   posts: Array<Post>
 }
 
-const Home: React.FC<Props> = ({ archive, posts }) => {
+const Home: React.FC<Props> = ({ posts }) => {
   const pageMetaData: PageMetaData = {
     description: 'My stretch of pipe in the world wide inter-tubes.',
     title: 'codybrunner.dev | Home',
@@ -34,21 +28,6 @@ const Home: React.FC<Props> = ({ archive, posts }) => {
           />
         ))}
       </ul>
-      <h1 className="font-medium mb-4 text-3xl underline">Archive</h1>
-      <ul className="flex flex-col mb-8 overflow-y-scroll p-2 space-y-6 lg:space-y-4">
-        {Object.keys(archive).map(year => (
-          <div key={year}>
-            <h2 className="font-medium mb-4 text-accent-magenta text-2xl">
-              {year}
-            </h2>
-            <ul className="flex flex-col space-y-6 lg:ml-4 lg:space-y-4">
-              {archive[year].map(({ frontMatter, source }) => (
-                <ArchivedPost frontMatter={frontMatter} key={source} />
-              ))}
-            </ul>
-          </div>
-        ))}
-      </ul>
     </AnimatedPage>
   )
 }
@@ -59,11 +38,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
     return {
       props: {
-        archive: createArchivedPostMap(
-          filterPosts(posts, p => p.frontMatter.archived)
-        ),
-        // All posts for current year.
-        posts: filterPosts(posts, p => !p.frontMatter.archived),
+        posts,
       },
     }
   } catch (error) {

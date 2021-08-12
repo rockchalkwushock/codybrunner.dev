@@ -1,7 +1,6 @@
 import { Maybe } from './helpers'
 
 interface FrontMatter {
-  archived: boolean
   createdAt: string
   description: string
   keywords: Array<string>
