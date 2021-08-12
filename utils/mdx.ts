@@ -47,38 +47,6 @@ export function byDate(p1: Post, p2: Post): number {
 }
 
 /**
- * @name createArchivedPostMap
- * @param posts {Array<Post>}
- * @returns {Record<string, Array<Post>>}
- * @description Function for taking an array of posts and returning an object where the
- * keys represent the years of the posts and the value represent an array of posts corresponding
- * to that year.
- */
-export function createArchivedPostMap(
-  posts: Array<Post>
-): Record<string, Array<Post>> {
-  return posts.reduce((acc, post) => {
-    // Get year post was written.
-    const year = new Date(
-      post.frontMatter.updatedAt || post.frontMatter.createdAt
-    )
-      .getFullYear()
-      .toString()
-    // Check to see if year is present in map.
-    if (!acc[year]) {
-      // If it is not add the year as a key to the map
-      // and place the post as the first entry of the array.
-      acc[year] = [post]
-      return acc
-    }
-    // If the year was present push the current post onto the array
-    // at that key.
-    acc[year].push(post)
-    return acc
-  }, {} as Record<string, Array<Post>>)
-}
-
-/**
  * @name filterPosts
  * @param posts {Array<Post>}
  * @param cb {(post:Post) => boolean}
@@ -93,7 +61,6 @@ export function filterPosts(
 }
 
 export async function getAllPostsFrontMatter(): Promise<Array<Post>> {
-  let archivedPosts, currentYearsPosts
   const files = getFiles(paths.blog, appRegex.blogSource).filter(ext =>
     appRegex.mdx.test(ext)
   )
@@ -101,45 +68,23 @@ export async function getAllPostsFrontMatter(): Promise<Array<Post>> {
   const posts = await parsePosts(files)
 
   if (process.env.NODE_ENV === 'production') {
-    archivedPosts = addsPaginationToPosts(
-      sortPosts(
-        filterPosts(posts, ({ frontMatter }) => frontMatter.archived),
-        byDate
-      )
-    )
-
-    currentYearsPosts = addsPaginationToPosts(
+    return addsPaginationToPosts(
       // Lastly sort the posts so they are in ascending order.
       sortPosts(
-        filterPosts(
-          // First filter out drafts
-          // Obviously they are not ready to be published but I also must
-          // prevent them from breaking the pagination.
-          filterPosts(posts, ({ frontMatter }) => frontMatter.published),
-          // Next filter out archived posts...this is the list of posts for the current year.
-          ({ frontMatter }) => !frontMatter.archived
-        ),
+        // First filter out drafts
+        // Obviously they are not ready to be published but I also must
+        // prevent them from breaking the pagination.
+        filterPosts(posts, ({ frontMatter }) => frontMatter.published),
         byDate
       )
     )
-
-    return [...currentYearsPosts, ...archivedPosts]
   } else {
-    const archivedPosts = addsPaginationToPosts(
+    return addsPaginationToPosts(
       sortPosts(
-        filterPosts(posts, ({ frontMatter }) => frontMatter.archived),
+        filterPosts(posts, ({ frontMatter }) => frontMatter.published),
         byDate
       )
     )
-
-    const currentYearsPosts = addsPaginationToPosts(
-      sortPosts(
-        filterPosts(posts, ({ frontMatter }) => !frontMatter.archived),
-        byDate
-      )
-    )
-
-    return [...currentYearsPosts, ...archivedPosts]
   }
 }
 
