@@ -3,7 +3,6 @@ import NextHead from 'next/head'
 import { useRouter } from 'next/router'
 import { motion, Variants } from 'framer-motion'
 
-import { useAmplitude } from '@hooks/useAmplitude'
 import { constants } from '@utils/constants'
 import { toISO8601 } from '@utils/dateTime'
 
@@ -56,8 +55,6 @@ export const AnimatedPage: React.FC<Props> = ({
   pageMetaData,
 }) => {
   const { asPath } = useRouter()
-
-  useAmplitude()
 
   const pageKeywords = pageMetaData.keywords
     ? // Use new Set(args) to dedupe the keywords.
