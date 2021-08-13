@@ -4,16 +4,23 @@ import { join } from 'path'
 import { formatDateTime } from './dateTime'
 
 const root = process.cwd()
-
-// Must be CJS import!
-const pkg = require('package.json')
-
 const year = formatDateTime(new Date(), 'full-year')
+
+// Programmatically handle updating my age.
+const age =
+  new Date().getMonth() > 1 ? parseInt(year) - 1988 : parseInt(year) - 1 - 1988
+const baseUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://codybrunner.dev'
+    : 'http://localhost:4000'
+const location = 'Colombia'
 
 type Constants = {
   age: number
   author: string
+  bio: string
   copyright: string
+  description: string
   externalLinks: {
     github: string
     instagram: string
@@ -24,13 +31,10 @@ type Constants = {
     twitter: string
     vercel: string
   }
-  keywords: Array<string>
   location: string
   menu: Array<{ path: string; text: string }>
-  tech: Record<string, string>
   twitter: string
   url: string
-  version: string
 }
 
 export const appRegex = {
@@ -46,13 +50,11 @@ export interface Project {
 }
 
 export const constants: Constants = {
-  // Programmatically handle updating my age.
-  age:
-    new Date().getMonth() > 1
-      ? parseInt(year) - 1988
-      : parseInt(year) - 1 - 1988,
+  age,
   author: 'Cody Brunner',
-  copyright: `© 2017-${year}`,
+  bio: `Cody is a ${age} year old American software developer, Jayhawk, and US Navy veteran originally hailing from the boondocks of Kansas and now currently living with his wife and step-doggo in ${location}.`,
+  copyright: `All content © ${year}`,
+  description: 'My stretch of pipe in the world wide inter-tubes.',
   externalLinks: {
     github: 'https://github.com/rockchalkwushock',
     instagram: 'https://www.instagram.com/rockchalkwushock',
@@ -63,31 +65,17 @@ export const constants: Constants = {
     twitter: 'https://twitter.com/RockChalkDev',
     vercel: 'https://vercel.com',
   },
-  keywords: [
-    'Cody Brunner',
-    'Software Developer',
-    'Frontend Developer',
-    'Fullstack Developer',
-    'Colombia',
-  ],
-  location: 'Colombia',
+  location,
   menu: [
     { path: '/', text: 'Home' },
     { path: '/about', text: 'About' },
+    { path: '/blog', text: 'Blog' },
     { path: '/contact', text: 'Contact' },
     { path: '/projects', text: 'Projects' },
     { path: '/CodyBrunner.pdf', text: 'Resume' },
   ],
-  tech: {
-    next: pkg.dependencies.next.substr(1, 4), // Major.Minor
-    tailwindCSS: pkg.devDependencies.tailwindcss.substr(1, 3), // Major.Minor
-  },
   twitter: '@RockChalkDev',
-  url:
-    process.env.NODE_ENV === 'production'
-      ? 'https://codybrunner.dev'
-      : 'http://localhost:4000',
-  version: pkg.version,
+  url: baseUrl,
 }
 
 export const paths = {

@@ -2,8 +2,8 @@ import { getServerSideSitemap, ISitemapField } from 'next-sitemap'
 import { GetServerSideProps } from 'next'
 
 import { getMDXBySlug, prepareMDX } from '@lib/mdx'
-import { getAllPostsFrontMatter } from '@utils/mdx'
 import { constants } from '@utils/constants'
+import { getAllPostsFrontMatter } from '@utils/mdx'
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
   const lastmod = (timestamp?: string) =>
@@ -30,10 +30,8 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   const posts = (await getAllPostsFrontMatter()).reduce((acc, post) => {
     acc.push({
-      lastmod: lastmod(
-        post.frontMatter.updatedAt || post.frontMatter.createdAt
-      ),
-      loc: `${constants.url}/${post.frontMatter.slug}`,
+      lastmod: lastmod(post.updatedAt || post.publishedAt || post.createdAt),
+      loc: post.canonicalUrl,
     })
     return acc
   }, [] as Array<ISitemapField>)
@@ -42,8 +40,10 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const fields: Array<ISitemapField> = [
     ...staticPages,
     {
-      lastmod: lastmod(aboutPage.frontMatter.updatedAt),
-      loc: `${constants.url}/${aboutPage.frontMatter.slug}`,
+      lastmod: lastmod(
+        aboutPage.updatedAt || aboutPage.publishedAt || aboutPage.createdAt
+      ),
+      loc: aboutPage.canonicalUrl,
     },
     ...posts,
   ]

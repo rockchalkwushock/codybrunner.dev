@@ -8,8 +8,8 @@ interface Props {}
 const Contact: React.FC<Props> = () => {
   useAppointletEmbed()
   const pageMetaData: PageMetaData = {
-    description: 'Ways in which to contact cody brunner',
-    title: 'codybrunner.dev | Contact',
+    description: 'Ways in which to contact Cody Brunner',
+    title: 'Contact',
     type: 'website',
   }
   return (

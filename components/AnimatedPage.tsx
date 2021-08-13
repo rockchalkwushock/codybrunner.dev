@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { motion, Variants } from 'framer-motion'
 
 import { constants } from '@utils/constants'
-import { toISO8601 } from '@utils/dateTime'
+import { Maybe } from '@interfaces/helpers'
 
 const variants: Variants = {
   animate: {
@@ -32,14 +32,13 @@ const content: Variants = {
 }
 
 export interface PageMetaData {
-  createdAt?: string
-  description: string
+  description?: string
   image?: string
-  keywords?: Array<string>
+  publishedAt?: Maybe<string>
   tags?: Array<string>
   title: string
   type: 'article' | 'website'
-  updatedAt?: string
+  updatedAt?: Maybe<string>
 }
 interface Props
   extends React.DetailedHTMLProps<
@@ -56,54 +55,53 @@ export const AnimatedPage: React.FC<Props> = ({
 }) => {
   const { asPath } = useRouter()
 
-  const pageKeywords = pageMetaData.keywords
-    ? // Use new Set(args) to dedupe the keywords.
-      [...new Set([...constants.keywords, ...pageMetaData.keywords])]
-    : constants.keywords
+  const meta = {
+    author: constants.author,
+    description: pageMetaData?.description || constants.description,
+    image: pageMetaData?.image,
+    publishedAt: pageMetaData?.publishedAt,
+    tags: pageMetaData?.tags,
+    title: `codybrunner.dev | ${pageMetaData?.title}`,
+    twitter: constants.twitter,
+    type: pageMetaData?.type,
+    url: `${constants.url}${asPath}`,
+    updatedAt: pageMetaData?.updatedAt,
+  }
 
   return (
     <>
       <NextHead>
-        <title>{pageMetaData.title}</title>
+        <title>{meta.title}</title>
         <meta charSet="utf-8" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <meta content={constants.author} name="author" />
-        <meta content={pageMetaData.description} name="description" />
-        <meta content={pageKeywords.join(', ').trim()} name="keywords" />
-        <link rel="canonical" href={`${constants.url}${asPath}`} />
+        <meta content={meta.author} name="author" />
+        <meta content={meta.description} name="description" />
+        <link rel="canonical" href={`${meta.url}${asPath}`} />
         {/* Open Graph: http://ogp.me/ */}
-        <meta content={pageMetaData.description} property="og:description" />
-        {pageMetaData.image && (
-          <meta content={pageMetaData.image} property="og:image" />
-        )}
+        <meta content={meta.description} property="og:description" />
+        {meta.image && <meta content={meta.image} property="og:image" />}
         <meta content="en-US" name="og:locale" />
         <meta content="Cody Brunner" property="og:site_name" />
-        <meta content={pageMetaData.title} property="og:title" />
-        <meta content={pageMetaData.type} property="og:type" />
-        <meta content={`${constants.url}${asPath}`} property="og:url" />
+        <meta content={meta.title} property="og:title" />
+        <meta content={meta.type} property="og:type" />
+        <meta content={`${meta.url}${asPath}`} property="og:url" />
         {/* Twitter */}
         <meta content="summary_large_image" property="twitter:card" />
-        <meta content={constants.twitter} name="twitter:creator" />
-        <meta content={constants.twitter} property="twitter:site" />
+        <meta content={meta.twitter} name="twitter:creator" />
+        <meta content={meta.twitter} property="twitter:site" />
         {/* Article */}
-        {pageMetaData.type === 'article' && (
+        {meta.type === 'article' && (
           <>
-            <meta content={constants.author} name="article:author" />
-            {pageMetaData.createdAt && (
-              <meta
-                content={toISO8601(pageMetaData.createdAt)}
-                name="article:published_time"
-              />
+            <meta content={meta.author} name="article:author" />
+            {meta.publishedAt && (
+              <meta content={meta.publishedAt} name="article:published_time" />
             )}
-            {pageMetaData.tags &&
-              pageMetaData.tags.map(tag => (
+            {meta.tags &&
+              meta.tags.map(tag => (
                 <meta content={tag} key={tag} name="article:tag" />
               ))}
-            {pageMetaData.updatedAt && (
-              <meta
-                content={toISO8601(pageMetaData.updatedAt)}
-                name="article:modified_time"
-              />
+            {meta.updatedAt && (
+              <meta content={meta.updatedAt} name="article:modified_time" />
             )}
           </>
         )}

@@ -1,7 +1,7 @@
 import { isBefore } from 'date-fns'
 
 import { appRegex, paths } from './constants'
-import { getFiles } from './helpers'
+import { dedupeArray, getFiles } from './helpers'
 import { Post } from '@interfaces/blog'
 import { getMDXBySlug, prepareMDX } from '@lib/mdx'
 
@@ -19,12 +19,10 @@ export function addsPaginationToPosts(posts: Array<Post>): Array<Post> {
       ...p,
       // If we are at the beginning of the iteration there is no "nextPost": set to null.
       // In all other cases find the post that is 1 minus the current length of the accumulator.
-      nextPost:
-        acc.length === 0 ? null : posts[acc.length - 1].frontMatter.slug,
+      nextPost: acc.length === 0 ? null : posts[acc.length - 1].slug,
       // If we are at the end of the list of posts there is no "previousPost": set to null.
       // In all other cases find the post that is the current index plus 1.
-      previousPost:
-        posts.length === acc.length + 1 ? null : posts[i + 1].frontMatter.slug,
+      previousPost: posts.length === acc.length + 1 ? null : posts[i + 1].slug,
     })
     return acc
   }, [] as Array<Post>)
@@ -39,8 +37,8 @@ export function addsPaginationToPosts(posts: Array<Post>): Array<Post> {
  */
 export function byDate(p1: Post, p2: Post): number {
   return isBefore(
-    new Date(p1.frontMatter.updatedAt || p1.frontMatter.createdAt),
-    new Date(p2.frontMatter.updatedAt || p2.frontMatter.createdAt)
+    new Date(p1.updatedAt || p1.publishedAt || p1.createdAt),
+    new Date(p2.updatedAt || p2.publishedAt || p2.createdAt)
   )
     ? -1
     : 1
@@ -74,14 +72,14 @@ export async function getAllPostsFrontMatter(): Promise<Array<Post>> {
         // First filter out drafts
         // Obviously they are not ready to be published but I also must
         // prevent them from breaking the pagination.
-        filterPosts(posts, ({ frontMatter }) => frontMatter.published),
+        filterPosts(posts, ({ publishedAt }) => !!publishedAt),
         byDate
       )
     )
   } else {
     return addsPaginationToPosts(
       sortPosts(
-        filterPosts(posts, ({ frontMatter }) => frontMatter.published),
+        filterPosts(posts, ({ publishedAt }) => !!publishedAt),
         byDate
       )
     )
@@ -98,7 +96,7 @@ export async function getAllPostsFrontMatter(): Promise<Array<Post>> {
  */
 export function getPostsByTag(posts: Array<Post>, tag: string): Array<Post> {
   return posts.reduce((acc, post) => {
-    if (post.frontMatter.tags.includes(tag)) {
+    if (post.tags && post.tags.includes(tag)) {
       acc.push(post)
     }
     return acc
@@ -119,41 +117,51 @@ export function getRelatedPosts(
   posts: Array<Post>,
   quantity = 2
 ): Array<Post> {
+  if (!currentPost.tags) {
+    return []
+  }
   // Take the current post's tags and create a map where the keys map to
   // an empty array for later storing posts that possess that key as a tag.
-  const tagMap = currentPost.frontMatter.tags.reduce((cache, tag) => {
+  const tagMap = currentPost.tags.reduce((cache, tag) => {
     cache[tag.toLowerCase()] = []
     return cache
   }, {} as Record<string, Array<Post>>)
 
   // Loop over all the posts...
   for (const post of posts) {
-    // Loop over all the tags of the given post...
-    for (const tag of post.frontMatter.tags) {
-      // Check to see if the current tag exists in the tagMap.
-      // We don't want the current post to end up in the list of related posts
-      // so check the slugs are not equal to the current post.
-      if (
-        tagMap[tag.toLowerCase()] &&
-        post.frontMatter.slug !== currentPost.frontMatter.slug
-      ) {
-        tagMap[tag.toLowerCase()].push(post)
+    if (post.tags) {
+      // Loop over all the tags of the given post...
+      for (const tag of post.tags) {
+        // Check to see if the current tag exists in the tagMap.
+        // We don't want the current post to end up in the list of related posts
+        // so check the slugs are not equal to the current post.
+        if (!!tagMap[tag.toLowerCase()] && post.slug !== currentPost.slug) {
+          tagMap[tag.toLowerCase()].push(post)
+        }
       }
     }
   }
-  const relatedPosts = Object.keys(tagMap).reduce((cache, key) => {
-    // If tagMap only has one key return all the associated posts.
-    if (Object.keys(tagMap).length === 1) {
-      cache = tagMap[key]
-      return cache
-    }
-    // If there are more than one key in tagMap take the first 2 posts from each key.
-    if (Object.keys(tagMap).length > 1) {
-      cache = tagMap[key].slice(0, quantity)
-    }
 
-    return cache
-  }, [] as Array<Post>)
+  // NOTE: Why does dedupeArray work here?
+  // As we loop the tagMap and add the posts associated to the current tag
+  // to the cache we are assembling an array of objects. Those objects have
+  // a memory reference. Should we push the same object to the array then
+  // we have two of the same memory references present.
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+  const relatedPosts = dedupeArray(
+    Object.keys(tagMap).reduce((cache, key) => {
+      // If tagMap only has one key return all the associated posts.
+      if (Object.keys(tagMap).length === 1) {
+        return [...cache, ...tagMap[key]]
+      }
+      // If there are more than one key in tagMap take the first 2 posts from each key.
+      if (Object.keys(tagMap).length > 1) {
+        cache = [...cache, ...tagMap[key].slice(0, quantity)]
+      }
+
+      return cache
+    }, [] as Array<Post>)
+  )
 
   // Return an array of related posts based on our tagMap that is sorted
   // from most recent.
@@ -171,13 +179,14 @@ export function getRelatedPosts(
  * and returning a deduped array of those tags.
  */
 export function getTags(posts: Array<Post>): Array<string> {
-  return [
-    ...new Set(
-      posts.reduce((tags, post) => {
-        return [...tags, ...post.frontMatter.tags]
-      }, [] as Array<string>)
-    ),
-  ]
+  return dedupeArray(
+    posts.reduce((tags, post) => {
+      if (post.tags) {
+        return [...tags, ...post.tags]
+      }
+      return []
+    }, [] as Array<string>)
+  )
 }
 
 /**

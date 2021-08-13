@@ -12,31 +12,18 @@ interface Props extends Post {
   relatedPosts?: Array<Post>
 }
 
-const Article: React.FC<Props> = ({
-  frontMatter,
-  nextPost,
-  previousPost,
-  relatedPosts,
-  source,
-}) => {
+const Article: React.FC<Props> = post => {
   const pageMetaData: PageMetaData = {
-    createdAt: frontMatter.createdAt,
-    description: frontMatter.description,
-    keywords: frontMatter.keywords,
-    tags: frontMatter.tags,
-    title: `codybrunner.dev | ${frontMatter.title}`,
+    description: post.description,
+    publishedAt: post.publishedAt,
+    tags: post.tags,
+    title: post.title,
     type: 'article',
-    updatedAt: frontMatter.updatedAt,
+    updatedAt: post.updatedAt,
   }
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <MDXLayout
-        frontMatter={frontMatter}
-        nextPost={nextPost}
-        previousPost={previousPost}
-        relatedPosts={relatedPosts}
-        source={source}
-      />
+      <MDXLayout {...post} />
     </AnimatedPage>
   )
 }
@@ -65,12 +52,9 @@ export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
       return {
         props: {
           ...post,
-          nextPost:
-            posts.find(p => p.nextPost === post.frontMatter.slug)?.frontMatter
-              .slug || null,
+          nextPost: posts.find(p => p.nextPost === post.slug)?.slug || null,
           previousPost:
-            posts.find(p => p.previousPost === post.frontMatter.slug)
-              ?.frontMatter.slug || null,
+            posts.find(p => p.previousPost === post.slug)?.slug || null,
           relatedPosts: getRelatedPosts(post, posts),
         },
       }

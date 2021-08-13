@@ -11,11 +11,17 @@ body {
   .divider {
     @apply border-brand my-8;
   }
-  .draft-banner {
-    @apply bg-accent-red border-2 flex flex-col font-bold items-center justify-center mb-16 py-4 rounded-lg text-4xl;
+  .flex-container {
+    @apply flex flex-col items-center space-y-8 lg:items-start;
+  }
+  .heading {
+    @apply font-medium text-3xl underline;
   }
   .pagination-button {
     @apply bg-brand border border-transparent px-8 py-2 rounded-lg shadow-md text-gray-dark text-xl hover:bg-accent-purple hover:text-accent-yellow;
+  }
+  .post-card-grid {
+    @apply gap-8 grid grid-cols-1 justify-items-center w-full lg:justify-items-start;
   }
   .social-button {
     @apply bg-transparent duration-100 ease-in-out rounded-full text-brand transition-all hover:p-2 hover:text-white;

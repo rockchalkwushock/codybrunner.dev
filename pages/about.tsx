@@ -5,22 +5,64 @@ import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
 import { Post } from '@interfaces/blog'
 import { MDXLayout } from '@layouts/MDXLayout'
 import { getMDXBySlug, prepareMDX } from '@lib/mdx'
+import { constants } from '@utils/constants'
 
 interface Props extends Post {}
 
-const About: React.FC<Props> = ({ frontMatter, source }) => {
+const technologies = [
+  'apollographql',
+  'bootstrap',
+  'chakra-ui',
+  'css3',
+  'django',
+  'elixir',
+  'fly.io',
+  'gatsbyjs',
+  'ghost-cms',
+  'graphql',
+  'heroku',
+  'html5',
+  'javascript',
+  'mongodb',
+  'netlify',
+  'nextjs',
+  'nodejs',
+  'phoenix',
+  'postgresql',
+  'python',
+  'reactjs',
+  'react-query',
+  'redux',
+  'styled-components',
+  'tailwindcss',
+  'typescript',
+  'vercel',
+  'x-state',
+]
+
+const customTags = [
+  constants.author,
+  'Colombia',
+  'expatriate',
+  'Frontend Developer',
+  'Fullstack Developer',
+  'Software Developer',
+  'Web Developer',
+  ...technologies,
+]
+
+const About: React.FC<Props> = post => {
   const pageMetaData: PageMetaData = {
-    createdAt: frontMatter.createdAt,
-    description: frontMatter.description,
-    keywords: frontMatter.keywords,
-    tags: frontMatter.tags,
-    title: 'codybrunner.dev | About',
+    description: post.description,
+    publishedAt: post.publishedAt,
+    tags: customTags,
+    title: post.title,
     type: 'article',
-    updatedAt: frontMatter.updatedAt,
+    updatedAt: post.updatedAt,
   }
   return (
     <AnimatedPage pageMetaData={pageMetaData}>
-      <MDXLayout frontMatter={frontMatter} source={source} />
+      <MDXLayout {...post} />
     </AnimatedPage>
   )
 }

@@ -8,7 +8,7 @@ import { projects } from '@utils/constants'
 const Projects: React.FC = () => {
   const pageMetaData: PageMetaData = {
     description: 'Enterprise & Side Projects Cody Brunner has developed.',
-    title: 'codybrunner.dev | Projects',
+    title: 'Projects',
     type: 'website',
   }
 
