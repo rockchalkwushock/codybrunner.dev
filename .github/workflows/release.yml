@@ -34,6 +34,11 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Build
+        run: pnpm build
+        env:
+          NODE_ENV: production
+
       - name: Deploying
         uses: amondnet/vercel-action@v20.0.0
         with:

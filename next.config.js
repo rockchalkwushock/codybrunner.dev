@@ -1,14 +1,20 @@
-// This is currently needed because 'rehype-code-titles' is a pure-ESM package
-// and NextJS cannot resolve the import properly.
-// https://github.com/vercel/next.js/issues/9607
-const withTM = require('next-transpile-modules')(['rehype-code-titles'])
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
 
-module.exports = withTM({
-  env: {
-    AMPLITUDE_API_KEY: process.env.AMPLITUDE_API_KEY,
-  },
+const isProd = process.env.NODE_ENV === 'production'
+
+/**
+ * @type {import('next').NextConfig}
+ **/
+const customNextConfig = {
   eslint: {
     dirs: ['components', 'hooks', 'layouts', 'lib', 'pages', 'utils'],
+  },
+
+  experimental: {
+    // https://nextjs.org/blog/next-11-1#es-modules-support
+    esmExternals: true,
   },
   reactStrictMode: true,
   // https://github.com/leerob/leerob.io/blob/main/next.config.js
@@ -43,11 +49,13 @@ module.exports = withTM({
 
     return config
   },
-})
+}
+
+module.exports = withBundleAnalyzer(customNextConfig)
 
 // https://securityheaders.com
 const CSP = `
-  child-src appt.link api.amplitude.com;
+  child-src appt.link;
   connect-src *;
   default-src 'self';
   font-src 'self' *.gstatic.com;
@@ -55,7 +63,7 @@ const CSP = `
   frame-src appt.link giphy.com platform.twitter.com *.youtube.com;
   img-src * blob: data:;
   media-src 'none';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' api.amplitude.com platform.twitter.com *.youtube.com;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' platform.twitter.com *.youtube.com;
   style-src 'self' 'unsafe-inline' *.googleapis.com;
 `
 

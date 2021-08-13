@@ -1,26 +1,87 @@
 import * as React from 'react'
 import { GetStaticProps } from 'next'
+import { ArticleJsonLd, NextSeo } from 'next-seo'
 
-import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
+import { AnimatedPage } from '@components/AnimatedPage'
 import { Post } from '@interfaces/blog'
 import { MDXLayout } from '@layouts/MDXLayout'
 import { getMDXBySlug, prepareMDX } from '@lib/mdx'
 
 interface Props extends Post {}
 
-const About: React.FC<Props> = ({ frontMatter, source }) => {
-  const pageMetaData: PageMetaData = {
-    createdAt: frontMatter.createdAt,
-    description: frontMatter.description,
-    keywords: frontMatter.keywords,
-    tags: frontMatter.tags,
-    title: 'codybrunner.dev | About',
-    type: 'article',
-    updatedAt: frontMatter.updatedAt,
-  }
+const technologies = [
+  'apollographql',
+  'bootstrap',
+  'chakra-ui',
+  'css3',
+  'django',
+  'elixir',
+  'fly.io',
+  'gatsbyjs',
+  'ghost-cms',
+  'graphql',
+  'heroku',
+  'html5',
+  'javascript',
+  'mongodb',
+  'netlify',
+  'nextjs',
+  'nodejs',
+  'phoenix',
+  'postgresql',
+  'python',
+  'reactjs',
+  'react-query',
+  'redux',
+  'styled-components',
+  'tailwindcss',
+  'typescript',
+  'vercel',
+  'x-state',
+]
+
+const customTags = [
+  'Colombia',
+  'expatriate',
+  'Frontend Developer',
+  'Fullstack Developer',
+  'Software Developer',
+  'Web Developer',
+  ...technologies,
+]
+
+const About: React.FC<Props> = post => {
   return (
-    <AnimatedPage pageMetaData={pageMetaData}>
-      <MDXLayout frontMatter={frontMatter} source={source} />
+    <AnimatedPage>
+      <NextSeo
+        canonical={post.canonicalUrl}
+        description={post.description}
+        openGraph={{
+          article: {
+            authors: [post.author],
+            modifiedTime: post.updatedAt ?? undefined,
+            publishedTime: post.publishedAt ?? undefined,
+            tags: customTags,
+          },
+          type: 'article',
+          url: post.canonicalUrl,
+        }}
+        title={post.title}
+      />
+      <ArticleJsonLd
+        authorName={[post.author]}
+        datePublished={post.publishedAt || post.createdAt}
+        dateModified={post.updatedAt ?? undefined}
+        description={post.description}
+        // TODO
+        images={[]}
+        // TODO
+        publisherLogo=""
+        publisherName={post.author}
+        title={post.title}
+        url={post.canonicalUrl}
+      />
+      <MDXLayout {...post} />
     </AnimatedPage>
   )
 }

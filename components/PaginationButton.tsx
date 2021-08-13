@@ -4,7 +4,7 @@ import { FastForward, Rewind } from 'react-feather'
 import { PostLink } from './PostLink'
 import { Post } from '@interfaces/blog'
 
-interface Props extends Pick<Post['frontMatter'], 'slug'> {
+interface Props extends Pick<Post, 'slug'> {
   direction: 'next' | 'prev'
 }
 

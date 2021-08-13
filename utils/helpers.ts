@@ -1,6 +1,8 @@
 import { readdirSync, statSync } from 'fs'
 import { join } from 'path'
 
+export const dedupeArray = <T>(array: Array<T>): Array<T> => [...new Set(array)]
+
 export const isServer = typeof window === 'undefined'
 
 /**

@@ -1,19 +1,26 @@
 import * as React from 'react'
+import { useRouter } from 'next/router'
+import { NextSeo } from 'next-seo'
 
-import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
+import { AnimatedPage } from '@components/AnimatedPage'
 import { Panel, ProjectKey, Tab, Tabs } from '@components/Tabs'
 import { ProjectCard } from '@components/ProjectCard'
-import { projects } from '@utils/constants'
+import { constants, projects } from '@utils/constants'
 
 const Projects: React.FC = () => {
-  const pageMetaData: PageMetaData = {
-    description: 'Enterprise & Side Projects Cody Brunner has developed.',
-    title: 'codybrunner.dev | Projects',
-    type: 'website',
-  }
+  const { asPath } = useRouter()
 
   return (
-    <AnimatedPage pageMetaData={pageMetaData}>
+    <AnimatedPage>
+      <NextSeo
+        canonical={`${constants.url}${asPath}`}
+        description="Enterprise & Side Projects Cody Brunner has developed."
+        openGraph={{
+          description: 'Enterprise & Side Projects Cody Brunner has developed.',
+          url: `${constants.url}${asPath}`,
+        }}
+        title="Projects"
+      />
       <Tabs>
         <div className="flex flex-col space-y-6">
           <div className="flex overflow-x-scroll space-x-2 md:space-x-4">

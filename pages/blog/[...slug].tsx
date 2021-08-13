@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { ArticleJsonLd, NextSeo } from 'next-seo'
 
-import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
+import { AnimatedPage } from '@components/AnimatedPage'
 import { Post } from '@interfaces/blog'
 import { MDXLayout } from '@layouts/MDXLayout'
 import { appRegex, paths } from '@utils/constants'
@@ -12,31 +13,38 @@ interface Props extends Post {
   relatedPosts?: Array<Post>
 }
 
-const Article: React.FC<Props> = ({
-  frontMatter,
-  nextPost,
-  previousPost,
-  relatedPosts,
-  source,
-}) => {
-  const pageMetaData: PageMetaData = {
-    createdAt: frontMatter.createdAt,
-    description: frontMatter.description,
-    keywords: frontMatter.keywords,
-    tags: frontMatter.tags,
-    title: `codybrunner.dev | ${frontMatter.title}`,
-    type: 'article',
-    updatedAt: frontMatter.updatedAt,
-  }
+const Article: React.FC<Props> = post => {
   return (
-    <AnimatedPage pageMetaData={pageMetaData}>
-      <MDXLayout
-        frontMatter={frontMatter}
-        nextPost={nextPost}
-        previousPost={previousPost}
-        relatedPosts={relatedPosts}
-        source={source}
+    <AnimatedPage>
+      <NextSeo
+        canonical={post.canonicalUrl}
+        description={post.description}
+        openGraph={{
+          article: {
+            authors: [post.author],
+            modifiedTime: post.updatedAt ?? undefined,
+            publishedTime: post.publishedAt ?? undefined,
+            tags: post.tags ?? undefined,
+          },
+          type: 'article',
+          url: post.canonicalUrl,
+        }}
+        title={post.title}
       />
+      <ArticleJsonLd
+        authorName={[post.author]}
+        datePublished={post.publishedAt || post.createdAt}
+        dateModified={post.updatedAt ?? undefined}
+        description={post.description}
+        // TODO
+        images={[]}
+        // TODO
+        publisherLogo=""
+        publisherName={post.author}
+        title={post.title}
+        url={post.canonicalUrl}
+      />
+      <MDXLayout {...post} />
     </AnimatedPage>
   )
 }
@@ -65,12 +73,9 @@ export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
       return {
         props: {
           ...post,
-          nextPost:
-            posts.find(p => p.nextPost === post.frontMatter.slug)?.frontMatter
-              .slug || null,
+          nextPost: posts.find(p => p.nextPost === post.slug)?.slug || null,
           previousPost:
-            posts.find(p => p.previousPost === post.frontMatter.slug)
-              ?.frontMatter.slug || null,
+            posts.find(p => p.previousPost === post.slug)?.slug || null,
           relatedPosts: getRelatedPosts(post, posts),
         },
       }

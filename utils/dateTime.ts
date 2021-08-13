@@ -31,4 +31,7 @@ export const formatDateTime = (date: Date | number | string, format: Formats) =>
  * @returns {string}
  * @description Converts date string to ISO 8061 timestamp.
  */
-export const toISO8601 = (date: string): string => new Date(date).toISOString()
+export const toISO8601 = (date: string): string =>
+  // Add to the date string my timezone so date's are formatted
+  // correctly when deployed to Vercel.
+  new Date(`${date} 00:00 GMT-5`).toISOString()

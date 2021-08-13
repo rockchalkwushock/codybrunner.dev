@@ -1,16 +1,10 @@
 import { readFile } from 'fs/promises'
 import { join } from 'path'
-
 import { bundleMDX } from 'mdx-bundler'
-import readingTime from 'reading-time'
-
-// Plugins & Presets
-import rehypeCodeTitles from 'rehype-code-titles'
-import remarkEmoji from 'remark-emoji'
-import remarkExternalLinks from 'remark-external-links'
-import gfm from 'remark-gfm'
 
 import { Post } from '@interfaces/blog'
+import { constants } from '@utils/constants'
+import { toISO8601 } from '@utils/dateTime'
 
 const root = process.cwd()
 
@@ -18,6 +12,18 @@ interface MDXSource {
   file: string
   slug: string
 }
+
+interface RawFrontMatter
+  extends Pick<
+    Post,
+    | 'createdAt'
+    | 'description'
+    | 'featured'
+    | 'publishedAt'
+    | 'tags'
+    | 'title'
+    | 'updatedAt'
+  > {}
 
 /**
  * @name getMDXBySlug
@@ -66,19 +72,31 @@ export async function prepareMDX(source: MDXSource): Promise<Post> {
     )
   }
   try {
+    const { default: readingTime } = await import('reading-time')
+    const { default: rehypeAutoLink } = await import('rehype-autolink-headings')
+    const { default: rehypeCodeTitles } = await import('rehype-code-titles')
+    const { default: rehypeSlug } = await import('rehype-slug')
+    const { default: remarkExternalLink } = await import(
+      'remark-external-links'
+    )
+    const { default: remarkGfm } = await import('remark-gfm')
+
     // mdx-bundler processes the frontMatter internally from the file. No need for gray-matter anymore.
     const { code, frontmatter } = await bundleMDX(source.file, {
-      xdmOptions(_input, options) {
-        return {
-          ...options,
-          remarkPlugins: [
-            ...(options.remarkPlugins ?? []),
-            gfm,
-            remarkEmoji,
-            remarkExternalLinks,
-          ],
-          rehypePlugins: [...(options.rehypePlugins ?? []), rehypeCodeTitles],
-        }
+      xdmOptions(options) {
+        options.remarkPlugins = [
+          ...(options.remarkPlugins ?? []),
+
+          remarkGfm,
+          remarkExternalLink,
+        ]
+        options.rehypePlugins = [
+          ...(options.rehypePlugins ?? []),
+          rehypeSlug,
+          [rehypeAutoLink, { behavior: 'wrap' }],
+          rehypeCodeTitles,
+        ]
+        return options
       },
     })
 
@@ -87,14 +105,33 @@ export async function prepareMDX(source: MDXSource): Promise<Post> {
     // 2. words = 1735
     const { text, words } = readingTime(code)
 
+    const {
+      createdAt,
+      description,
+      featured,
+      publishedAt,
+      tags,
+      title,
+      updatedAt,
+    } = frontmatter as RawFrontMatter
+
     return {
-      frontMatter: {
-        ...(frontmatter as Post['frontMatter']),
-        readingTime: text,
-        slug: source.slug,
-        wordCount: words,
-      },
+      author: constants.author,
+      canonicalUrl:
+        source.slug === 'about'
+          ? `${constants.url}/${source.slug}`
+          : `${constants.url}/blog/${source.slug}`,
+      createdAt: toISO8601(createdAt),
+      description,
+      featured: !!featured,
+      publishedAt: publishedAt ? toISO8601(publishedAt) : null,
+      readingTime: text,
+      slug: source.slug,
       source: code,
+      tags: tags ? tags.map(t => t.toLowerCase()) : undefined,
+      title,
+      updatedAt: updatedAt ? toISO8601(updatedAt) : null,
+      words,
     }
   } catch (error) {
     throw new Error(error)

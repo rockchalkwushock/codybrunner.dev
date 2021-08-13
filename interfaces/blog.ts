@@ -1,21 +1,19 @@
 import { Maybe } from './helpers'
 
-interface FrontMatter {
+export interface Post {
+  author: string
+  canonicalUrl: string
   createdAt: string
   description: string
-  keywords: Array<string>
-  published: boolean
-  readingTime: string
-  slug: string
-  tags: Array<string>
-  title: string
-  updatedAt?: string
-  wordCount: number
-}
-
-export interface Post {
-  frontMatter: FrontMatter
+  featured?: boolean
   nextPost?: Maybe<string>
   previousPost?: Maybe<string>
+  publishedAt?: Maybe<string>
+  readingTime: string
+  slug: string
   source: string
+  tags?: Array<string>
+  title: string
+  updatedAt?: Maybe<string>
+  words: number
 }

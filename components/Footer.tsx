@@ -15,7 +15,9 @@ export const Footer: React.FC = () => {
           href={constants.externalLinks.source}
           rel="noopener noreferrer"
           target="_blank"
-        >{`${constants.copyright} ${constants.author}`}</a>
+        >
+          {constants.copyright}
+        </a>
       </div>
       <ul className="flex items-center justify-center space-x-6 md:ml-8 md:space-x-4">
         <SocialIcons />
