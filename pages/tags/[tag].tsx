@@ -78,7 +78,10 @@ export const getStaticProps: GetStaticProps<Props, { tag: string }> =
     const tag = ctx.params!.tag
     const posts = await getAllPostsFrontMatter()
     const postsByTag = getPostsByTag(posts, tag)
-    const tags = getTags(posts).sort((a, b) => (a > b ? 1 : -1))
+    const tags = getTags(posts)
+      // Remove the current tag from the list of all other tags.
+      .filter(t => t !== tag)
+      .sort((a, b) => (a > b ? 1 : -1))
 
     try {
       return {
