@@ -1,6 +1,5 @@
 import { readFile } from 'fs/promises'
 import { join } from 'path'
-
 import { bundleMDX } from 'mdx-bundler'
 
 import { Post } from '@interfaces/blog'
@@ -84,19 +83,19 @@ export async function prepareMDX(source: MDXSource): Promise<Post> {
 
     // mdx-bundler processes the frontMatter internally from the file. No need for gray-matter anymore.
     const { code, frontmatter } = await bundleMDX(source.file, {
-      // @ts-ignore
-      xdmOptions(_input, options) {
-        return {
-          ...options,
-          remarkPlugins: [
-            ...(options.remarkPlugins ?? []),
-            remarkSlug,
-            [remarkAutoLink, { behavior: 'before' }],
-            remarkGfm,
-            remarkExternalLink,
-          ],
-          rehypePlugins: [...(options.rehypePlugins ?? []), rehypeCodeTitles],
-        }
+      xdmOptions(options) {
+        options.remarkPlugins = [
+          ...(options.remarkPlugins ?? []),
+          remarkSlug,
+          [remarkAutoLink, { behavior: 'before' }],
+          remarkGfm,
+          remarkExternalLink,
+        ]
+        options.rehypePlugins = [
+          ...(options.rehypePlugins ?? []),
+          rehypeCodeTitles,
+        ]
+        return options
       },
     })
 

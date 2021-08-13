@@ -1,9 +1,21 @@
-module.exports = {
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
+const isProd = process.env.NODE_ENV === 'production'
+
+/**
+ * @type {import('next').NextConfig}
+ **/
+const customNextConfig = {
   eslint: {
     dirs: ['components', 'hooks', 'layouts', 'lib', 'pages', 'utils'],
   },
-  // https://nextjs.org/blog/next-11-1#es-modules-support
-  experimental: { esmExternals: true },
+
+  experimental: {
+    // https://nextjs.org/blog/next-11-1#es-modules-support
+    esmExternals: true,
+  },
   reactStrictMode: true,
   // https://github.com/leerob/leerob.io/blob/main/next.config.js
   async headers() {
@@ -38,6 +50,8 @@ module.exports = {
     return config
   },
 }
+
+module.exports = withBundleAnalyzer(customNextConfig)
 
 // https://securityheaders.com
 const CSP = `
