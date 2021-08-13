@@ -110,6 +110,17 @@ body {
     @apply font-mono text-brand text-2xl uppercase;
   }
 
+  // Custom styles for `rehype-autolink-headings`.
+  h1 > a[href^="#"],
+  h2 > a[href^="#"],
+  h3 > a[href^="#"],
+  h4 > a[href^="#"],
+  h5 > a[href^="#"],
+  h6 > a[href^="#"] {
+    @apply no-underline hover:font-normal hover:underline hover:text-accent-magenta;
+  }
+
+
   hr {
     @apply my-8 border-brand;
   }

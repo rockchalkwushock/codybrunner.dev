@@ -73,26 +73,27 @@ export async function prepareMDX(source: MDXSource): Promise<Post> {
   }
   try {
     const { default: readingTime } = await import('reading-time')
+    const { default: rehypeAutoLink } = await import('rehype-autolink-headings')
     const { default: rehypeCodeTitles } = await import('rehype-code-titles')
-    const { default: remarkAutoLink } = await import('remark-autolink-headings')
+    const { default: rehypeSlug } = await import('rehype-slug')
     const { default: remarkExternalLink } = await import(
       'remark-external-links'
     )
     const { default: remarkGfm } = await import('remark-gfm')
-    const { default: remarkSlug } = await import('remark-slug')
 
     // mdx-bundler processes the frontMatter internally from the file. No need for gray-matter anymore.
     const { code, frontmatter } = await bundleMDX(source.file, {
       xdmOptions(options) {
         options.remarkPlugins = [
           ...(options.remarkPlugins ?? []),
-          remarkSlug,
-          [remarkAutoLink, { behavior: 'before' }],
+
           remarkGfm,
           remarkExternalLink,
         ]
         options.rehypePlugins = [
           ...(options.rehypePlugins ?? []),
+          rehypeSlug,
+          [rehypeAutoLink, { behavior: 'wrap' }],
           rehypeCodeTitles,
         ]
         return options
