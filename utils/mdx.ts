@@ -123,7 +123,7 @@ export function getRelatedPosts(
   // Take the current post's tags and create a map where the keys map to
   // an empty array for later storing posts that possess that key as a tag.
   const tagMap = currentPost.tags.reduce((cache, tag) => {
-    cache[tag.toLowerCase()] = []
+    cache[tag] = []
     return cache
   }, {} as Record<string, Array<Post>>)
 
@@ -135,8 +135,8 @@ export function getRelatedPosts(
         // Check to see if the current tag exists in the tagMap.
         // We don't want the current post to end up in the list of related posts
         // so check the slugs are not equal to the current post.
-        if (!!tagMap[tag.toLowerCase()] && post.slug !== currentPost.slug) {
-          tagMap[tag.toLowerCase()].push(post)
+        if (!!tagMap[tag] && post.slug !== currentPost.slug) {
+          tagMap[tag].push(post)
         }
       }
     }

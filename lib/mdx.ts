@@ -128,7 +128,7 @@ export async function prepareMDX(source: MDXSource): Promise<Post> {
       readingTime: text,
       slug: source.slug,
       source: code,
-      tags,
+      tags: tags ? tags.map(t => t.toLowerCase()) : undefined,
       title,
       updatedAt: updatedAt ? toISO8601(updatedAt) : null,
       words,

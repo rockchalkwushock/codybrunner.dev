@@ -78,16 +78,16 @@ const colorMap: Record<string, Styles> = {
 }
 
 export const Tag: React.FC<Props> = ({ tag }) => {
-  const colors = colorMap[tag.toLowerCase()] || {
+  const colors = colorMap[tag] || {
     bg: 'bg-gray-light',
     border: 'border-gray-light',
   }
   return (
     <TagLink
       className={`${colors.bg} ${colors.border} border flex items-center justify-center px-2 py-0.5 rounded-full shadow-md text-white text-xs lg:text-sm hover:bg-black hover:border-black hover:shadow-none`}
-      tag={tag.toLowerCase()}
+      tag={tag}
     >
-      {tag.toLowerCase()}
+      {tag}
     </TagLink>
   )
 }
