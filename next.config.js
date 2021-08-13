@@ -1,16 +1,9 @@
-// This is currently needed because 'rehype-code-titles' is a pure-ESM package
-// and NextJS cannot resolve the import properly.
-// https://github.com/vercel/next.js/issues/9607
-const withTM = require('next-transpile-modules')([
-  'rehype-code-titles',
-  'remark-autolink-headings',
-  'remark-slug',
-])
-
-module.exports = withTM({
+module.exports = {
   eslint: {
     dirs: ['components', 'hooks', 'layouts', 'lib', 'pages', 'utils'],
   },
+  // https://nextjs.org/blog/next-11-1#es-modules-support
+  experimental: { esmExternals: true },
   reactStrictMode: true,
   // https://github.com/leerob/leerob.io/blob/main/next.config.js
   async headers() {
@@ -44,7 +37,7 @@ module.exports = withTM({
 
     return config
   },
-})
+}
 
 // https://securityheaders.com
 const CSP = `
