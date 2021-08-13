@@ -29,6 +29,7 @@ specifiers:
   mdx-bundler: 3.4.1
   mdx-embed: ~0.0.19
   next: ~11.0.0
+  next-seo: ~4.26.0
   next-sitemap: ~1.6.121
   next-transpile-modules: ~8.0.0
   postcss: ~8.3.5
@@ -64,6 +65,7 @@ dependencies:
   mdx-bundler: 3.4.1
   mdx-embed: 0.0.19_73e8d0148a4c5c71ceb6a02bbce55c80
   next: 11.0.0_b29611f176d89dfd575a283fa3cdaac1
+  next-seo: 4.26.0_202b18601d71dc92f6dbf39b46c5242f
   next-transpile-modules: 8.0.0
   preact: 10.5.13
   react: 17.0.2
@@ -6154,6 +6156,21 @@ packages:
   /natural-compare/1.4.0:
     resolution: { integrity: sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc= }
     dev: true
+
+  /next-seo/4.26.0_202b18601d71dc92f6dbf39b46c5242f:
+    resolution:
+      {
+        integrity: sha512-5TqywQ3XAwqdmEU1AyNZjR7WdDKFTkDD8aBtgQelPvzBUEy8i0mTjtiw+09jhiHFNik6FqS8uPKCaYcY6jRgSQ==,
+      }
+    peerDependencies:
+      next: ^8.1.1-canary.54 || >=9.0.0
+      react: '>=16.0.0'
+      react-dom: '>=16.0.0'
+    dependencies:
+      next: 11.0.0_b29611f176d89dfd575a283fa3cdaac1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
 
   /next-sitemap/1.6.121_next@11.0.0:
     resolution:

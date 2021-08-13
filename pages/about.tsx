@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { GetStaticProps } from 'next'
+import { ArticleJsonLd, NextSeo } from 'next-seo'
 
-import { AnimatedPage, PageMetaData } from '@components/AnimatedPage'
+import { AnimatedPage } from '@components/AnimatedPage'
 import { Post } from '@interfaces/blog'
 import { MDXLayout } from '@layouts/MDXLayout'
 import { getMDXBySlug, prepareMDX } from '@lib/mdx'
-import { constants } from '@utils/constants'
 
 interface Props extends Post {}
 
@@ -41,7 +41,6 @@ const technologies = [
 ]
 
 const customTags = [
-  constants.author,
   'Colombia',
   'expatriate',
   'Frontend Developer',
@@ -52,16 +51,36 @@ const customTags = [
 ]
 
 const About: React.FC<Props> = post => {
-  const pageMetaData: PageMetaData = {
-    description: post.description,
-    publishedAt: post.publishedAt,
-    tags: customTags,
-    title: post.title,
-    type: 'article',
-    updatedAt: post.updatedAt,
-  }
   return (
-    <AnimatedPage pageMetaData={pageMetaData}>
+    <AnimatedPage>
+      <NextSeo
+        canonical={post.canonicalUrl}
+        description={post.description}
+        openGraph={{
+          article: {
+            authors: [post.author],
+            modifiedTime: post.updatedAt ?? undefined,
+            publishedTime: post.publishedAt ?? undefined,
+            tags: customTags,
+          },
+          type: 'article',
+          url: post.canonicalUrl,
+        }}
+        title={post.title}
+      />
+      <ArticleJsonLd
+        authorName={[post.author]}
+        datePublished={post.publishedAt || post.createdAt}
+        dateModified={post.updatedAt ?? undefined}
+        description={post.description}
+        // TODO
+        images={[]}
+        // TODO
+        publisherLogo=""
+        publisherName={post.author}
+        title={post.title}
+        url={post.canonicalUrl}
+      />
       <MDXLayout {...post} />
     </AnimatedPage>
   )

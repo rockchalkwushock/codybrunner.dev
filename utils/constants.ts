@@ -31,6 +31,7 @@ type Constants = {
     twitter: string
     vercel: string
   }
+  lang: 'en-US'
   location: string
   menu: Array<{ path: string; text: string }>
   twitter: string
@@ -65,6 +66,7 @@ export const constants: Constants = {
     twitter: 'https://twitter.com/RockChalkDev',
     vercel: 'https://vercel.com',
   },
+  lang: 'en-US',
   location,
   menu: [
     { path: '/', text: 'Home' },
