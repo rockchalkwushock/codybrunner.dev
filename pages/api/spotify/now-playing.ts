@@ -7,6 +7,7 @@ const handler = async (
   _: NextApiRequest,
   res: NextApiResponse<CurrentEpisode | CurrentTrack | RecentTrack>
 ) => {
+  console.log(_.headers)
   try {
     const response = await getNowPlaying()
     return res.status(200).json(response)
