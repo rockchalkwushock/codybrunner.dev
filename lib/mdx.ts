@@ -33,7 +33,7 @@ interface RawFrontMatter
  * @description Finds a md or mdx file by given type and slug parameters.
  */
 export async function getMDXBySlug(
-  type: 'about' | 'blog',
+  type: 'about' | 'blog' | 'setup',
   slug: string
 ): Promise<MDXSource> {
   try {
@@ -118,7 +118,7 @@ export async function prepareMDX(source: MDXSource): Promise<Post> {
     return {
       author: constants.author,
       canonicalUrl:
-        source.slug === 'about'
+        source.slug === 'about' || source.slug === 'setup'
           ? `${constants.url}/${source.slug}`
           : `${constants.url}/blog/${source.slug}`,
       createdAt: toISO8601(createdAt),
