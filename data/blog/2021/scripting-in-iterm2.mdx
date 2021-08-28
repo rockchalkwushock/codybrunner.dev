@@ -1,0 +1,135 @@
+---
+createdAt: 08/24/2021
+description: How to use the Python Scripting API in iTerm2 to open several tabs and execute commands in those tabs.
+publishedAt: 08/28/2021
+tags:
+  - cli
+  - iterm2
+  - macos
+  - python
+title: Python Scripting in iTerm2
+---
+
+import { Signature } from '../components/MDXComponents.tsx'
+
+Lately I've been working on personal projects that require **A LOT** of different services to be running at the same time for the development environment on my Mac. It became very tedious to open my terminal to the project working directory and run each script individually and manually opening a new tab/session for each script. I mean when you get past doing that 4 times how much time do you lose every time you have to restart all those scripts 🤦🏻‍♂️
+
+I did some surfing on the inter tubes and found out that I could automate this using some internal features with [iTerm2](https://iterm2.com). One thing I quickly realized was all the information I was finding online was out of date so I would have to figure out how to use the new methods on my own. iTerm2 deprecated the use of [AppleScript](https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/introduction/ASLR_intro.html) as the solution for this problem; however that has been deprecated in lieu of a [Python Scripting API](https://iterm2.com/python-api/).
+
+## Going through the GUI Setup
+
+iTerm makes this pretty easy at the beginning simply go to:
+
+> MenuBar > Scripts > Manage > New Python Script
+
+You will be presented with two prompts and you will want to chose "Basic" and then "Simple" for what we are trying to achieve today. You can get hella fancy on your own time.
+
+![Prompt 1](/images/2021/scripting-in-iterm2/prompt-1.png)
+
+![Prompt 2](/images/2021/scripting-in-iterm2/prompt-2.png)
+
+## Into Python Land
+
+The bootstrapped file will look similar to the below:
+
+```python:iterm_script.py
+#!/usr/bin/env python3.7
+
+import iterm2
+# This script was created with the "basic" environment which does not support adding dependencies
+# with pip.
+
+async def main(connection):
+    # Your code goes here. Here's a bit of example code that adds a tab to the current window:
+    app = await iterm2.async_get_app(connection)
+    window = app.current_terminal_window
+    if window is not None:
+        await window.async_create_tab()
+    else:
+        # You can view this message in the script console.
+        print("No current window")
+
+iterm2.run_until_complete(main)
+```
+
+Your use case here might deviate from this post, but for now let's say you have 4 scripts that you will need to run to get your application up and running. We can create a list of tuples to execute on in our main function with an API like so:
+
+```python
+# [
+#   (
+#     "command to execute",
+#     "rgb color as a tuple (red, green, blue)",
+#     "Name for Tab"),
+# ]
+
+actions = [
+  ("npm run dev", (255, 100, 100), "Development Server"),
+  ("npm run db", (255, 50, 120), "Database"),
+  ("npm run proxy", (100, 100, 255), "Server Proxy"),
+  ("npm run some-external-service", (255, 50, 200), "Some External Service"),
+]
+```
+
+The Python for this is really not that difficult what was crazy difficult was understanding the API and getting this to work...some what as I would want it too.
+
+```python:iterm_script.py
+PATH_TO_REPOSITORY = "../path/to/repository"
+
+async def main(connection):
+    app = await iterm2.async_get_app(connection)
+    window = app.current_terminal_window
+    if window is not None:
+        for (cmd, color, name) in actions:
+            # I had to do the following because passing a tuple
+            # to iterm2.Color gave me nastygrams from Python.
+            (r, g, b) = color
+            # Gives us access for customizing the current profile.
+            customizations = iterm2.LocalWriteOnlyProfile()
+            # Will set the name provided in the Tab bar (most likely at the top, depends on yours settings).
+            customizations.set_name(name)
+            # Set the provide colors.
+            customizations.set_tab_color(iterm2.Color(r, g, b))
+            # Don't forget to do this or yeah no pretty colors!
+            customizations.set_use_tab_color(True)
+
+            # Create the Tab, it will open automagically and get a reference to the tab.
+            tab = await window.async_create_tab(
+                profile_customizations=customizations
+            )
+
+            # Get reference to the current session
+            session = tab.current_session
+
+            # Send a text input to the Tab that is our command to be ran and run a newline
+            # so the iTerm executes the command. You will need to pass the path in which to
+            # execute the command as well. Just don't forget to "&&" so your command runs
+            # after changing the path.
+            await session.async_send_text(f"cd {PATH_TO_REPOSITORY} && {cmd}\n")
+
+    else:
+        # You can view this message in the script console.
+        print("No current window")
+```
+
+## Executing the Script
+
+iTerm references a few different ways to execute our script [here](https://iterm2.com/python-api/tutorial/running.html). I could never get the auto load method to work which kind of pissed me off because I wanted to have it execute when I changed profiles in the terminal. I ended up opting for aliasing the ridiculously long paths/command in my `.zshrc` for faster usage. You could go as far as having the profile call the alias when switching to that profile if you wanted too.
+
+```shell:.zshrc
+alias app_backend="~/Library/ApplicationSupport/iTerm2/iterm2env/versions/3.7.9/bin/python3 ~/Library/ApplicationSupport/iTerm2/Scripts/iterm_script.py";
+```
+
+## The Problems I Encountered
+
+Understanding what a Window, Tab, and Session are in the API is not hard by any means. What was insanely difficult was:
+
+1. Debugging the script.
+2. Understanding what methods on the classes/instances worked and under what circumstances.
+
+There is a way to execute `split_panes` in iTerm. This overall is not difficult to run either. The reason I opted not to do this was I needed to run 11 scripts. You can open, I am pretty certain, an unlimited amount of panes in a Session. However you need to tell iTerm how you want to open those panes and doing so inside my `for` loop was getting way to damn confusing. Maybe in the future I will clean this up to present 6 panes in one tab and 5 in another for faster viewing.
+
+## Wrap Up
+
+I hope this code helps someone out. Feel free to extend it or use it as a template as needed. This is still kind of a work-in-progress. I'd like to do more with it. Possibly make it more generic and a function I could execute from a project workspace that would take in the scripts and execute them without me needing to define them manually.
+
+<Signature>~ Cody 🚀</Signature>
