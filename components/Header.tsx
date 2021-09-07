@@ -30,7 +30,7 @@ export const Header: React.FC = () => {
     <header
       className={`bg-transparent ${show} grid-in-header items-center justify-between sticky top-0 w-full z-50`}
     >
-      <div className="hidden lg:flex lg:items-center lg:space-x-40 lg:text-2xl">
+      <div className="hidden lg:flex lg:items-center lg:space-x-32 lg:text-2xl">
         <h1 className="lg:font-semibold lg:text-brand">codybrunner.dev</h1>
         <ul className="flex space-x-8">
           {constants.menu.map(({ path, text }) => (

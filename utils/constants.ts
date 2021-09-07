@@ -75,6 +75,7 @@ export const constants: Constants = {
     { path: '/contact', text: 'Contact' },
     { path: '/projects', text: 'Projects' },
     { path: '/CodyBrunner.pdf', text: 'Resume' },
+    { path: '/setup', text: 'Setup' },
   ],
   twitter: '@RockChalkDev',
   url: baseUrl,
