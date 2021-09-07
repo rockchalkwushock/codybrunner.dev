@@ -43,7 +43,9 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     return {
       props: {
         featured,
-        posts: posts.reverse().slice(0, 5),
+        posts: filterPosts(posts, p => !p.featured)
+          .reverse()
+          .slice(0, 5),
       },
     }
   } catch (error) {
