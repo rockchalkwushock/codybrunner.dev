@@ -59,6 +59,10 @@ const colorMap: Record<string, Styles> = {
     bg: 'bg-accent-blue',
     border: 'border-accent-blue',
   },
+  'raspberry-pi': {
+    bg: 'bg-accent-red',
+    border: 'border-accent-red',
+  },
   react: {
     bg: 'bg-accent-blue',
     border: 'border-accent-blue',
