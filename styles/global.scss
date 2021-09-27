@@ -111,15 +111,14 @@ body {
   }
 
   // Custom styles for `rehype-autolink-headings`.
-  h1 > a[href^="#"],
-  h2 > a[href^="#"],
-  h3 > a[href^="#"],
-  h4 > a[href^="#"],
-  h5 > a[href^="#"],
-  h6 > a[href^="#"] {
+  h1 > a[href^='#'],
+  h2 > a[href^='#'],
+  h3 > a[href^='#'],
+  h4 > a[href^='#'],
+  h5 > a[href^='#'],
+  h6 > a[href^='#'] {
     @apply no-underline hover:font-normal hover:underline hover:text-accent-magenta;
   }
-
 
   hr {
     @apply my-8 border-brand;
@@ -127,6 +126,10 @@ body {
 
   img {
     @apply flex items-center justify-center max-w-full mx-auto rounded-lg;
+  }
+
+  kbd {
+    @apply border-brand border-2 px-1.5 py-0.5 rounded-md text-brand text-base;
   }
 
   strong {
