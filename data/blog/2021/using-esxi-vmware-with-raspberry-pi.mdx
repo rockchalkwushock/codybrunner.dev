@@ -1,0 +1,159 @@
+---
+createdAt: 09/26/2021
+description: My first steps towards world domination with Raspberry Pi. In this post I setup ESXi VMware for future projects I want to try out.
+featured: false
+publishedAt: 09/27/2021
+tags:
+  - raspberry-pi
+title: Using ESXi VMware With Raspberry-Pi
+---
+
+import { Giphy, Signature } from '../components/MDXComponents.tsx'
+
+I have been wanting to play around with Raspberry Pis since about 2014 when I was studying for my associates in robotics at Wichita Area Technical College (now [WSU Tech](https://wsutech.edu/)). Unfortunately at the time I either never had the time or the money to do so. I purchased one a few months back and am finally getting the chance to play around with it. I have always found networking really interesting. Let's be honest as a web developer nothing I do would ever see the light of day if it was not for networking, shit the internet would not even exist or we all would have to do a lot of really wonky shit to get online. So hat's of to IT guys and gals doing your magic, I think your job is dope!
+
+I started watching a guy called [Eli the Computer Guy](https://www.elithecomputerguy.com/) years ago while studying robotics and taking a programming in C class. Eli and Bucky of [TheNewBoston](https://www.youtube.com/user/thenewboston) were my go to YouTubers for learning this entirely new world. I recently stumbled upon this guy called [NetworkChuck](https://www.youtube.com/channel/UC9x0AN7BWHpCDHSm9NiJFJQ) and really enjoy his channel. He did a tutorial on setting up virtual machines on a Raspberry Pi about a year ago with a technology called [ESXi](https://www.vmware.com/products/esxi-and-esx.html). The closest thing to VMs I have worked with are Docker containers so this could be pretty cool to get some more "DevOpsie" knowledge. It got me thinking it could be really cool to set that up with my Pi and be able to run something like [Pi-Hole](https://pi-hole.net/) and my own [BitWarden](https://bitwarden.com/) & [NextCloud](https://nextcloud.com/) server instances in parallel on the same Pi. At least that would be the end goal (achievable or not I have not the slightest idea). The idea of running self-hosted services is kind of appealing to me in the world we are living in today where trust in our institutions and services are at all time lows. Yeah I am not a ISP so at anytime **"FML the internet is down"** will mess with my self-hosted cloud services...but that would be no different with [LastPass](https://www.lastpass.com/) and [iCloud](https://www.icloud.com/) anyways so what am I really losing?
+
+So that's what I spent my Saturday night doing: setting up ESXi on my Raspberry Pi. I went as far to add a VM for [Ubuntu Server](https://ubuntu.com/download/server) to play around with just for shits and giggles.
+
+As a side note, I love what I do in tech, but building embedded software is where I would really like to end up going. I have always found that to be super interesting and [Elixir](https://elixir-lang.org/) has a project called the [Nerves Project](https://www.nerves-project.org/) that is embedded Elixir running on a Pi. I actually stumbled on to this [repository](https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials) for using [Rust](https://www.rust-lang.org/) to build embedded software on a Pi this morning and am geeking pretty hard about that too since learning Rust is in my "learn all the things" pipeline. 🤓
+
+## What Do You Need
+
+- Raspberry Pi 4 (4GB or 8GB)
+- microSD (+16GB)
+- USB Flash Drive (16-32GB)
+- Storage device of some kind for the VMs
+- Keyboard
+- Mouse
+- Monitor
+- Power Supply for Pi
+- HDMI to microUSB cable
+
+I will be using the following:
+
+- Raspberry Pi 4 8GB
+- Samsung 32GB microSD
+- SanDisk Cruzer Glide 16GB (2)
+- Samsung T7 500GB SDD
+
+## Pre "Let's Go" Problem
+
+I'm not gonna lie I ran into problem after problem following Chuck's example and it had nothing to do with having the lastest firmwares. Being that I work in tech when I saw how old the video was the first thing I did was go to the respective GitHub repositories to get the latest releases of both the Raspberry Pi firmware and the UEFI. I scoured the internet looking for a solution to the problem I was having and all the forums told me the same thing that it was a known problem and that was it.
+
+The problem was that I would disable the 3GB RAM limit in the Device Manager menu like Chuck tells you too. This needs to be done because ESXi won't run on something with less than 4GB of physical RAM available. You will get a nastygram over having less.
+
+Thankfully I found a comment on the YouTube video way way down the page that discussed what was happening and the work around for it. Many thanks to Kyle Hughes for the research and solution. You are a gentleman and a scholar sir!
+
+Essentially what is happening is there is an issue with the Pi writting the configuraiton changes back to the microSD card. It is apparently hard for the development teams to reproduce so it has been a known bug for nearly a year (not sure which firmware version introduced it). The workaround is to use a USB device when it comes time to make those updates to the PI's internal configuraiton so the write back to disc occurs. I have no real idea why or what is at play here. I don't build firmware...guess I should add that to the list of things to learn!
+
+## Let's Go!
+
+[Chuck's Tutorial](https://www.youtube.com/watch?v=6aLyZisehCU) to follow along with because he is better at this than me. 😂
+
+Take your microSD and plug it into your machine. Depending on the OS you are using this step will be slightly different. I am on a Mac so I downloaded the following to put an image of Raspberry Pi OS on the SD.
+
+```shell
+brew install raspberrypi-pi-imager
+```
+
+I opted for the "Lite" version of Raspberry Pi OS because it is faster, but it doesn't really matter which option you choose. You can eject the SD now and insert it in the Pi. Turn the power on and we will make sure everything is up-to-date:
+
+First off we will make sure the firmware is updated on the Pi.
+
+```shell
+# These are the defaults that ship with the pi,
+# for the love of God please change these for your security!
+login: pi
+password: raspberry
+
+# Update EEPROM
+sudo rpi-eeprom-update
+sudo rpi-eeprom-update -a
+
+# Time to do special things to get shit to work:
+sudo -E rpi-eeprom-config --edit
+# My firmware already had the config value present but if not add the following
+# BOOT_ORDER=0xf41
+# ctrl-x and Y to save and exit
+
+# Reboot the pi
+sudo reboot
+```
+
+You can choose to verify the change took place by waiting for the pi to reboot and then verifying your change with `sudo rpi-eeprom-config`.
+
+## Setting Up the USB's
+
+Another deviation from Chuck's video we won't plug in the SD card and wipe it clean just yet. Go ahead and remove it from the Pi but place one of your USB's in your machine instead. We will use it to do the next steps in Chuck's video and to do that we will need the firmwares below:
+
+- [raspberrypi/firmware](https://github.com/raspberrypi/firmware)
+- [UEFI](https://github.com/pftf/RPi4/releases)
+
+We want to copy all the contents of the raspberrypi firmare folder's `boot` directory into the, **empty**, USB. The next thing we will do is to delete all the files labeled `kernel*`. There should be 4 of them and we don't need them.
+
+Now we will copy over all the contents of the UEFI folder into the USB and we will choose to replace any conflicting files with the inboud files from the UEFI folder.
+
+The last thing we will do is go into the `config.txt` and add the following line
+
+```shell:config.txt
+gpu_mem=16
+```
+
+Okay we have that USB setup, but now we need to setup the other USB with our copy of ESXi VMware. You will need to setup an account [here](https://customerconnect.vmware.com/account-registration) and then you will be able to download a copy of the VMware [here](https://flings.vmware.com/esxi-arm-edition). If you ware macOS you will need a way to add that image to the USB (not just copy and paste). I like etcher:
+
+```shell
+brew install balenaetcher
+```
+
+Now we have both of our USB's ready we can insert them into our Pi for the next steps.
+
+> Just a friendly FYI the USB ports with the blue piece on the inside, so the USB ports on the right when looking directly at all the ports are USB 3.0 so use those when doing data transfers. It will be faster than using the 2.0 ports to the left.
+
+## Installing The Firmware & ESXi
+
+We will want to go through the following menu progressions:
+
+**Device Manager > Raspberry Pi Configuration > Advanced Configuration**
+
+From this menu we will opt to "Disable" the 3GB RAM Limit. As state above we need to do this so ESXi can even run on our Pi. Press F10 to save and confirm with Y.
+
+One last thing before we install ESXi on our Pi. Go to the **Boot Manager** menu and select the USB that contains our ESXi VMware on it. When this boots we need to change a configuraiton so as soon as the USB tries to boot hold down <kbd>Shift</kbd> + <kbd>O</kbd>. This will open a command line with `runweasel cdromBoot` we will add the below to it:
+
+```shell
+runweasel cdromBoot autoPartitionOSDataSize=8192
+```
+
+This added configuraiton will ensure that ESXi will not take up the entire storage device which would mean we would have no room for our VMs. We are telling ESXi it can have 8GB of space on our storage device to install to and run from. Press <kbd>Enter</kbd> and the installation will begin.
+
+The installation of ESXi from the USB does take a hot minute. You will see a yellow screen and a lot going on. Eventually you will see a setup menu appear.
+
+On the first menu press <kbd>Enter</kbd> and on the second press <kbd>F11</kbd> to agree to the EULA. The next menu will scan your Pi looking for a storage device to run the ESXi and your VMs from. Unplug the USB that we put the Raspberry Pi firmware and UEFI on and in its place insert your storage device. In my case I am using the SSD. You can press <kbd>F5</kbd> to rescan the Pi for the device. Press <kbd>Enter</kbd> to select the storage device and then set a root password for the device. Now press <kbd>F11</kbd> and the installation will begin.
+
+You can now remove the USB that we installed ESXi from as we no longer need it and reboot the Pi by pressing <kbd>Enter</kbd>. Be ready to press <kbd>ESC</kbd> when the Pi boots back up so we can enter the configuration menu one last time.
+
+**Boot Maintenance Manager > Boot Options > Change Boot Order**
+
+Find the name of the storage device we installed ESXi too (your big storage device) and use the <kbd>+</kbd> key to move it to the top so the Pi knows to boot from there first. <kbd>F10</kbd> to save and <kbd>Y</kbd> to confirm. Press <kbd>ESC</kbd> to get back out to the main menu and select `Continue`.
+
+## First Boot with ESXi-Pi
+
+When ESXi has booted you will see the familiar yellow screen and see some urls:
+
+```
+https://10.11.2.130 (DHCP)
+```
+
+You can navigate to this url from a browser and you will be presented with a login screen to your ESXi VMware instance. Note you will have to do a self-signed certification to navigate to the page.
+
+On the login your credentials will be `root` and then the root password you set for the storage device.
+
+You are now in ESXi and ready to create and run virtual machines on your Raspberry Pi...time to celebrate!
+
+<Giphy giphyId="G96zgIcQn1L2xpmdxi" />
+
+## Wrap Up
+
+This was pretty lengthy and an ardous task but it was a lot of fun and now you can play around with different things via VM's on your Pi. Next up I want to play with Pi-Hole and will do a tutorial on that soon. I hope this can help someone geek out and do cool shit, enjoy!
+
+<Signature>~ Cody 🚀</Signature>
