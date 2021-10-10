@@ -7,12 +7,8 @@ const handler = async (
   _: NextApiRequest,
   res: NextApiResponse<CurrentEpisode | CurrentTrack | RecentTrack>
 ) => {
-  try {
-    const response = await getNowPlaying()
-    return res.status(200).json(response)
-  } catch (error) {
-    throw new Error(error)
-  }
+  const response = await getNowPlaying()
+  return res.status(200).json(response)
 }
 
 export default handler
