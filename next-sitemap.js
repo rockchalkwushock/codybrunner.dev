@@ -5,7 +5,7 @@ const baseUrl =
     : 'localhost:4000'
 
 module.exports = {
-  changefreq: 'monthly',
+  changefreq: 'weekly',
   exclude: ['/api/*', '/server-sitemap.xml'],
   generateRobotsTxt: true,
   robotsTxtOptions: {

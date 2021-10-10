@@ -83,16 +83,12 @@ export const getStaticProps: GetStaticProps<Props, { tag: string }> =
       .filter(t => t !== tag)
       .sort((a, b) => (a > b ? 1 : -1))
 
-    try {
-      return {
-        props: {
-          posts: sortPosts(postsByTag, byDate).reverse(),
-          tag,
-          tags,
-        },
-      }
-    } catch (error) {
-      throw new Error(error)
+    return {
+      props: {
+        posts: sortPosts(postsByTag, byDate).reverse(),
+        tag,
+        tags,
+      },
     }
   }
 

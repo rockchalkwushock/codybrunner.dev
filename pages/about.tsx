@@ -87,13 +87,9 @@ const About: React.FC<Props> = post => {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  try {
-    const source = await getMDXBySlug('about', 'about')
-    const post = await prepareMDX(source)
-    return { props: { ...post } }
-  } catch (error) {
-    throw new Error(error)
-  }
+  const source = await getMDXBySlug('about', 'about')
+  const post = await prepareMDX(source)
+  return { props: { ...post } }
 }
 
 export default About

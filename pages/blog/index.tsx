@@ -50,17 +50,13 @@ const BlogIndex: React.FC<Props> = ({ posts }) => {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  try {
-    const posts = await getAllPostsFrontMatter()
+  const posts = await getAllPostsFrontMatter()
 
-    return {
-      props: {
-        // Descending published order.
-        posts: posts.reverse(),
-      },
-    }
-  } catch (error) {
-    throw new Error(error)
+  return {
+    props: {
+      // Descending published order.
+      posts: posts.reverse(),
+    },
   }
 }
 

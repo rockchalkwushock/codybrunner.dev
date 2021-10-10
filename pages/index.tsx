@@ -36,20 +36,16 @@ const Home: React.FC<Props> = ({ featured, posts }) => {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  try {
-    const posts = await getAllPostsFrontMatter()
-    const featured = filterPosts(posts, ({ featured }) => !!featured)
+  const posts = await getAllPostsFrontMatter()
+  const featured = filterPosts(posts, ({ featured }) => !!featured)
 
-    return {
-      props: {
-        featured,
-        posts: filterPosts(posts, p => !p.featured)
-          .reverse()
-          .slice(0, 5),
-      },
-    }
-  } catch (error) {
-    throw new Error(error)
+  return {
+    props: {
+      featured,
+      posts: filterPosts(posts, p => !p.featured)
+        .reverse()
+        .slice(0, 5),
+    },
   }
 }
 

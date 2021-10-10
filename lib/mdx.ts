@@ -36,16 +36,12 @@ export async function getMDXBySlug(
   type: 'about' | 'blog' | 'setup',
   slug: string
 ): Promise<MDXSource> {
-  try {
-    const file =
-      type === 'blog' && slug
-        ? await readFile(join(root, 'data', type, `${slug}.mdx`), 'utf8')
-        : await readFile(join(root, 'data', `${type}.mdx`), 'utf8')
+  const file =
+    type === 'blog' && slug
+      ? await readFile(join(root, 'data', type, `${slug}.mdx`), 'utf8')
+      : await readFile(join(root, 'data', `${type}.mdx`), 'utf8')
 
-    return { file, slug }
-  } catch (error) {
-    throw new Error(error)
-  }
+  return { file, slug }
 }
 
 /**
@@ -71,69 +67,63 @@ export async function prepareMDX(source: MDXSource): Promise<Post> {
       'esbuild'
     )
   }
-  try {
-    const { default: readingTime } = await import('reading-time')
-    const { default: rehypeAutoLink } = await import('rehype-autolink-headings')
-    const { default: rehypeCodeTitles } = await import('rehype-code-titles')
-    const { default: rehypeSlug } = await import('rehype-slug')
-    const { default: remarkExternalLink } = await import(
-      'remark-external-links'
-    )
-    const { default: remarkGfm } = await import('remark-gfm')
+  const { default: readingTime } = await import('reading-time')
+  const { default: rehypeAutoLink } = await import('rehype-autolink-headings')
+  const { default: rehypeCodeTitles } = await import('rehype-code-titles')
+  const { default: rehypeSlug } = await import('rehype-slug')
+  const { default: remarkExternalLink } = await import('remark-external-links')
+  const { default: remarkGfm } = await import('remark-gfm')
 
-    // mdx-bundler processes the frontMatter internally from the file. No need for gray-matter anymore.
-    const { code, frontmatter } = await bundleMDX(source.file, {
-      xdmOptions(options) {
-        options.remarkPlugins = [
-          ...(options.remarkPlugins ?? []),
+  // mdx-bundler processes the frontMatter internally from the file. No need for gray-matter anymore.
+  const { code, frontmatter } = await bundleMDX(source.file, {
+    xdmOptions(options) {
+      options.remarkPlugins = [
+        ...(options.remarkPlugins ?? []),
 
-          remarkGfm,
-          remarkExternalLink,
-        ]
-        options.rehypePlugins = [
-          ...(options.rehypePlugins ?? []),
-          rehypeSlug,
-          [rehypeAutoLink, { behavior: 'wrap' }],
-          rehypeCodeTitles,
-        ]
-        return options
-      },
-    })
+        remarkGfm,
+        remarkExternalLink,
+      ]
+      options.rehypePlugins = [
+        ...(options.rehypePlugins ?? []),
+        rehypeSlug,
+        [rehypeAutoLink, { behavior: 'wrap' }],
+        rehypeCodeTitles,
+      ]
+      return options
+    },
+  })
 
-    // readingTime will process the content and tell us
-    // 1. text = "X min read"
-    // 2. words = 1735
-    const { text, words } = readingTime(code)
+  // readingTime will process the content and tell us
+  // 1. text = "X min read"
+  // 2. words = 1735
+  const { text, words } = readingTime(code)
 
-    const {
-      createdAt,
-      description,
-      featured,
-      publishedAt,
-      tags,
-      title,
-      updatedAt,
-    } = frontmatter as RawFrontMatter
+  const {
+    createdAt,
+    description,
+    featured,
+    publishedAt,
+    tags,
+    title,
+    updatedAt,
+  } = frontmatter as RawFrontMatter
 
-    return {
-      author: constants.author,
-      canonicalUrl:
-        source.slug === 'about' || source.slug === 'setup'
-          ? `${constants.url}/${source.slug}`
-          : `${constants.url}/blog/${source.slug}`,
-      createdAt: toISO8601(createdAt),
-      description,
-      featured: !!featured,
-      publishedAt: publishedAt ? toISO8601(publishedAt) : null,
-      readingTime: text,
-      slug: source.slug,
-      source: code,
-      tags: tags ? tags.map(t => t.toLowerCase()) : undefined,
-      title,
-      updatedAt: updatedAt ? toISO8601(updatedAt) : null,
-      words,
-    }
-  } catch (error) {
-    throw new Error(error)
+  return {
+    author: constants.author,
+    canonicalUrl:
+      source.slug === 'about' || source.slug === 'setup'
+        ? `${constants.url}/${source.slug}`
+        : `${constants.url}/blog/${source.slug}`,
+    createdAt: toISO8601(createdAt),
+    description,
+    featured: !!featured,
+    publishedAt: publishedAt ? toISO8601(publishedAt) : null,
+    readingTime: text,
+    slug: source.slug,
+    source: code,
+    tags: tags ? tags.map(t => t.toLowerCase()) : undefined,
+    title,
+    updatedAt: updatedAt ? toISO8601(updatedAt) : null,
+    words,
   }
 }
