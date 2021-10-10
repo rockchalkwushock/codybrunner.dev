@@ -196,16 +196,12 @@ export function getTags(posts: Array<Post>): Array<string> {
  * @description Takes a file path, reads the file and parses content.
  */
 export async function parsePost(filePath: string): Promise<Post> {
-  try {
-    const source = await getMDXBySlug('blog', filePath)
-    const post = await prepareMDX(source)
-    return {
-      ...post,
-      nextPost: null,
-      previousPost: null,
-    }
-  } catch (error) {
-    throw new Error(error)
+  const source = await getMDXBySlug('blog', filePath)
+  const post = await prepareMDX(source)
+  return {
+    ...post,
+    nextPost: null,
+    previousPost: null,
   }
 }
 

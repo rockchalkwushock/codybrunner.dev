@@ -66,21 +66,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<Props, { slug: Array<string> }> =
   async ctx => {
-    try {
-      const post = await parsePost(ctx.params!.slug.join('/'))
-      const posts = await getAllPostsFrontMatter()
+    const post = await parsePost(ctx.params!.slug.join('/'))
+    const posts = await getAllPostsFrontMatter()
 
-      return {
-        props: {
-          ...post,
-          nextPost: posts.find(p => p.nextPost === post.slug)?.slug || null,
-          previousPost:
-            posts.find(p => p.previousPost === post.slug)?.slug || null,
-          relatedPosts: getRelatedPosts(post, posts),
-        },
-      }
-    } catch (error) {
-      throw new Error(error)
+    return {
+      props: {
+        ...post,
+        nextPost: posts.find(p => p.nextPost === post.slug)?.slug || null,
+        previousPost:
+          posts.find(p => p.previousPost === post.slug)?.slug || null,
+        relatedPosts: getRelatedPosts(post, posts),
+      },
     }
   }
 
