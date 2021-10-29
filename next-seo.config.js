@@ -48,7 +48,7 @@ const config = {
     notranslate: false,
   },
   title: 'Home',
-  titleTemplate: 'codybrunner.dev | %s',
+  titleTemplate: 'codybrunner-dev.vercel.app | %s',
   twitter: {
     cardType: 'summary_large_image',
     handle: constants.twitter,

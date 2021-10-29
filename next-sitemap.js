@@ -1,7 +1,7 @@
 // https://github.com/iamvishnusankar/next-sitemap
 const baseUrl =
   process.env.NODE_ENV === 'production'
-    ? 'https://codybrunner.dev'
+    ? 'https://codybrunner-dev.vercel.app'
     : 'localhost:4000'
 
 module.exports = {
