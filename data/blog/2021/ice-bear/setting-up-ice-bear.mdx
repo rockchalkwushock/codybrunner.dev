@@ -179,7 +179,7 @@ You can find all the diffs for the files touched in this section in:
 
 > **NOTE** You can choose to skip this step if you'd like too.
 
-I am not going to touch to heavily on this because you can read a more in depth article on how to do this [here](https://codybrunner.dev/blog/2021/esbuild-pnpm-and-tailwind-in-phoenix). What I am doing here is to move JavaScript dependency management to `pnpm`, JavaScript bundling to be handled by `webpack@5` and `esbuild-loader`, and add support for `tailwindcss` in `jit` mode.
+I am not going to touch to heavily on this because you can read a more in depth article on how to do this [here](https://codybrunner-dev.vercel.app/blog/2021/esbuild-pnpm-and-tailwind-in-phoenix). What I am doing here is to move JavaScript dependency management to `pnpm`, JavaScript bundling to be handled by `webpack@5` and `esbuild-loader`, and add support for `tailwindcss` in `jit` mode.
 
 - [Pull Request #2: Switch to Esbuild](https://github.com/rockchalkwushock/ice-bear/pull/2)
 - [Pull Request #3: Add TailwindCSS Support](https://github.com/rockchalkwushock/ice-bear/pull/3)
@@ -676,6 +676,3 @@ You can copy and paste this token into the "Secrets" UI on GitHub:
 And I believe that does it! Merging `staging` into `production` should kick off the `release` pipeline and deploy Ice Bear to fly.io. From now on I can checkout the `staging` branch and build a feature for Ice Bear, open a PR against `staging` and see that all is good in the Ice Bear hood, and then merge the feature addition to production so my wife and I can take advantage of all Ice Bear ahs to offer! This was a crazy long post and it's my hope that every post following this is much shorter and scoped to particular features as I build out Ice Bear.
 
 <Signature>~ Cody 🚀</Signature>
-
-- [Introduction](https://codybrunner.dev/blog/2021/ice-bear/introduction)
-- [Telegram Client](https://codybrunner.dev/blog/2021/ice-bear/telegram-client)

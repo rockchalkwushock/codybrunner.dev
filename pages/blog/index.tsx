@@ -34,7 +34,7 @@ const BlogIndex: React.FC<Props> = ({ posts }) => {
         datePublished={posts[0].publishedAt || posts[0].createdAt}
         description="My musings about the everyday challenges of life and things I have learned in software development."
         images={[]}
-        title="codybrunner.dev | Blog"
+        title="codybrunner-dev.vercel.app | Blog"
         url={`${constants.url}${asPath}`}
       />
       <div className="flex-container">

@@ -11,7 +11,7 @@ const age =
   new Date().getMonth() > 1 ? parseInt(year) - 1988 : parseInt(year) - 1 - 1988
 const baseUrl =
   process.env.NODE_ENV === 'production'
-    ? 'https://codybrunner.dev'
+    ? 'https://codybrunner-dev.vercel.app'
     : 'http://localhost:4000'
 const location = 'Colombia'
 
@@ -128,7 +128,7 @@ export const projects: Record<
         'My personal website built with NextJS, TypeScript, & TailwindCSS.',
       name: 'codybrunner.dev',
       source: 'https://github.com/rockchalkwushock/codybrunner.dev',
-      url: 'https://codybrunner.dev',
+      url: 'https://codybrunner-dev.vercel.app',
     },
     {
       description:

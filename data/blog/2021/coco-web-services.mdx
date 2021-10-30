@@ -1,0 +1,107 @@
+---
+createdAt: 10/29/2021
+description: Moving my website/blog off of Vercel and to Cloudflare while I setup my own server to self-host from using my Raspberry Pi.
+featured: true
+publishedAt: 10/29/2021
+tags:
+  - elixir
+  - live-view
+  - phoenix
+  - raspberry-pi
+title: Coco Web Services
+---
+
+import { Signature } from '../components/MDXComponents.tsx'
+
+People will likely think this is crazy as fuck but oh well. There is that saying you know, the one that says:
+
+> Just because you can doesn't mean you should.
+
+Well when it comes to a developer’s site/blog this is a playground for us to do ridiculous shit, try out new tech, and just generally tinker. I have been toying around with a crazy idea and I'm moving on it. I am going to roll my own server with my Raspberry Pi 4 and host this website and blog from it...although there is a lot more to it than just that!
+
+First off I have a second Raspberry Pi 4 now and I am going to cluster them together and use them as a NAS (network attached storage) with a 500GB Samsung SSD.
+
+Second I am going to self-host my own Bitwarden server and leave LastPass because I hate it and generally like to support Open Source Software (OSS) as much as possible.
+
+The bare minimum before 01 January 2022 is to have a rough deploy of this website as a Phoenix Web App (minus the blog service/feature) being served from the Pi cluster as well as my own Bitwarden.
+
+This is all going to be made possible due to a lot of different OSS. I will be using the following to make all of this possible:
+
+### Ubuntu Server
+
+The Pi cluster will be running on [Ubuntu](https://ubuntu.com/) because well it's like the only Linux distribution I have any experience with so yeah. Also I've ran into lots of problems trying to boot from my SSD using RaspberryPi OS so yeah I'll go with Ubuntu Server LTS.
+
+### Cloudflare
+
+Okay so yeah yeah Cloudflare is not OSS. I could reach for DuckDNS, but honestly this gets into a whole lot of stuff I don't have nearly enough knowledge in so I will let Cloudflare's peeps do the heavy lifting for me. I am moving to [Cloudflare](https://www.cloudflare.com/) to host my domain...problem that arose was that Cloudflare did not support my `dev` TLD so I am moving to `com`. I will use some of Cloudflare's features for security and all the fancy DNS stuff that is way the hell over my head. Currently I have a simple NextJS project deployed to the Pages feature on Cloudflare that just acts as a small in-between from https://codybrunner.com and the remnants of codybrunner.dev that is hosted on Vercel where I will continue to write as I get this up and running.
+
+### Portainer
+
+[Portainer](https://www.portainer.io/) is going to help me manage all the docker containers that will run different services hosted on my domain and the Kubernetes cluster that will help allocate resources. Why all the fucking complicated DevOps lingo? Why the hell not! This is how you learn all the shit you should not do that someone who is paid a lot more than me does for a living at AWS. (psst I am learning all that AWS stuff right now so yeah I'm coming for your job homeboy).
+
+### Nginx Proxy Manager
+
+I will use [Nginx Proxy Manager](https://nginxproxymanager.com/) (NPM) as a reverse proxy so that when traffic hits my router for https://codybrunner.com it will be able to serve the correct resource. You might wonder what I mean by that. The Pi cluster will contain multiple docker containers for different services (i.e. phoenix web app, Bitwarden server, etc). I can't run multiple resources all from the same port (i.e. 443) so NPM will say:
+
+> Hey this is codybrunner.com, yo Portainer, give me the Phoenix web application container that is running internally on say port 4000.
+
+or
+
+> Hey this is the subdomain vault.codybrunner.com, yo Portainer, give me the Bitwarden container that is running internally on say port 99.
+
+### ValutWarden (aka Bitwarden)
+
+[valutwarden](https://github.com/dani-garcia/vaultwarden) is the [Rust](https://www.rust-lang.org/) implementation of the OSS [Bitwarden](https://bitwarden.com/) sever. I am using it because it is lighter and made to run on hardware like a Pi. It does not offer all the features of the Bitwarden server and is in no way connected to Bitwarden the company. It does offer all the security measures with great documentation on how to make sure your self-hosted server is secure from the outside world.
+
+### Elixir and Phoenix
+
+I want to self-host my website as a Phoenix web application making use of Phoenix LiveView for some cool feature ideas. I am also going to use this really cool OSS package from [Alfred Baudisch](https://twitter.com/AlfredBaudisch) called [pardall_markdown](https://github.com/alfredbaudisch/pardall_markdown) that I have contributed too and plan on making more contributions too.
+
+### NextCloud
+
+I want to use [NextCloud](https://nextcloud.com/) as my new iCloud since I ditched that service a while ago and have not had the wonderfulness of the cloud for a few months. My wife has me on an Android phone trying to ween me off that "Apple Kool-Aid" and I hate Google services so I need to find a reliable option for a cloud. I think I will probably just use it for contacts and calendar but perhaps I will use it for more.
+
+### A Git Server ???
+
+I kind of would like to self-host my own git server like [GitLab](https://about.gitlab.com/blog/2018/04/20/gitlab-tiers/), but I'm not sure if this is something I'd really like to do. Need to do more research on it. The idea would be that then the Phoenix Web App would look to the repository in my git server for content to host via `pardall_markdown` since I helped out with adding the ability to load remote data. Pardall gives me a completely reactive way of publishing so as soon as new content hits the production branch of that repository it is live on my blog. There is no need to wait for a redeploy of the website. I can achieve the same by hosting a repository on GitHub that holds all my markdown blog content so I don't know maybe in the future. It would be hella dope!
+
+## The MVP
+
+```shell
+# . = codybrunner.com, everything else is a subdomain
+# .         - Phoenix Web App (same container)
+# blog.     - Phoenix Web App (same container)
+# vault.    - Bitwarden Server
+```
+
+### Future Additions
+
+```shell
+# anon.      - SimpleLogin Server
+# cloud.     - NextCloud Server
+# gallery.   - Photostructure Server OR Photoview Server
+# registry.  - Git Server
+# tiny.      - Phoenix Web App - Url Shortener
+```
+
+People might be like,
+
+> But what if you lose power at your home?
+
+Well that is where the UPS will come in handy and should keep the Pi cluster up for roughly an hour (router & Pi cluster are on the same UPS). This is Colombia so it's likely that a power loss could be catastrophic and we lose power for hours, but it's not that common.
+
+> But what if your ISP goes down?
+
+My answer to that is what if AWS, Netlify, Vercel, etc go down? Sure with AWS you have regions and many redundancies in place for the event of outages if you set things up to be that way. It's just not that big of a deal. My website/blog is not a million dollar business. Now losing access to my vault, yikes. One thing I've got going for me is that Bitwarden will cache the vault to my device so as long as it is not out of since with the Pi cluster it's not that big of a deal either.
+
+One thing I would like to achieve as part of the MVP, or maybe MVP part 2, is to figure out how I could, for redundancy sake, backup to AWS or even in more of an advanced setup have a Lambda that pings my server periodically checking to see if it is up and if it is not the website/blog comes online via an EC2 instance that will have access to the backed up data. I don't really know how that will work, but it will be really fucking cool to figure it out.
+
+Like I said before this is a playground to do cool shit and fail loudly! I will document the whole process from the hardware assembly, building containers, k8 clusters, DNS/Networking, and general tom fuckery that will ensue right here (hopefully right here becomes `https://blog.codybrunner.com` sooner rather than later).
+
+So if you ain't got shit to do and would like to listen to the ramblings of a hi-tech redneck try to create his own AWS on a Raspberry Pi then visit this blog from time to time over the next couple months (someday I will set up a newsletter). In fact you know what that's it, I have a name for this:
+
+> Coco Web Services, (aka: CWS)
+
+Why coco? Because I fucking love coconut and everything in this country is coco-something!
+
+Suck it Bezos I'm coming for your ass!
