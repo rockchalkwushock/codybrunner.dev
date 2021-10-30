@@ -17,7 +17,7 @@ function buildFeed(items: Array<Omit<Post, 'tags'>>) {
     copyright: constants.copyright,
     id: constants.url,
     link: constants.url,
-    title: 'codybrunner.dev',
+    title: 'codybrunner-dev.vercel.app',
     updated: new Date(),
   })
 
