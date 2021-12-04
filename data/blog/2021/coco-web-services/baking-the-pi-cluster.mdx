@@ -20,7 +20,17 @@ I have spent the last month or so researching and trying out different setups fo
 
 So I found through some digging that a good place to start with a new Pi is to take your microSD card and flash the USB Boot firmware to it. Then boot the Pi with that microSD for 10-15 seconds. This will update the internal firmware on the Pi so that USB Boot is enabled.
 
-TODO: Add Images Here
+If you don't already have the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) you can find the download for it at the previous link or you can install it via [Homebrew](https://brew.sh):
+
+```bash
+brew install raspberry-pi-imager
+```
+
+![Miscellaneous Utility Images](/images/2021/coco-web-services/baking-the-pi-cluster/misc-utility-images.png)
+
+![Bootloader](/images/2021/coco-web-services/baking-the-pi-cluster/bootloader.png)
+
+![USB Boot](/images/2021/coco-web-services/baking-the-pi-cluster/usb-boot.png)
 
 Next up I installed the latest RaspberryPi OS Lite which at the time of writing is the [32 bit Bullseye distribution](https://downloads.raspberrypi.org/raspios_lite_armhf/release_notes.txt). Before selecting "Write" though I used <kbd>CTRL + SHIFT + X</kbd> to enter the options menu. Where I did the following:
 
@@ -29,7 +39,13 @@ Next up I installed the latest RaspberryPi OS Lite which at the time of writing 
 3. Enabled SSH via password authentication for the `pi` user (password: `raspberry`)
 4. Set locale settings
 
-TODO: Add Images Here
+![RaspberryPi OS Other](/images/2021/coco-web-services/baking-the-pi-cluster/rpios-other.png)
+
+![RaspberryPi OS Lite 32 Bit](/images/2021/coco-web-services/baking-the-pi-cluster/rpios-32-bit.png)
+
+![Customize Install](/images/2021/coco-web-services/baking-the-pi-cluster/custom-options.png)
+
+![Customize Install 2](/images/2021/coco-web-services/baking-the-pi-cluster/custom-options-2.png)
 
 With the OS setup it was time to boot up the Pi for the first time.
 
@@ -76,7 +92,7 @@ update && upgrade && full-upgrade && remove && clean
 # sudo apt autoremove -y && sudo apt autoclean -y
 ```
 
-Even though I was able to bootstrap somethings with the OS via the options menu in the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) there were still some things to be done in the configuration:
+Even though I was able to bootstrap somethings with the OS via the options menu in the Raspberry Pi Imager there were still some things to be done in the configuration:
 
 ```bash:RPiOS
 pi_config # sudo raspi-config
@@ -84,9 +100,21 @@ pi_config # sudo raspi-config
 
 From this menu I did a few different things:
 
-1. Updated the Locales (for keyboard)
+1. Updated the Locales
 2. Updated the Country for WLAN
 3. Added USB Boot as the leading boot order
+
+![Localization Menu](/images/2021/coco-web-services/baking-the-pi-cluster/localization.png)
+
+![Locales Menu](/images/2021/coco-web-services/baking-the-pi-cluster/locale.png)
+
+![WLAN Country Menu](/images/2021/coco-web-services/baking-the-pi-cluster/wlan-country.png)
+
+![Advanced Options Menu](/images/2021/coco-web-services/baking-the-pi-cluster/advanced-options.png)
+
+![Boot Order Menu](/images/2021/coco-web-services/baking-the-pi-cluster/boot-order.png)
+
+![USB Boot Config](/images/2021/coco-web-services/baking-the-pi-cluster/usb-boot-config.png)
 
 > NOTE: I really don't think the last one is necessary with the fact the firmware was updated via the first step with the microSD card; however doing this helped aleviate the `dhcp` problem as did setting the WLAN country.
 
@@ -111,7 +139,15 @@ ssh pi@rpi_one.local
 
 ## Creating A Backup With ApplePi Baker
 
-TODO: Install and Backup Instructions
+Some Googling on how to do backups for images led me to finding the wonderful software called [ApplePi-Baker](https://www.tweaking4all.com/hardware/raspberry-pi/applepi-baker-v2/) that works like a charm for this. I installed the software using [Homebrew](https://brew.sh):
+
+```bash
+brew install applepi-baker
+```
+
+![Select Drive](/images/2021/coco-web-services/baking-the-pi-cluster/applepi-baker-initial.png)
+
+![Backing Up](/images/2021/coco-web-services/baking-the-pi-cluster/applepi-baker-2.png)
 
 ## Setting a Static IP
 
@@ -123,6 +159,10 @@ A common theme you are going to find is that I always create a backup of a file 
 
 ```bash:RPiOS
 sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
+```
+
+```bash:RPiOS
+sudo nano /etc/dhcpcd.conf
 ```
 
 The next thing I did was retrieve the Pi's current IP address and my network's gateway (router) IP address:
@@ -187,12 +227,14 @@ sudo service sshd restart
 
 ```bash:macOS
 ssh pi@rpi_one.local
-# Should fail because ssh is by default running against port 22
+# ssh: connect to host rpi_one.local port 22: Connection refused
 ssh pi@rpi_one.local -p 122
 # Yahtzee!
 ```
 
 Exiting the session and going back to the other terminal session I exectuted another reboot. Now I am not giving a script kitty low hanging fruit when it comes to gaining access to my Pi.
+
+If you want to read up more on SSH and learn more I highly suggest the following [website](https://www.ssh.com).
 
 ## Add A New User And Lockdown The Pi User
 
@@ -203,7 +245,10 @@ sudo adduser cody
 sudo gpasswd -a cody adm
 sudo gpasswd -a cody sudo
 sudo groups cody
+# cody : cody adm sudo
 ```
+
+> One thing I did realize is my `.bash_aliases` are living on the `pi` account so I needed to copy those over to my user `cody` or just recreate them under that account.
 
 My new user will have administrative and sudo rights for now and to test out that the new user is good I opened up a new terminal and logged in as that user:
 
@@ -236,17 +281,19 @@ sudo passwd -l pi
 
 One thing to note about the `-l` or `--lock` flag is that what this is doing is disabling the password by changing it to a value that cannot match any encrypted value. This does not disable the account because if `pi` has other means of logging in (i.e. ssh keys) it can still do that. To truly lock the account I needed to do one more thing:
 
-TODO: Test this out it might not work.
-
 ```bash:RPiOS
-sudo usermod --expiredate 1
+sudo usermod pi --expiredate 1
 ```
 
-This truly disables the account by telling the system the user's account expired on Jan 2, 1970.
+This truly disables the account by telling the system the user's account expired on Jan 2, 1970. I was able to verify the change by trying to execute a command as `sudo`:
+
+```bash:RPiOS
+update # sudo apt update -y
+# sudo: account validation failure, is your account locked?
+# sudo: a password is required
+```
 
 Lastly I changed the password for `root`:
-
-TODO: Test this out it might not work.
 
 ```bash:RPiOS
 sudo passwd root
@@ -257,6 +304,8 @@ A quick reboot of the Pi and I verified that I could no longer log in as `pi`:
 ```bash:macOS
 ssh pi@rpi_one.local -p 122 # raspberry
 ssh pi@rpi_one.local -p 122 # new password
+ssh root@rpi_one.local -p 122 # new password
+# all should fail
 ```
 
 ## Setup SSH Keys
@@ -311,42 +360,50 @@ ssh p1
 
 ## Further Securing SSH
 
-TODO: Test that it is true I can login as `root`.
-
-TODO: Read up on `StrictModes`.
-
-TODO: Read up on `RSAAuthentication` and `PubkeyAuthentication`.
-
-TODO: Find out if tunneling is actually enabled by default.
-
 SSH still has some holes and I didn't really like that. For one I can SSH in as `root` and tunneling is fully available. The following are all the configurations I made changes too in the `sshd_config`:
 
 ```bash:RPiOS
 sudo nano /etc/ssh/sshd_config
 ```
 
+Main points to take away from the below configuration:
+
+- I am only using IPv4 connections so that's why you see `inet`.
+- I am not allowing any port forwarding or tunneling.
+- I explicitly say where to find the `authorized_keys`.
+- As added security I deny `root` and `pi` from being allowd to login.
+- I limit authentication tries to 3 times.
+- No password based authentication (ssh-keys only).
+- No empty passwords.
+- No `root` login.
+- A custom SSH port.
+
 ```text:/etc/ssh/sshd_config
 AddressFamily inet
-LoginGraceTime 120
-PermitRootLogin no
-MaxAuthTries 3
-StrictModes yes
-RSAAuthentication yes
-PubkeyAuthentication yes
+AllowAgentForwarding no
+AllowStreamLocalForwarding no
+AllowTcpForwarding no
 AuthorizedKeysFile %h/.ssh/authorized_keys
+Banner none
+ChallengeResponseAuthentication no
+DenyUsers pi root
+GatewayPorts no
+GSSAPiAuthentication no
+KerberosAuthentication no
+LoginGraceTime 120
+MaxAuthTries 3
 PasswordAuthentication no
 PermitEmptyPasswords no
-ChallengeResponseAuthentication no
-UsePAM no
-KerberosAuthentication no
-GSSAPIAuthentication no
-AllowAgentForwarding no
-AllowTcpForwarding no
-X11Forwarding no
-PermitUserEnvironment no
+PermitRootLogin no
 PermitTunnel no
-Banner none
-#AcceptEnv Lang LC_*
+PermitUserEnvironment no
+Port 122
+PrintMotd no
+PubkeyAuthentication yes
+StrictModes yes
+Subsystem       sftp    /usr/lib/openssh/sftp-server
+UsePAM no
+X11Forwarding no
 ```
 
 And just like editing this file before:
@@ -436,10 +493,9 @@ net.ipv6.conf.all.disable_ipv6 = 1
 ```
 
 ```bash:RPiOS
-# I was able to run the following and the changes be applied to the Pi
-# without the need to reboot
 sudo sysctl -p
-hostname -I
+# net.ipv6.conf.all.disable_ipv6 = 1
+pi_ip # hostname -I
 # You should only see the static IP (IPv4) that we setup earlier.
 ```
 
@@ -453,20 +509,44 @@ update && upgrade && full-upgrade
 sudo curl -sSL https://get.docker.com | sh
 ```
 
+I updated my `.bash_aliases` with the following:
+
+```bash
+alias d="docker";
+alias dps="docker ps";
+alias dr="docker run";
+alias ds="docker stop";
+alias dcl="docker container ls";
+alias dcrm="docker container rm";
+alias dil="docker image ls";
+alias dirm="docker image rm";
+alias dnl="docker network ls";
+alias dnrm="docker network rm";
+alias dsl="docker service ls";
+alias dsrm="docker service rm";
+alias dvl="docker volume ls";
+alias dvrm="docker volume rm";
+alias nodes="sudo docker node ls";
+```
+
 I needed to give my user permissions for using `docker` and then reboot the Pi so docker machine would accept the permission changes:
 
 ```bash:RPiOS
 sudo gpasswd -a cody docker
 sudo groups cody
-# adm docker sudo
+# cody adm sudo docker
 sudo reboot
 ```
 
 Once the Pi was back online I could verify that `docker` was truly installed and working correctly:
 
 ```bash:RPiOS
-docker version
-docker run hello-world
+d version # docker version
+dr hello-world # docker run hello-world
+d system prune # docker system prune
+dil # docker image ls
+# copy image id
+dirm <id> # docker image rm <id>
 ```
 
 With `docker` installed I could then install `docker-compose`:
@@ -487,7 +567,7 @@ sudo docker swarm init --advertise-addr 192.168.20.250 # Static IP for Pi
 By running the below I could see that the swarm had begun to "swarm":
 
 ```bash:RPiOS
-sudo docker node ls
+nodes # sudo docker node ls
 #ID     HOSTNAME  STATUS AVAILABILITY   MANAGER STATUS   ENGINE VERSION
 #nodeID rpi_one   Ready  Active         Leader           20.10.11
 ```
@@ -500,7 +580,11 @@ docker swarm join --token <token> <manager-ip-address>:2337
 
 ## Repeat for all Pi's
 
-I only have 2 Pi's at the moment and my cluster case supports 4. I don't think I will expand past 2 Pi's anytime soon; however all the steps in this post will need to be repeated for each Pi. The only real change needed will be to change the hostname of each Pi for clustering and then run the above `docker swarm join` command with the generated token and the IP address of the manager node with the `2337` tacked on at the end.
+I only have 2 Pi's at the moment and my cluster case supports 4. I don't think I will expand past 2 Pi's anytime soon; however all the steps in this post will need to be repeated for each Pi. The only real change needed will be to change the hostname of each Pi for clustering and then run the above `docker swarm join` command with the generated token and the IP address of the manager node with the `2337` tacked on at the end. I had made that initial backup of the first Pi from ApplePi Baker and was able to start from that point thanks to the feature of creating from a custom image:
+
+![Use Custom Image](/images/2021/coco-web-services/baking-the-pi-cluster/use-custom-image.png)
+
+![From Backup Image](/images/2021/coco-web-services/baking-the-pi-cluster/from-backup.png)
 
 ## Backup the Pi with ApplePi Baker
 
