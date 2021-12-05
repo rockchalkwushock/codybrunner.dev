@@ -1,0 +1,604 @@
+---
+createdAt: 12/03/2021
+description: The initial assembly of hardware and setting up each Pi's operating system as well as creating the Docker Swarm.
+publishedAt: 12/04/2021
+tags:
+  - raspberry-pi
+title: 'Coco Web Services: Baking The Pi Cluster'
+---
+
+import { Signature } from '../components/MDXComponents.tsx'
+
+1. [Intro](https://codybrunner-dev.vercel.app/blog/2021/coco-web-services/intro)
+2. [Baking The Pi Cluster](https://codybrunner-dev.vercel.app/blog/2021/coco-web-services/baking-the-pi-cluster)
+
+I have spent the last month or so researching and trying out different setups for Coco Web Services. If you thought web development was shit show wait until you try building servers and doing networking all on your lonesome! I quickly found the Kubernetes was just going to be too damn hard to start with. I mean at least I have foundational understandings of Docker so even though I have no experience with Docker Swarm it can't be that hard right? I tested out [Rancher's](https://rancher.com) [K3s](https://rancher.com/products/k3s) and albiet getting going is crazy easy that is where easy street stopped and "Fuck me in the Ass" avenue started. But that's not what this post is about. In this post all I am going to do is "bootstrap" each Pi so it ready to go from here on.
+
+> A note before we begin, there will be lots and I do mean lots of code blocks in this post that are for terminal session. To make it clear when a command is being ran on the Pi versus on my local machine please pay attention to the header on the code snippet (i.e. `RPiOS` or `macOS`)
+
+## Initial Setup For Each Pi
+
+So I found through some digging that a good place to start with a new Pi is to take your microSD card and flash the USB Boot firmware to it. Then boot the Pi with that microSD for 10-15 seconds. This will update the internal firmware on the Pi so that USB Boot is enabled.
+
+If you don't already have the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) you can find the download for it at the previous link or you can install it via [Homebrew](https://brew.sh):
+
+```bash
+brew install raspberry-pi-imager
+```
+
+![Miscellaneous Utility Images](/images/2021/coco-web-services/baking-the-pi-cluster/misc-utility-images.png)
+
+![Bootloader](/images/2021/coco-web-services/baking-the-pi-cluster/bootloader.png)
+
+![USB Boot](/images/2021/coco-web-services/baking-the-pi-cluster/usb-boot.png)
+
+Next up I installed the latest RaspberryPi OS Lite which at the time of writing is the [32 bit Bullseye distribution](https://downloads.raspberrypi.org/raspios_lite_armhf/release_notes.txt). Before selecting "Write" though I used <kbd>CTRL + SHIFT + X</kbd> to enter the options menu. Where I did the following:
+
+1. Disabled overscan
+2. Set a new hostname
+3. Enabled SSH via password authentication for the `pi` user (password: `raspberry`)
+4. Set locale settings
+
+![RaspberryPi OS Other](/images/2021/coco-web-services/baking-the-pi-cluster/rpios-other.png)
+
+![RaspberryPi OS Lite 32 Bit](/images/2021/coco-web-services/baking-the-pi-cluster/rpios-32-bit.png)
+
+![Customize Install](/images/2021/coco-web-services/baking-the-pi-cluster/custom-options.png)
+
+![Customize Install 2](/images/2021/coco-web-services/baking-the-pi-cluster/custom-options-2.png)
+
+With the OS setup it was time to boot up the Pi for the first time.
+
+> NOTE: With one of my Pi's I kept running into an issue with the `dhcp` service failing to start on first boot so I had no choice but to attach a monitor and keyboard. After the initial steps below and the first reboot though I was good to go with only SSH.
+
+## First Boot
+
+The first thing I did was add a `.bash_aliases` file with common aliases so I would not have to type as much #haks #lazy.
+
+```bash:RPiOS
+sudo nano .bash_aliases
+```
+
+```bash:.bash_aliases
+alias ..="cd ../";
+alias ...="cd ../../";
+alias ....="cd ../../../";
+alias apt="sudo apt";
+alias bs="source .bashrc";
+alias clean="sudo apt autoclean -y";
+alias clr="clear"
+alias full-upgrade="sudo apt full-upgrade"
+alias gateway="ip r | grep default"
+alias ls="ls -la";
+alias mkdir="mkdir -p";
+alias pi_config="sudo raspi-config"
+alias pi_ip="hostname -I"
+alias ports="sudo ss -tupln";
+alias remove="sudo apt autoremove -y";
+alias rmf="rm -rf";
+alias update="sudo apt update -y";
+alias upgrade="sudo apt upgrade -y";
+```
+
+```bash:RPiOS
+source .bashrc
+```
+
+The next thing was to run all the updates and upgrades:
+
+```bash:RPiOS
+update && upgrade && full-upgrade && remove && clean
+# sudo apt update -y && sudo apt upgrade -y && sudo apt full-upgrade \
+# sudo apt autoremove -y && sudo apt autoclean -y
+```
+
+Even though I was able to bootstrap somethings with the OS via the options menu in the Raspberry Pi Imager there were still some things to be done in the configuration:
+
+```bash:RPiOS
+pi_config # sudo raspi-config
+```
+
+From this menu I did a few different things:
+
+1. Updated the Locales
+2. Updated the Country for WLAN
+3. Added USB Boot as the leading boot order
+
+![Localization Menu](/images/2021/coco-web-services/baking-the-pi-cluster/localization.png)
+
+![Locales Menu](/images/2021/coco-web-services/baking-the-pi-cluster/locale.png)
+
+![WLAN Country Menu](/images/2021/coco-web-services/baking-the-pi-cluster/wlan-country.png)
+
+![Advanced Options Menu](/images/2021/coco-web-services/baking-the-pi-cluster/advanced-options.png)
+
+![Boot Order Menu](/images/2021/coco-web-services/baking-the-pi-cluster/boot-order.png)
+
+![USB Boot Config](/images/2021/coco-web-services/baking-the-pi-cluster/usb-boot-config.png)
+
+> NOTE: I really don't think the last one is necessary with the fact the firmware was updated via the first step with the microSD card; however doing this helped aleviate the `dhcp` problem as did setting the WLAN country.
+
+I choose to not reboot on exiting the config menu to verify the boot order was infact set to USB first.
+
+```bash:RPiOS
+sudo rpi-eeprom-config
+# BOOT_ORDER=0xf14
+```
+
+And with all of that being in order I rebooted the Pi for the first of many times to come.
+
+```bash:RPiOS
+sudo reboot
+```
+
+With all of that done (at least with the problematic Pi) I was able to SSH into the Pi from my Mac with no need for plugging in periphreals into the Pi.
+
+```bash:macOS
+ssh pi@rpi_one.local
+```
+
+## Creating A Backup With ApplePi Baker
+
+Some Googling on how to do backups for images led me to finding the wonderful software called [ApplePi-Baker](https://www.tweaking4all.com/hardware/raspberry-pi/applepi-baker-v2/) that works like a charm for this. I installed the software using [Homebrew](https://brew.sh):
+
+```bash
+brew install applepi-baker
+```
+
+![Select Drive](/images/2021/coco-web-services/baking-the-pi-cluster/applepi-baker-initial.png)
+
+![Backing Up](/images/2021/coco-web-services/baking-the-pi-cluster/applepi-baker-2.png)
+
+## Setting a Static IP
+
+I need to make sure that my Pi always can be found at the same location. Unfortunately the way I would have liked to do this (my router assigning a static IP via the whitelisted MAC address of the Pi) is not available to me on my router. Not my choice to have such a shitty router, welcome to Colombia and their wonderful ISPs.
+
+So that means I need to tell the Pi that it has as a static IP it should always broadcast.
+
+A common theme you are going to find is that I always create a backup of a file before editing it. This is just a safe and good practice to do. It would be hella dope to check the operating system into `git`, but I think that is probably not possible so this is the first way to protect myself from "oh shit" moments:
+
+```bash:RPiOS
+sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
+```
+
+```bash:RPiOS
+sudo nano /etc/dhcpcd.conf
+```
+
+The next thing I did was retrieve the Pi's current IP address and my network's gateway (router) IP address:
+
+```bash:RPiOS
+pi_ip # hostname -I
+# 192.168.20.250
+gateway # ip r | grep default
+# 192.168.1.1
+```
+
+With this information I could setup the static IP for the Pi:
+
+```text:/etc/dhcpcd.conf
+interface eth0
+static ip_address=192.168.20.250/24
+static routers=192.168.1.1
+static domain_name_server=192.168.1.1 1.1.1.1
+```
+
+You would obviously replace those values as needed in your configuration. You can choose to add `8.8.8.8` (Google DNS) and/or `1.1.1.1` (Cloudflare DNS) as fallback options for the `domain_name_server` line. That is totally up to you. You could just run everything through your gateway. I use Cloudflare as a second option.
+
+I won't reference this again in the post but coming from `vim`, I had no idea how the hell to get out of `nano`.
+
+<kbd>CTRL X</kbd>
+<kbd>Y</kbd>
+<kbd>Return</kbd>
+
+You are welcome.
+
+Another reboot and I checked the [Fing](https://www.fing.com/products/fing-app) app on my phone and could see the Pi had joined my network and was broadcasting as the static IP. To futher verify after logging back into the Pi I ran:
+
+```bash:RPiOS
+pi_ip # hostname -I
+# 192.168.20.250
+```
+
+## Changing the SSH Port
+
+I wasn't aware of any of this being that my "time in tech" has been basically as a frontend developer (no I don't count my time as a robotic technician, it was short lived); but the "SSH Protocol/Standard" is set to use port 22 by default on any device that SSH is installed on. With this knowledge in hand you could realize how easily it is for a malicious entity to start trying to gain access to a server via SSH. I am implementing the age old practice of [security through obscurity](https://encyclopedia2.thefreedictionary.com/Security+through+obfuscation) by changing the default SSH port to something other that 22:
+
+```bash:RPiOS
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+sudo nano /etc/ssh/sshd_config
+```
+
+```text:/etc/ssh/sshd_config
+Port 122
+```
+
+After making the update and exiting the file I found out I could test to make sure the `sshd_config` was valid by running:
+
+```bash:RPiOS
+sudo sshd -t
+```
+
+If it didn't scream at me I could move on to restarting the service and test out my changes in a new terminal session on my Mac:
+
+```bash:RPiOS
+sudo service sshd restart
+```
+
+```bash:macOS
+ssh pi@rpi_one.local
+# ssh: connect to host rpi_one.local port 22: Connection refused
+ssh pi@rpi_one.local -p 122
+# Yahtzee!
+```
+
+Exiting the session and going back to the other terminal session I exectuted another reboot. Now I am not giving a script kitty low hanging fruit when it comes to gaining access to my Pi.
+
+If you want to read up more on SSH and learn more I highly suggest the following [website](https://www.ssh.com).
+
+## Add A New User And Lockdown The Pi User
+
+Just like the default port on SSH, Raspberry Pi ships with a default user `pi` and that user has a default password `raspberry`. You don't have to look hard on the interwebs to find that out. So yet again this is an easy attack vector for a script kitty. I need to change the password for `pi` but I also want to just lockdown that user so no one can ever log in as `pi`. At first I just wanted to nuke the user altogether, but it turns out RaspberryPi OS uses the `pi` user under the hood for a few things so nuking the user would mean I'd need to know what permissions to give my new user moving forward. I also will want to change the password for `root` to be on the even safer side. So first I would need to add a user and give them some basic permissions and verify that user was good before locking the `pi` account.
+
+```bash:RPiOS
+sudo adduser cody
+sudo gpasswd -a cody adm
+sudo gpasswd -a cody sudo
+sudo groups cody
+# cody : cody adm sudo
+```
+
+> One thing I did realize is my `.bash_aliases` are living on the `pi` account so I needed to copy those over to my user `cody` or just recreate them under that account.
+
+My new user will have administrative and sudo rights for now and to test out that the new user is good I opened up a new terminal and logged in as that user:
+
+```bash:macOS
+ssh cody@rpi_one.local
+```
+
+From there I tested that the user's `sudo` rights were working:
+
+```bash:RPiOS
+sudo su pi
+# After inputing the user's password you should see your terminal prompt change
+# pi@rpi_one:/home/cody
+```
+
+The user is all setup for now so I could go forward with locking down the `pi` user. In the first terminal session I went about changing the password for `pi`. Why would I change the password if I am locking the account? Well on the off chance the `pi` user became accessible by the outside world again if the default password of `raspberry` is still in place I am fuck-a-doodle-doed. `pi` has damn near root level privileges so if a hacker gets in he or she can do whatever they want to do and I don't want that.
+
+```bash:RPiOS
+passwd
+# Current Password: raspberry
+# New Password: ********
+# Retype New Password: ********
+```
+
+Then I locked the `pi` account from being able to login via password:
+
+```bash:RPiOS
+sudo passwd -l pi
+```
+
+One thing to note about the `-l` or `--lock` flag is that what this is doing is disabling the password by changing it to a value that cannot match any encrypted value. This does not disable the account because if `pi` has other means of logging in (i.e. ssh keys) it can still do that. To truly lock the account I needed to do one more thing:
+
+```bash:RPiOS
+sudo usermod pi --expiredate 1
+```
+
+This truly disables the account by telling the system the user's account expired on Jan 2, 1970. I was able to verify the change by trying to execute a command as `sudo`:
+
+```bash:RPiOS
+update # sudo apt update -y
+# sudo: account validation failure, is your account locked?
+# sudo: a password is required
+```
+
+Lastly I changed the password for `root`:
+
+```bash:RPiOS
+sudo passwd root
+```
+
+A quick reboot of the Pi and I verified that I could no longer log in as `pi`:
+
+```bash:macOS
+ssh pi@rpi_one.local -p 122 # raspberry
+ssh pi@rpi_one.local -p 122 # new password
+ssh root@rpi_one.local -p 122 # new password
+# all should fail
+```
+
+## Setup SSH Keys
+
+As I said before if `pi` had ssh keys he/she could still access the server if all I did was lock the account from password based authentication. I don't even want to do password based authentication with my user with all the tom fuckery on the interwebs these days. So with that ssh keys it is. I've had to set these up several times for GitHub and other services as a developer so it wasn't all that difficult.
+
+```bash:macOS
+# Remove all entries in .known_hosts for rpi_one
+ssh-keygen -R rpi_one
+# Generate the keys for the Pi
+ssh-keygen -f ~/.ssh/pi_one -t ed25519 -C "Pi Node #1 in Cluster"
+# Add a passphrase
+ls .ssh/
+# pi_one pi_one.pub
+ssh-copy-id -i ~/.ssh/pi_one -p 122 cody@rpi_one.local
+ssh -p 122 cody@rpi_one.local
+```
+
+```bash:RPiOS
+ls .ssh/
+# authorized_keys
+cat .ssh/authorized_keys
+# value should match pi_one.pub on macOS
+```
+
+### BONUS: Faster Login With SSH Config
+
+For easier and faster login with SSH I setup the following on my Mac:
+
+```text:.ssh/config
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+
+Host p1
+  HostName rpi_one.local
+  IdentityFile ~/.ssh/pi_one
+  IdentitiesOnly yes
+  Port 122
+  User cody
+```
+
+> Please note that `UseKeychain` only works on macOS.
+
+Now try logging into Pi again
+
+```bash:macOS
+ssh p1
+# You will be asked for the passphrase you gave when creating the SSH keys.
+# If on macOS the passphrase is added to Keychain so you will never be asked for it again. Simply type in `ssh <Host>`
+```
+
+## Further Securing SSH
+
+SSH still has some holes and I didn't really like that. For one I can SSH in as `root` and tunneling is fully available. The following are all the configurations I made changes too in the `sshd_config`:
+
+```bash:RPiOS
+sudo nano /etc/ssh/sshd_config
+```
+
+Main points to take away from the below configuration:
+
+- I am only using IPv4 connections so that's why you see `inet`.
+- I am not allowing any port forwarding or tunneling.
+- I explicitly say where to find the `authorized_keys`.
+- As added security I deny `root` and `pi` from being allowd to login.
+- I limit authentication tries to 3 times.
+- No password based authentication (ssh-keys only).
+- No empty passwords.
+- No `root` login.
+- A custom SSH port.
+
+```text:/etc/ssh/sshd_config
+AddressFamily inet
+AllowAgentForwarding no
+AllowStreamLocalForwarding no
+AllowTcpForwarding no
+AuthorizedKeysFile %h/.ssh/authorized_keys
+Banner none
+ChallengeResponseAuthentication no
+DenyUsers pi root
+GatewayPorts no
+GSSAPiAuthentication no
+KerberosAuthentication no
+LoginGraceTime 120
+MaxAuthTries 3
+PasswordAuthentication no
+PermitEmptyPasswords no
+PermitRootLogin no
+PermitTunnel no
+PermitUserEnvironment no
+Port 122
+PrintMotd no
+PubkeyAuthentication yes
+StrictModes yes
+Subsystem       sftp    /usr/lib/openssh/sftp-server
+UsePAM no
+X11Forwarding no
+```
+
+And just like editing this file before:
+
+```bash:RPiOS
+sudo sshd -t
+sudo service sshd restart
+```
+
+And before I rebooted I verified I hadn't locked myself out of my Pi:
+
+```bash:macOS
+ssh p1
+```
+
+## Whitelisting SSH Users
+
+I took the security around SSH a step further by whitelisting the users that can log in to the PI via SSH. The following line in the `sshd_config` will tell SSH that these are the **ONLY** users it should allow into the server. With the addition of this line as is now the server will only allow my user to log in and since my user is the only user with ssh keys on the server my user is the only one that can authenticate with the server.
+
+> I am sure there is some super genius hacker out there reading this and chuckling while thinking "There are 100 other ways I can hack your ass"
+
+```bash:RPiOS
+sudo nano /etc/ssh/sshd_config
+```
+
+```text:/etc/ssh/sshd_config
+AllowUsers cody
+```
+
+And as always when working with this file I checked the configs validity, restarted the service, and then tried logging in to the Pi via another terminal session:
+
+```bash:RPiOS
+sudo sshd -t
+sudo service sshd restart
+```
+
+```bash:macOS
+ssh <Host>
+```
+
+```bash:RPiOS
+sudo reboot
+```
+
+## Disabling Bluetooth and WiFi
+
+I don't forsee the need for Bluetooth and WiFi via the Pi cluster at anypoint for the use cases that I am wanting to achive. A few quick google searches and I found out how I could completely disable these on the Pi:
+
+```bash:RPiOS
+sudo cp /boot/config.txt /boot/config.txt.bak
+```
+
+```bash:RPiOS
+sudo nano /boot/config.txt
+```
+
+```text:/boot/config.txt
+[all]
+dtoverlay=disable-bt,disable-wifi
+```
+
+I was able to verify that the WiFi had been disabled by using the follow command. Unfortunately I was not able to find a way to check that bluetooth was disable other than scanning my network to see if I could connect to the Pi via bluetooth:
+
+```bash:RPiOS
+ip -br addr
+# Should see wlan0 is down.
+```
+
+## Disable IPv6
+
+I don't ever really use IPv6 so I decided to disable this as well:
+
+```bash:RPiOS
+sudo cp /etc/sysctl.conf /etc/sysctl.conf.bak
+```
+
+```bash:RPiOS
+sudo nano /etc/sysctl.conf
+```
+
+```text:/etc/sysctl.conf
+# Note to re-enable IPv6
+# 1. Set to 0
+# 2. Run `sudo sysctl -p`
+# 3. Run `sudo ifconfig eth0 down && sudo ifconfig eth0 up`
+net.ipv6.conf.all.disable_ipv6 = 1
+```
+
+```bash:RPiOS
+sudo sysctl -p
+# net.ipv6.conf.all.disable_ipv6 = 1
+pi_ip # hostname -I
+# You should only see the static IP (IPv4) that we setup earlier.
+```
+
+## Installing Docker, Docker-Compose, And Swarming The Cluster
+
+With the Pi configured and secured to the best of my knowledge (skipping setting up a firewall for the moment) I could finally begin installing packages I will need moving forward. [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) are the core technologies I will use in meeting my use cases for the Pi cluster. All the services will be running in docker containers and I will be using [Docker Swarm](https://docs.docker.com/engine/swarm/) to cluster the Pi's:
+
+```bash:RPiOS
+update && upgrade && full-upgrade
+# sudo apt update -y && sudo apt upgrade -y && sudo apt full-upgrade
+sudo curl -sSL https://get.docker.com | sh
+```
+
+I updated my `.bash_aliases` with the following:
+
+```bash
+alias d="docker";
+alias dps="docker ps";
+alias dr="docker run";
+alias ds="docker stop";
+alias dcl="docker container ls";
+alias dcrm="docker container rm";
+alias dil="docker image ls";
+alias dirm="docker image rm";
+alias dnl="docker network ls";
+alias dnrm="docker network rm";
+alias dsl="docker service ls";
+alias dsrm="docker service rm";
+alias dvl="docker volume ls";
+alias dvrm="docker volume rm";
+alias nodes="sudo docker node ls";
+```
+
+I needed to give my user permissions for using `docker` and then reboot the Pi so docker machine would accept the permission changes:
+
+```bash:RPiOS
+sudo gpasswd -a cody docker
+sudo groups cody
+# cody adm sudo docker
+sudo reboot
+```
+
+Once the Pi was back online I could verify that `docker` was truly installed and working correctly:
+
+```bash:RPiOS
+d version # docker version
+dr hello-world # docker run hello-world
+d system prune # docker system prune
+dil # docker image ls
+# copy image id
+dirm <id> # docker image rm <id>
+```
+
+With `docker` installed I could then install `docker-compose`:
+
+```bash:RPiOS
+sudo apt install python3-pip -y
+sudo pip3 install docker-compose
+# Verify installation
+docker-compose version
+```
+
+With both `docker` and `docker-compose` present now I was ready to begin building the cluster and using `docker swarm`. This next step is specific only to whatever Pi will be the master, manager, or supervisor node in the cluster.
+
+```bash:RPiOS
+sudo docker swarm init --advertise-addr 192.168.20.250 # Static IP for Pi
+```
+
+By running the below I could see that the swarm had begun to "swarm":
+
+```bash:RPiOS
+nodes # sudo docker node ls
+#ID     HOSTNAME  STATUS AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+#nodeID rpi_one   Ready  Active         Leader           20.10.11
+```
+
+Now this Pi is setup as the manager of the swarm. Output from the command gave me a token and example of the command I would need to run on every new node in the Pi cluster:
+
+```bash:RPiOS
+docker swarm join --token <token> <manager-ip-address>:2337
+```
+
+## Repeat for all Pi's
+
+I only have 2 Pi's at the moment and my cluster case supports 4. I don't think I will expand past 2 Pi's anytime soon; however all the steps in this post will need to be repeated for each Pi. The only real change needed will be to change the hostname of each Pi for clustering and then run the above `docker swarm join` command with the generated token and the IP address of the manager node with the `2337` tacked on at the end. I had made that initial backup of the first Pi from ApplePi Baker and was able to start from that point thanks to the feature of creating from a custom image:
+
+![Use Custom Image](/images/2021/coco-web-services/baking-the-pi-cluster/use-custom-image.png)
+
+![From Backup Image](/images/2021/coco-web-services/baking-the-pi-cluster/from-backup.png)
+
+## Backup the Pi with ApplePi Baker
+
+I backed up each Pi again and saved off those backups to an external drive before moving on to the next steps. This way should shit ever go side ways I can quickly have the swarm that is preconfigured back up and running pretty quickly.
+
+An important thing to note is that these images are going to be specific to the Pi they were made on. I say this because I found that if I did a backup after setting up SSH and then tried to use the image on my other Pi and log in SSH would send me very very good nastygrams about this fingerprint beloning to XXX and not the current machine. It would then politely tell me to fuck off. I have not had time to look into this more, but my assumption is that under the hood SSH when generating a fingerprint that fingerprint is unique to the hostname it is being set for. So in the example below you get two different fingerprints:
+
+```bash:macOS
+ssh p1 # rpi_one.local - port 122 - static IP 192.168.20.250
+ssh p2 # rpi_two.local - port 122 - static IP 192.168.20.251
+```
+
+## Wrap Up
+
+Up next I will add [Portainer](https://www.portainer.io) to the cluster so I will have a nice GUI to work with when managing all the services on the cluster.
+
+<Signature>~ Cody 🚀</Signature>

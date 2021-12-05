@@ -1,0 +1,87 @@
+---
+createdAt: 11/21/2021
+description: The humble beginnings of Coco Web Services (CWS) as a Raspberry Pi cluster running dockerized applications ranging from self-hosted Bitwarden servers to this very website!
+publishedAt: 12/01/2021
+tags:
+  - raspberry-pi
+title: 'Coco Web Services: Intro'
+updatedAt: 12/04/2021
+---
+
+import { Signature } from '../components/MDXComponents.tsx'
+
+1. [Intro](https://codybrunner-dev.vercel.app/blog/2021/coco-web-services/intro)
+2. [Baking The Pi Cluster](https://codybrunner-dev.vercel.app/blog/2021/coco-web-services/baking-the-pi-cluster)
+
+I have been reading and watching a lot of tutorials on building with raspberry pi and all the cool things you can do with these bite size computers. I have come up with a project that will be rolled out in phases over the next couple months. This series will walk through the steps of setting up and configuring the pi for the features I want to have available to me.
+
+> Somethings have changed since I initially wrote about this idea [here](http://localhost:4000/blog/2021/coco-web-services). I am opting to use [Traefik](https://traefik.io) over [Nginx Proxy Manager](https://nginxproxymanager.com) and after many many troubles I will be clustering the Pis with Docker Swarm instead of Kubernetes.
+
+## The Project
+
+I want to use my Raspberry Pi as a cluster that will act as a server for many different things. How will this cluster be able to do multiple things? That is where technologies like [Docker](https://www.docker.com/) and [Portainer](https://www.portainer.io) will come in handy. Below is a list of all the things I want to try to accomplish with this project:
+
+- [x] Create a pi cluster in a headless state.
+- [x] Boot the pi from my SSD instead of the SD card.
+- [x] Setup ssh and secure the cluster.
+- [x] Setup the cluster so it requests a static IP from my router.
+- [ ] Setup [Portainer](https://www.portainer.io) to manage all of the docker containers and services.
+- [ ] Setup [Traefik](https://traefik.io) to securely expose the cluser's services from behind a reverse proxy.
+- [ ] Setup a [NextCloud](https://nextcloud.com/) server for myself.
+- [ ] Setup a [Bitwarden](https://bitwarden.com/) server for myself.
+- [ ] Setup a [Git](https://git-scm.com/) server as my own personal GitHub.
+- [ ] Setup a webserver that will serve this website and blog.
+- [ ] Setup a [Photoprism](https://photoprism.app) server for hosting all my photos/videos.
+- [ ] Setup a [Jitsi](https://jitsi.org/) server to use as my own personal video call service.
+- [ ] Setup an Elixir project and launch my own URL shortening service.
+
+This **should** be possible because Traefik can direct traffic to the subdomains for specific services that will be docker containers being managed by Portainer. So a request to the git subdomain would render the container for the git server service.
+
+```shell
+# Phoenix Web Application
+https://codybrunner.com
+https://blog.codybrunner.com
+# NextCloud Server
+https://cloud.codybrunner.com
+# Photoprism Server
+https://media.codybrunner.com
+# Jitsi Server
+https://meet.codybrunner.com
+# Git Server
+https://registry.codybrunner.com
+# Elixir URL Shortener Application
+https://tiny.codybrunner.com
+# Bitwarden Server
+https://valut.codybrunner.com
+```
+
+I have been wanting to rewrite my website and blog using Phoenix for a while now to get more experience with the framework and also a developer's website/blog is always a playground for trying out new technology and I have some cool ideas for it thanks to Phoenix LiveView. To do so I was going to need to move off [Vercel](https://vercel.com) for hosting anyways since their service does not support hosting Elixir apps or dockerizing applications for hosting. I originally thought [Heroku](https://www.heroku.com/) or [Fly.io](https://fly.io) could be good options and then I discovered the possibilities to do this on my own with my raspberry pi, docker, portainer, and nginx proxy manager. So I get to work with docker, elixir, and my pi...it's kind of a win win win to do this from a _"I get to learn a freaking ton!"_ standpoint.
+
+This will take a while to do for sure. I know a lot of people will be like _"Why?"_ and yeah it's overkill to the nth degree. I get to learn cool shit along the way and I will now own my infrastructure, my code, my passwords, my media, and maybe even more in the future. Yeah if my power goes out or my ISP goes down I'm fuck-a-doodle-dooed...but let's be real if GitHub, Google, iCloud, LastPass, etc go down I can't get to those cloud services either so there is really no difference. The main thing is all the heavy lifiting is on me and that will be fun and educational. Let's be real you don't pay for the services, you pay for the DevOps guy or gal on the other end making the service work 24/7...I get to be the DevOps guy now!
+
+I will get the BitWarden server up quickly to test it out and see if it's what I really want to do because I have to renew my LastPass Premium subscription on 01 January. I really don't want to pay them anymore. The other thing will be to do my best to get this site ported over to a Phoenix application and served from my own webserver. It will likely be a rough transition and I'm not goign to really care about the UI/UX to get it ported over. It will be really basic for the inital deploy.
+
+I am working on a project that will be really helpful with the blog called [pardall_markdown](https://github.com/alfredbaudisch/pardall_markdown). Specifically I am helping the package be able to watch data from remote locations and parse it into the deployed application. The plan is to get it to where a user can provide a remote url to GitHub, BitBucket, GitLab, etc so when content is published to that remote it will, in realtime thanks to LiveView, be parsed and added to the deployed website (no waiting for a build to render new content). Hosting my own git server means I essentially will have my very own GitHub. I will be able to take all my posts and add them to their own repository and then tell `pardall_markdown` to watch and load them from the repository source:
+
+```elixir:config/config.exs
+config :pardall_markdown, PardallMarkdown.Content,
+  root_path: "https://git.codybrunner.com/posts.git"
+```
+
+Pardall will allow me to write a post, commit and push it to my git server, and it immediately render the new post into the application. So think about that for a moment my Phoenix web application in a docker container will be listening to the changes on my git server in another docker container all running on the same hardware...how fucking cool is that!
+
+## Hardware
+
+Unfortunately I am waiting for my second i to show up, it's on backorder but the below list is what I will be using for this project. I am likely going to get started with only one pi and circle back to cluster when the second arrives. The initial parts of this seires will be pretty basic setup so I can't imagine clustering after the fact will break much or be a pain in the ass...but I have been known to be wrong!
+
+- [Raspberry Pi 4B 8GB](https://www.amazon.com/gp/product/B08FRSHWGQ/ref=ppx_yo_dt_b_asin_title_o01_s01?ie=UTF8&th=1) (2)
+- [Sandisk 128GB Extreme PRO USB 3.2 SSD Flash Drive](https://www.amazon.com/dp/B08GYM5F8G?ref=ppx_yo2_dt_b_product_details&th=1) (2)
+- [Cat6 Ethernet Cable 1ft](https://www.amazon.com/dp/B003L1AET2?ref=ppx_yo2_dt_b_product_details&th=1) (2)
+- [Geekworm 11mm Embedded Heatsink](https://www.amazon.com/dp/B08N5VZN8R?ref=ppx_yo2_dt_b_product_details&th=1) (2)
+- [Argon ONE Raspberry Pi 4 USB Type C Power Supply](https://www.amazon.com/dp/B07TW4Q693?psc=1&ref=ppx_yo2_dt_b_product_details) (2)
+- [Samsung microSD 32GB](https://www.amazon.com/gp/product/B06XWN9Q99/ref=ppx_yo_dt_b_asin_title_o06_s00?ie=UTF8&psc=1)
+- [Samsung T7 SSD 500GB](https://www.amazon.com/dp/B0874XJL6M/ref=dp_iou_view_product?ie=UTF8&psc=1)
+- [GeeekPi Raspberry Pi Cluster Case](https://www.amazon.com/gp/product/B083FDHPBH/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1)
+- [NETGEAR 5-Port Gigabit Unmanaged Switch](https://www.amazon.com/dp/B07S98YLHM?ref=ppx_yo2_dt_b_product_details&th=1)
+
+<Signature>~ Cody 🚀</Signature>
